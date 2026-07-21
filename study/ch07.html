@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>工作流与实验管理 Workflow · Qlib 学习教程</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>Qlib 教程</h1>
+    <div class="sub">从入门到实战</div>
+    <nav>
+      <a href="index.html"><span class="num">home</span>首页</a>
+      <a href="ch01.html"><span class="num">01</span>简介与架构</a>
+      <a href="ch02.html"><span class="num">02</span>环境与数据</a>
+      <a href="ch03.html"><span class="num">03</span>数据层</a>
+      <a href="ch04.html"><span class="num">04</span>数据集与处理器</a>
+      <a href="ch05.html"><span class="num">05</span>模型</a>
+      <a href="ch06.html"><span class="num">06</span>策略与回测</a>
+      <a href="ch07.html" class="active"><span class="num">07</span>工作流</a>
+      <a href="ch08.html"><span class="num">08</span>综合实战</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <span class="tag">CHAPTER 07</span>
+    <h1>工作流与实验管理 Workflow</h1>
+    <p class="lead">前六章我们把数据、模型、策略、回测这些"零件"逐一拆开讲透了。本章要做的事只有一件：把这些零件用一根传送带串起来，一键跑完，并且把每次实验的结果都规规矩矩地存档、随时能翻出来复现。</p>
+
+    <h2>1. 为什么需要"工作流"？一条流水线的故事</h2>
+    <p>想象你在一家工厂造车。前面几章你分别学会了：怎么进原料（数据层）、怎么把原料加工成零件（数据集与处理器）、怎么组装发动机（模型）、怎么装上轮子跑起来（策略与回测）。但如果每造一辆车都要人工把这些工序手动搬来搬去，效率极低，而且很容易漏工序、记错参数。</p>
+    <p>真正的工厂需要两样东西：一条 <b>自动流水线</b>（工序按顺序自动流转），和一本 <b>生产台账</b>（每辆车用了什么参数、质检结果如何，都记录在案，出了问题能追溯）。Qlib 的 <b>Workflow（工作流）</b> 就是这条流水线，<b>Recorder（记录器）</b> 就是这本台账。</p>
+
+    <div class="callout"><span class="t">一句话概括</span>
+    Workflow 负责"按顺序自动跑完 数据 → 训练 → 预测 → 信号分析 → 组合回测"；实验管理（Recorder / ExpManager）负责"把每一步的参数、模型、结果、图表都存起来，可对比、可复现"。
+    </div>
+
+    <p>Qlib 提供 <b>两种</b> 使用方式，本章都会讲：</p>
+    <div class="diagram"><pre>
+  方式 A：命令行驱动（配置即实验）
+  ┌───────────────────────────────────────────────┐
+  │  $ qrun workflow_config_lightgbm_Alpha158.yaml │
+  └───────────────────────────────────────────────┘
+        一个 YAML 文件描述整条流水线，qrun 一键跑完
+
+  方式 B：代码驱动（灵活可编程）
+  ┌───────────────────────────────────────────────┐
+  │  with R.start(experiment_name="my_exp"):       │
+  │      model.fit(dataset)                         │
+  │      R.save_objects(...)                        │
+  │      SignalRecord(...).generate()               │
+  └───────────────────────────────────────────────┘
+        用 Python 逐步调用，适合调试与二次开发
+</pre></div>
+
+    <p>两种方式底层是同一套东西：<code>qrun</code> 内部最终也是调用代码驱动的那套 API。理解了代码驱动，就理解了 <code>qrun</code>。</p>
+
+    <h2>2. qrun 命令行入口：一个 YAML 跑完全流程</h2>
+    <p>安装好 Qlib 后你就有了 <code>qrun</code> 命令，它的入口注册在 <code>setup.py</code> 里，指向函数 <code>qlib.cli.run:run</code>。整段逻辑非常短，就在 <code>qlib/cli/run.py:86</code> 的 <code>workflow()</code> 函数里。它借助 <code>fire</code> 库把命令行参数映射成函数参数，用法是：</p>
+
+    <pre><code><span class="cmt"># 最简单：跑一个配置</span>
+$ qrun workflow_config_lightgbm_Alpha158.yaml
+
+<span class="cmt"># 也可以指定实验名和 mlruns 目录</span>
+$ qrun config.yaml my_experiment ./mlruns</code></pre>
+
+    <p>它的执行步骤（对照 <code>qlib/cli/run.py:86-148</code>）：</p>
+    <ol>
+      <li><b>Jinja2 模板渲染</b>：先把 YAML 当模板读进来，用环境变量做替换（<code>render_template</code>，<code>run.py:52</code>）。所以你可以在 YAML 里写 <code>{{ MARKET }}</code>，然后 <code>export MARKET=csi300</code> 再跑，同一个配置适配不同环境。</li>
+      <li><b>解析 YAML</b>：用 <code>ruamel.yaml</code> 把渲染后的文本解析成 Python 字典。</li>
+      <li><b>处理 BASE_CONFIG_PATH</b>：若配置里写了 <code>BASE_CONFIG_PATH</code>，会先加载基础配置，再用当前文件里的字段覆盖（<code>update_config</code>），实现"配置继承"。</li>
+      <li><b>初始化 Qlib</b>：调用 <code>qlib.init(**config["qlib_init"])</code>，同时设置实验管理后端的 <code>uri</code>（默认落到当前目录的 <code>mlruns/</code>）。</li>
+      <li><b>训练与记录</b>：核心一行 <code>recorder = task_train(config["task"], experiment_name=...)</code>，把 <code>task</code> 段交给训练器执行；最后 <code>recorder.save_objects(config=config)</code> 把整份配置也一并存进 recorder，保证可复现。</li>
+    </ol>
+
+    <div class="callout tip"><span class="t">提示</span>
+    <code>task_train</code>（在 <code>qlib/model/trainer.py</code>）才是真正把 model / dataset / record 三段拼起来的地方：它先构建 dataset 和 model，训练模型，然后依次实例化 record 段里列出的每个 RecordTemp 并调用 <code>.generate()</code>。<code>qrun</code> 只是它的一层薄壳。
+    </div>
+
+    <div class="callout warn"><span class="t">易踩坑</span>
+    Jinja2 渲染发生在 YAML 解析<b>之前</b>。如果你在 YAML 里写了 <code>{{ ... }}</code> 但没设置对应环境变量，该变量会被替换成空字符串（见 <code>run.py:77</code> 的 <code>os.getenv(var, "")</code>），可能导致后续解析出意料之外的 <code>None</code>。</div>
+
+    <h2>3. 全局记录器 R：实验管理的总开关</h2>
+    <p>代码驱动的核心是一个全局单例对象 <code>R</code>，定义在 <code>qlib/workflow/__init__.py:681</code>：</p>
+    <pre><code><span class="kw">from</span> qlib.workflow <span class="kw">import</span> R</code></pre>
+    <p>你可以把 <code>R</code> 想象成台账管理员：它管着"哪个实验（Experiment）正在进行"、"当前用哪本记录本（Recorder）在记录"。它本质是 <code>QlibRecorder</code> 类的实例，内部持有一个 <code>ExpManager</code>（实验管理器）。</p>
+
+    <p><b>层级关系</b>要先分清（这是最容易混淆的地方）：</p>
+    <div class="diagram"><pre>
+  ExpManager  实验管理器（单例，管所有实验，对应 mlruns/ 根目录）
+     │
+     ├── Experiment  一次"课题"，有名字，如 "LightGBM_Alpha158"
+     │      │
+     │      ├── Recorder  一次"运行/试验"，有唯一 id，记录一组参数与结果
+     │      ├── Recorder
+     │      └── Recorder  （同一实验下可以有很多次 run，方便对比）
+     │
+     └── Experiment ...
+</pre></div>
+
+    <p><b>最常用的入口是 <code>R.start(...)</code> 上下文管理器</b>（<code>__init__.py:37</code>）。它是一个 <code>@contextmanager</code>，进入 <code>with</code> 块时创建/激活一个 experiment 和 recorder，退出时自动收尾——正常结束标记为 FINISHED，抛异常则标记 FAILED：</p>
+
+    <pre><code><span class="kw">from</span> qlib.workflow <span class="kw">import</span> R
+
+<span class="kw">with</span> R.start(experiment_name=<span class="str">"train_lgb"</span>, recorder_name=<span class="str">"run_1"</span>):
+    <span class="cmt"># 1) 记录超参数（键值对）</span>
+    R.log_params(learning_rate=<span class="str">0.2</span>, max_depth=<span class="str">8</span>)
+
+    <span class="cmt"># 2) 训练</span>
+    model.fit(dataset)
+
+    <span class="cmt"># 3) 记录指标（可带 step，用于画曲线）</span>
+    R.log_metrics(train_loss=<span class="str">0.33</span>, step=<span class="str">1</span>)
+
+    <span class="cmt"># 4) 把 Python 对象（模型/预测）直接存为产物</span>
+    R.save_objects(trained_model=model)
+
+    <span class="cmt"># 5) 拿到当前 recorder，记下它的 id 以便日后加载</span>
+    rid = R.get_recorder().id</code></pre>
+
+    <p>几个核心方法速查（都在 <code>QlibRecorder</code> 上，见 <code>__init__.py</code>）：</p>
+    <ul>
+      <li><code>R.log_params(**kw)</code>（<code>:542</code>）：记录超参数，值不可变，一次实验记一次。</li>
+      <li><code>R.log_metrics(step=None, **kw)</code>（<code>:567</code>）：记录评估指标，可随 step 多次记录形成曲线。</li>
+      <li><code>R.save_objects(**kw)</code>（<code>:481</code>）：把 Python 对象（如 <code>{"pred.pkl": pred}</code>）直接序列化存为 artifact——这是比 MLflow 原生 <code>log_artifact</code> 更方便的封装。</li>
+      <li><code>R.load_object(name)</code>（<code>:536</code>）：从当前 recorder 加载之前存的对象。</li>
+      <li><code>R.get_recorder(recorder_id=..., experiment_name=...)</code>（<code>:392</code>）：按 id/名字取回任意 recorder，是"翻旧账"的关键。</li>
+    </ul>
+
+    <div class="callout"><span class="t">设计动机</span>
+    文件顶部的注释（<code>__init__.py:3-15</code>）解释了为什么不直接用 MLflow：Qlib 用 <code>recorder</code> 对象（有一堆直观方法）代替了到处传 <code>run_id</code>；提供了直接存/取 Python 对象的 <code>save_objects/load_object</code>；启动时还会自动记录代码 diff。代价是"必须先有 experiment 才能拿 recorder"。
+    </div>
+
+    <h2>4. 底层是 MLflow：ExpManager 与 mlruns 目录</h2>
+    <p><code>R</code> 只是门面，真正干活的后端是 <code>MLflowExpManager</code>（<code>qlib/workflow/expm.py:317</code>，继承自 <code>ExpManager</code>）。它把 Qlib 的实验/记录概念映射到 <a>MLflow</a> 的 experiment/run 上，并把所有数据落盘到一个 <code>uri</code> 指向的目录，默认是当前工作目录下的 <code>mlruns/</code>。</p>
+
+    <p>对应地，具体的记录本实现是 <code>MLflowRecorder</code>（<code>qlib/workflow/recorder.py:247</code>）。它的 <code>save_objects</code>（<code>:397</code>）用 pickle 序列化对象、<code>load_object</code>（<code>:413</code>）反序列化、<code>log_params/log_metrics</code> 转调 MLflow 的对应 API。</p>
+
+    <div class="callout danger"><span class="t">安全提醒</span>
+    <code>load_object</code> 走的是 pickle 反序列化。<b>不要加载来源不明的 recorder 产物</b>，pickle 可执行任意代码。Qlib 近期已在部分加载路径引入 <code>RestrictedUnpickler</code> 收紧安全。
+    </div>
+
+    <p><b>mlruns 目录长什么样？</b>跑完一次 <code>qrun</code> 后，你会在当前目录看到类似结构：</p>
+    <div class="diagram"><pre>
+  mlruns/
+   └── 1/                         &lt;- experiment_id（实验）
+        ├── meta.yaml             &lt;- 实验元信息（名字等）
+        └── a1b2c3.../            &lt;- recorder_id（一次 run）
+             ├── meta.yaml        &lt;- run 的元信息、状态
+             ├── params/          &lt;- log_params 记的超参数
+             ├── metrics/         &lt;- log_metrics 记的指标（IC/ICIR...）
+             ├── tags/            &lt;- set_tags 记的标签
+             └── artifacts/       &lt;- save_objects 存的对象
+                  ├── pred.pkl              (SignalRecord)
+                  ├── label.pkl             (SignalRecord)
+                  ├── sig_analysis/         (SigAnaRecord)
+                  └── portfolio_analysis/   (PortAnaRecord)
+</pre></div>
+
+    <p>你可以用 MLflow 自带的 UI 可视化对比这些实验：</p>
+    <pre><code><span class="cmt"># 在含有 mlruns/ 的目录下执行</span>
+$ mlflow ui
+<span class="cmt"># 然后浏览器打开 http://127.0.0.1:5000 对比各次 run 的指标</span></code></pre>
+
+    <h2>5. 记录模板 RecordTemp：可复用的流水线步骤</h2>
+    <p>如果每个人都要自己写"预测 → 算 IC → 回测"的代码，既重复又容易出错。Qlib 把这些常见步骤抽象成 <b>记录模板（RecordTemp）</b>，定义在 <code>qlib/workflow/record_temp.py</code>。它们都接收一个 <code>recorder</code>，调用 <code>.generate()</code> 就会自动算好结果并存进 recorder。三个最重要的模板形成一条依赖链：</p>
+
+    <div class="diagram"><pre>
+  SignalRecord  →  SigAnaRecord  →  PortAnaRecord
+   生成预测          分析信号质量        组合回测分析
+  (pred/label)      (IC/ICIR)         (收益/风险)
+
+  后两者的 depend_cls = SignalRecord：
+  它们依赖前者产出的 pred.pkl / label.pkl 才能工作
+</pre></div>
+
+    <p><b>① SignalRecord</b>（<code>record_temp.py:161</code>）——生成预测信号。</p>
+    <pre><code><span class="cmt"># 核心逻辑（record_temp.py:190）</span>
+<span class="kw">def</span> <span class="fn">generate</span>(self, **kwargs):
+    pred = self.model.predict(self.dataset)   <span class="cmt"># 用模型对 test 段打分</span>
+    <span class="kw">if</span> isinstance(pred, pd.Series):
+        pred = pred.to_frame(<span class="str">"score"</span>)
+    self.save(**{<span class="str">"pred.pkl"</span>: pred})     <span class="cmt"># 存预测</span>
+    raw_label = self.generate_label(self.dataset)
+    self.save(**{<span class="str">"label.pkl"</span>: raw_label})  <span class="cmt"># 存真实标签</span></code></pre>
+    <p>它产出 <code>pred.pkl</code>（模型预测分数）和 <code>label.pkl</code>（真实收益标签），是后续一切分析的基础。</p>
+
+    <p><b>② SigAnaRecord</b>（<code>record_temp.py:295</code>）——信号分析。它加载 <code>pred.pkl</code> 与 <code>label.pkl</code>，计算 <b>预测能力</b>指标：</p>
+    <pre><code><span class="cmt"># 核心逻辑（record_temp.py:323）</span>
+ic, ric = calc_ic(pred.iloc[:, 0], label.iloc[:, self.label_col])
+metrics = {
+    <span class="str">"IC"</span>: ic.mean(),                 <span class="cmt"># 信息系数：预测与真实收益的相关性</span>
+    <span class="str">"ICIR"</span>: ic.mean() / ic.std(),     <span class="cmt"># IC 的稳定性（越高越稳）</span>
+    <span class="str">"Rank IC"</span>: ric.mean(),
+    <span class="str">"Rank ICIR"</span>: ric.mean() / ric.std(),
+}
+self.recorder.log_metrics(**metrics)     <span class="cmt"># 指标写进 recorder</span></code></pre>
+    <p>IC/ICIR 是量化选股里衡量"因子/模型预测好不好"的黄金指标。若开启 <code>ana_long_short=True</code>，还会额外算多空组合的年化收益与夏普。</p>
+
+    <p><b>③ PortAnaRecord</b>（<code>record_temp.py:358</code>）——组合回测分析。它拿预测信号，套上第 6 章讲的策略（如 TopkDropoutStrategy）跑回测，产出：</p>
+    <ul>
+      <li><code>report_normal.pkl</code>：逐日收益报告；<code>positions_normal.pkl</code>：每日持仓明细。</li>
+      <li><code>port_analysis.pkl</code>：组合的风险分析（年化收益、波动、夏普、最大回撤等，由 <code>risk_analysis</code> 计算）。</li>
+    </ul>
+
+    <div class="callout tip"><span class="t">自动检查机制</span>
+    <code>SigAnaRecord</code> 和 <code>PortAnaRecord</code> 都继承 <code>ACRecordTemp</code>（<code>record_temp.py:212</code>），它的 <code>generate()</code> 会先 <code>check()</code> 依赖是否就绪（<code>pred.pkl</code> 是否存在），缺依赖就跳过并告警，而不是直接报错崩溃。设 <code>skip_existing=True</code> 还能跳过已生成的结果，避免重复计算。
+    </div>
+
+    <h2>6. 逐段读懂一个 workflow YAML</h2>
+    <p>把前面所有概念拼起来，就是一个 workflow 配置文件。我们逐段解剖 <code>examples/benchmarks/LightGBM/workflow_config_lightgbm_Alpha158.yaml</code>。它分四大块：全局初始化、市场/基准、数据配置、任务（task）。</p>
+
+    <p><b>① qlib_init + 市场/基准</b>——初始化和一些用锚点复用的变量。YAML 里的 <code>&amp;market</code> 是"定义锚点"，<code>*market</code> 是"引用锚点"，这样同一个值只写一次：</p>
+    <pre><code><span class="kw">qlib_init:</span>
+    provider_uri: <span class="str">"~/.qlib/qlib_data/cn_data"</span>  <span class="cmt"># 数据存放目录</span>
+    region: cn                              <span class="cmt"># A 股</span>
+<span class="kw">market:</span> &amp;market csi300          <span class="cmt"># 定义锚点 market = 沪深300成分股</span>
+<span class="kw">benchmark:</span> &amp;benchmark SH000300  <span class="cmt"># 定义锚点 benchmark = 沪深300指数</span></code></pre>
+
+    <p><b>② data_handler_config</b>——喂给数据处理器（第 4 章的 Handler）的参数，也定义成锚点，稍后被 dataset 引用：</p>
+    <pre><code><span class="kw">data_handler_config:</span> &amp;data_handler_config
+    start_time: 2008-01-01
+    end_time: 2020-08-01
+    fit_start_time: 2008-01-01     <span class="cmt"># 拟合归一化统计量的起止（防止未来信息泄露）</span>
+    fit_end_time: 2014-12-31
+    instruments: *market           <span class="cmt"># 引用上面的 market 锚点</span></code></pre>
+
+    <p><b>③ port_analysis_config</b>——给 PortAnaRecord 用的回测/策略配置。注意 <code>signal: &lt;PRED&gt;</code> 这个占位符，运行时会被替换成模型的真实预测：</p>
+    <pre><code><span class="kw">port_analysis_config:</span> &amp;port_analysis_config
+    strategy:
+        class: TopkDropoutStrategy       <span class="cmt"># 第6章的 Topk-Drop 策略</span>
+        module_path: qlib.contrib.strategy
+        kwargs:
+            signal: &lt;PRED&gt;               <span class="cmt"># 占位符：运行时填入模型预测</span>
+            topk: 50                     <span class="cmt"># 持有分数最高的 50 只</span>
+            n_drop: 5                    <span class="cmt"># 每日换出 5 只</span>
+    backtest:
+        start_time: 2017-01-01
+        end_time: 2020-08-01
+        account: 100000000               <span class="cmt"># 初始资金 1 亿</span>
+        benchmark: *benchmark
+        exchange_kwargs:
+            limit_threshold: 0.095       <span class="cmt"># 涨跌停限制</span>
+            deal_price: close            <span class="cmt"># 以收盘价成交</span>
+            open_cost: 0.0005            <span class="cmt"># 买入手续费</span>
+            close_cost: 0.0015           <span class="cmt"># 卖出手续费</span>
+            min_cost: 5</code></pre>
+
+    <p><b>④ task</b>——整条流水线的心脏，分 <code>model</code> / <code>dataset</code> / <code>record</code> 三小节。Qlib 用 <code>class</code> + <code>module_path</code> + <code>kwargs</code> 的"动态实例化"模式，把配置直接映射成 Python 对象：</p>
+    <pre><code><span class="kw">task:</span>
+    model:                               <span class="cmt"># 模型：LightGBM</span>
+        class: LGBModel
+        module_path: qlib.contrib.model.gbdt
+        kwargs: { loss: mse, learning_rate: 0.2, max_depth: 8, ... }
+    dataset:                             <span class="cmt"># 数据集：DatasetH + Alpha158 因子</span>
+        class: DatasetH
+        module_path: qlib.data.dataset
+        kwargs:
+            handler:
+                class: Alpha158
+                module_path: qlib.contrib.data.handler
+                kwargs: *data_handler_config   <span class="cmt"># 引用②的锚点</span>
+            segments:                    <span class="cmt"># 训练/验证/测试三段时间切分</span>
+                train: [2008-01-01, 2014-12-31]
+                valid: [2015-01-01, 2016-12-31]
+                test:  [2017-01-01, 2020-08-01]
+    record:                              <span class="cmt"># 记录步骤列表：依次执行</span>
+        - class: SignalRecord            <span class="cmt"># ① 生成预测</span>
+          module_path: qlib.workflow.record_temp
+          kwargs: { model: &lt;MODEL&gt;, dataset: &lt;DATASET&gt; }
+        - class: SigAnaRecord            <span class="cmt"># ② 信号分析 IC/ICIR</span>
+          module_path: qlib.workflow.record_temp
+          kwargs: { ana_long_short: False, ann_scaler: 252 }
+        - class: PortAnaRecord           <span class="cmt"># ③ 组合回测分析</span>
+          module_path: qlib.workflow.record_temp
+          kwargs: { config: *port_analysis_config }</code></pre>
+
+    <div class="callout"><span class="t">占位符替换</span>
+    <code>&lt;MODEL&gt;</code>、<code>&lt;DATASET&gt;</code>、<code>&lt;PRED&gt;</code> 是特殊占位符。<code>task_train</code> 会先构建好 model 与 dataset，再把它们填进 record 段的 <code>&lt;MODEL&gt;/&lt;DATASET&gt;</code>；预测生成后把 <code>&lt;PRED&gt;</code> 填进策略的 <code>signal</code>。record 是个<b>有序列表</b>，因此依赖顺序天然满足：先 Signal，再分析。
+    </div>
+
+    <h2>7. 代码驱动整条流水线 & 翻回历史结果</h2>
+    <p>把上面 YAML 干的事用 Python 手写一遍，你就彻底理解了工作流。下面是等价的代码驱动版本：</p>
+    <pre><code><span class="kw">import</span> qlib
+<span class="kw">from</span> qlib.workflow <span class="kw">import</span> R
+<span class="kw">from</span> qlib.workflow.record_temp <span class="kw">import</span> SignalRecord, SigAnaRecord, PortAnaRecord
+<span class="kw">from</span> qlib.utils <span class="kw">import</span> init_instance_by_config
+
+qlib.init(provider_uri=<span class="str">"~/.qlib/qlib_data/cn_data"</span>, region=<span class="str">"cn"</span>)
+
+<span class="cmt"># 用配置字典动态构建 model 与 dataset（与 YAML 一一对应）</span>
+model   = init_instance_by_config(model_config)
+dataset = init_instance_by_config(dataset_config)
+
+<span class="kw">with</span> R.start(experiment_name=<span class="str">"lgb_alpha158"</span>):
+    <span class="cmt"># 1) 训练 + 记录模型</span>
+    model.fit(dataset)
+    R.save_objects(trained_model=model)
+    recorder = R.get_recorder()          <span class="cmt"># 当前活跃的记录本</span>
+
+    <span class="cmt"># 2) 依次跑三个记录模板（顺序 = 依赖顺序）</span>
+    SignalRecord(model, dataset, recorder).generate()
+    SigAnaRecord(recorder).generate()
+    PortAnaRecord(recorder, config=port_analysis_config).generate()
+
+    rid = recorder.id                    <span class="cmt"># 记住 id 以便日后翻账</span>
+    <span class="fn">print</span>(<span class="str">"recorder id ="</span>, rid)</code></pre>
+
+    <p><b>如何加载回历史结果？</b>实验跑完后，产物都在 <code>mlruns/</code> 里。用 <code>R.get_recorder</code> 按 id 或名字取回记录本，再 <code>load_object</code> 拿产物做二次分析（画图、对比、再回测）：</p>
+    <pre><code><span class="cmt"># 关掉 Python 重新进来也没关系，只要 qlib.init 指向同一个 mlruns</span>
+qlib.init(provider_uri=<span class="str">"~/.qlib/qlib_data/cn_data"</span>, region=<span class="str">"cn"</span>)
+
+<span class="cmt"># 按 id + 实验名取回历史记录本</span>
+recorder = R.get_recorder(recorder_id=rid, experiment_name=<span class="str">"lgb_alpha158"</span>)
+
+<span class="cmt"># 加载之前存的对象（注意带上 artifact 子目录前缀）</span>
+pred  = recorder.load_object(<span class="str">"pred.pkl"</span>)
+ic    = recorder.load_object(<span class="str">"sig_analysis/ic.pkl"</span>)
+report = recorder.load_object(<span class="str">"portfolio_analysis/report_normal_1day.pkl"</span>)
+
+<span class="cmt"># 列出该实验下所有 run，或用 DataFrame 做指标对比</span>
+recorders = R.list_recorders(experiment_name=<span class="str">"lgb_alpha158"</span>)
+df = R.search_records([recorder.experiment_id], order_by=[<span class="str">"metrics.IC DESC"</span>])</code></pre>
+
+    <div class="callout tip"><span class="t">工程建议</span>
+    调试阶段用代码驱动逐步跑（能 <code>import pdb</code> 打断点）；实验定型后写成 YAML 用 <code>qrun</code> 跑，配置即文档，团队协作和批量实验都更整洁。两者可无缝切换，因为共用同一套 <code>task_train</code> 与 Recorder。
+    </div>
+
+    <div class="exercises">
+      <h2>📝 课后练习题</h2>
+
+      <div class="q"><b>1. （概念）请说出 ExpManager、Experiment、Recorder 三者的层级关系，并说明 <code>R.get_recorder(recorder_id="xxx")</code> 在没有 active recorder 时为什么必须同时提供 <code>experiment_name</code>？</b>
+        <details><summary>参考答案</summary><div class="a">层级为 ExpManager（单例，管所有实验）→ Experiment（一个课题，有名字）→ Recorder（一次 run，有唯一 id）。见正文架构图与 <code>expm.py</code>。当没有 active recorder 时，系统无法知道该去哪个实验下按 id 找记录本，所以必须指定 experiment_name 来定位（见 <code>__init__.py:392</code> get_recorder 的 Case 4/5：只给 id 不给实验名会报错）。</div></details>
+      </div>
+
+      <div class="q"><b>2. （流程）在 <code>qrun config.yaml</code> 执行过程中，YAML 的 Jinja2 模板渲染发生在解析之前还是之后？举一个会因此踩坑的例子。</b>
+        <details><summary>参考答案</summary><div class="a">渲染发生在解析<b>之前</b>（<code>run.py:106</code> 先 <code>render_template</code>，再 <code>yaml.load</code>）。踩坑例子：YAML 写了 <code>market: {{ MARKET }}</code> 但没 <code>export MARKET</code>，<code>os.getenv(var, "")</code> 会把它渲染成空串，解析后 market 变成空/None，导致后续按空市场取不到股票。</div></details>
+      </div>
+
+      <div class="q"><b>3. （改错）下面代码想加载历史预测，为什么会报错？怎么改？</b>
+        <pre><code>recorder = R.get_recorder(recorder_id="abc123")
+pred = recorder.load_object("pred.pkl")</code></pre>
+        <details><summary>参考答案</summary><div class="a">缺少 <code>experiment_name</code>（或 <code>experiment_id</code>）来定位实验，在无 active recorder 情况下会报错。改为 <code>R.get_recorder(recorder_id="abc123", experiment_name="lgb_alpha158")</code>。另外若 pred 是由 SigAnaRecord 等带 artifact_path 的模板存的子目录文件，加载时要带前缀，如 <code>sig_analysis/ic.pkl</code>；但 <code>pred.pkl</code> 由 SignalRecord 存在根 artifact 下，直接写 <code>pred.pkl</code> 即可。</div></details>
+      </div>
+
+      <div class="q"><b>4. （概念）record 段里为什么 <code>SigAnaRecord</code> 和 <code>PortAnaRecord</code> 必须排在 <code>SignalRecord</code> 之后？它们靠什么机制避免"依赖缺失就崩溃"？</b>
+        <details><summary>参考答案</summary><div class="a">因为二者的 <code>depend_cls = SignalRecord</code>，它们要读 SignalRecord 产出的 <code>pred.pkl / label.pkl</code>。record 是有序列表，先跑 SignalRecord 生成依赖。二者继承 <code>ACRecordTemp</code>（<code>record_temp.py:212</code>），<code>generate()</code> 会先 <code>check()</code> 依赖是否存在，缺失则告警并跳过（<code>logger.warning</code>），而非抛异常崩溃。</div></details>
+      </div>
+
+      <div class="q"><b>5. （代码填空）补全代码，跑完信号分析后拿到 IC 均值：</b>
+        <pre><code>with R.start(experiment_name="demo"):
+    model.fit(dataset)
+    rec = R.get_recorder()
+    SignalRecord(model, dataset, rec).________()   # (a)
+    SigAnaRecord(rec).generate()
+ic = rec.load_object("____________")               # (b)
+print(ic.mean())</code></pre>
+        <details><summary>参考答案</summary><div class="a">(a) 填 <code>generate</code>；(b) 填 <code>sig_analysis/ic.pkl</code>。SigAnaRecord 的 <code>artifact_path = "sig_analysis"</code>，产出 <code>ic.pkl</code>，因此完整路径带 <code>sig_analysis/</code> 前缀。</div></details>
+      </div>
+
+      <div class="q"><b>6. （思考）Qlib 为什么不让用户直接调 MLflow，而要包一层 <code>R</code> / Recorder？至少说出两点好处与一个代价。</b>
+        <details><summary>参考答案</summary><div class="a">好处（见 <code>__init__.py:3-15</code>）：① 用 recorder 对象及其直观方法代替到处传 <code>run_id</code>；② 提供 <code>save_objects/load_object</code> 直接存取 Python 对象，无需手动 log_artifact/download_artifact；③ 启动时自动记录代码 diff，便于复现；④ 可支持多种后端。代价：设计更重，必须先创建/激活 experiment 才能拿到 recorder（MLflow 里 experiment 更像标签，很多接口直接用 run_id）。</div></details>
+      </div>
+    </div>
+
+    <div class="pager">
+      <a class="prev" href="ch06.html"><span class="lbl">← 上一章</span><span class="ttl">策略与回测</span></a>
+      <a class="next" href="ch08.html"><span class="lbl">下一章 →</span><span class="ttl">综合实战</span></a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

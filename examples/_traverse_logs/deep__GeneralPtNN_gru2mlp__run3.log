@@ -1,0 +1,171 @@
+'The following are prediction results of the GeneralPTNN model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000   -0.052086
+           SH600008   -0.078801
+           SH600009    0.002882
+           SH600010    0.139556
+           SH600015   -0.006640
+{'IC': np.float64(0.006082715481551208),
+ 'ICIR': np.float64(0.0636331864515607),
+ 'Rank IC': np.float64(0.01085249341101177),
+ 'Rank ICIR': np.float64(0.11656398448430504)}
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean              -0.000031
+std                0.005227
+annualized_return -0.007436
+information_ratio -0.092209
+max_drawdown      -0.169739
+'The following are analysis results of the excess return with cost(1day).'
+                       risk
+mean              -0.000208
+std                0.005225
+annualized_return -0.049416
+information_ratio -0.613042
+max_drawdown      -0.231069
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0
+
+[25934:MainThread](2026-07-20 23:22:06,814) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[25934:MainThread](2026-07-20 23:22:06,820) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[25934:MainThread](2026-07-20 23:22:06,822) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[25934:MainThread](2026-07-20 23:22:06,822) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[25934:MainThread](2026-07-20 23:22:06,830) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name trav_deep_GeneralPtNN_gru2mlp_3.
+[25934:MainThread](2026-07-20 23:22:06,834) INFO - qlib.workflow - [exp.py:258] - Experiment 188522547135824745 starts running ...
+[25934:MainThread](2026-07-20 23:22:07,565) INFO - qlib.workflow - [recorder.py:345] - Recorder e333959fc82f4fc39e442f23554edfdb starts running under Experiment 188522547135824745 ...
+[25934:MainThread](2026-07-20 23:22:09,835) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:75] - GeneralPTNN pytorch version...
+[25934:MainThread](2026-07-20 23:22:09,836) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:93] - GeneralPTNN parameters setting:
+n_epochs : 1
+lr : 0.001
+metric : 
+batch_size : 800
+early_stop : 20
+optimizer : adam
+loss_type : mse
+device : cpu
+n_jobs : 0
+use_GPU : False
+weight_decay : 0.0
+seed : None
+pt_model_uri: qlib.contrib.model.pytorch_nn.Net
+pt_model_kwargs: {'input_dim': 20, 'layers': [20]}
+[25934:MainThread](2026-07-20 23:22:09,836) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:130] - model:
+Net(
+  (dnn_layers): ModuleList(
+    (0): Dropout(p=0.05, inplace=False)
+    (1): Sequential(
+      (0): Linear(in_features=20, out_features=20, bias=True)
+      (1): BatchNorm1d(20, eps=1e-05, momentum=0.1, affine=True, bias=True, track_running_stats=True)
+      (2): LeakyReLU(negative_slope=0.1)
+    )
+    (2): Dropout(p=0.05, inplace=False)
+    (3): Linear(in_features=20, out_features=1, bias=True)
+  )
+)
+[25934:MainThread](2026-07-20 23:22:09,837) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:131] - model size: 0.0005 MB
+[25934:MainThread](2026-07-20 23:22:29,015) INFO - qlib.timer - [log.py:127] - Time cost: 17.814s | Loading data Done
+[25934:MainThread](2026-07-20 23:22:29,133) INFO - qlib.timer - [log.py:127] - Time cost: 0.010s | FilterCol Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:296: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[self.cols] = X
+[25934:MainThread](2026-07-20 23:22:29,375) INFO - qlib.timer - [log.py:127] - Time cost: 0.242s | RobustZScoreNorm Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:192: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[self.fields_group] = df[self.fields_group].fillna(self.fill_value)
+[25934:MainThread](2026-07-20 23:22:29,421) INFO - qlib.timer - [log.py:127] - Time cost: 0.046s | Fillna Done
+[25934:MainThread](2026-07-20 23:22:29,453) INFO - qlib.timer - [log.py:127] - Time cost: 0.015s | DropnaLabel Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:358: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[cols] = t
+[25934:MainThread](2026-07-20 23:22:29,604) INFO - qlib.timer - [log.py:127] - Time cost: 0.150s | CSRankNorm Done
+[25934:MainThread](2026-07-20 23:22:29,605) INFO - qlib.timer - [log.py:127] - Time cost: 0.590s | fit & process data Done
+[25934:MainThread](2026-07-20 23:22:29,605) INFO - qlib.timer - [log.py:127] - Time cost: 18.405s | Init data Done
+[25934:MainThread](2026-07-20 23:22:29,639) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:246] - Train samples: 478007
+[25934:MainThread](2026-07-20 23:22:29,639) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:247] - Valid samples: 128309
+[25934:MainThread](2026-07-20 23:22:29,647) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:295] - training...
+[25934:MainThread](2026-07-20 23:22:29,647) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch0:
+[25934:MainThread](2026-07-20 23:22:29,647) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[25934:MainThread](2026-07-20 23:22:30,934) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[25934:MainThread](2026-07-20 23:22:32,110) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch0: train 0.999241, valid 1.000029
+[25934:MainThread](2026-07-20 23:22:32,111) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:327] - best score: 1.000029 @ 0 epoch
+[25934:MainThread](2026-07-20 23:22:32,122) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[25934:MainThread](2026-07-20 23:22:32,255) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:344] - Test samples: 261300
+[25934:MainThread](2026-07-20 23:22:32,473) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 188522547135824745
+[25934:MainThread](2026-07-20 23:22:32,752) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+[25934:MainThread](2026-07-20 23:22:40,210) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[25934:MainThread](2026-07-20 23:22:40,211) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[25934:MainThread](2026-07-20 23:22:40,213) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[25934:MainThread](2026-07-20 23:22:40,213) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[25934:MainThread](2026-07-20 23:22:47,899) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[25934:MainThread](2026-07-20 23:22:47,899) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[25934:MainThread](2026-07-20 23:22:47,904) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x124e94680>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   3%|▎         | 24/871 [00:00<00:03, 221.37it/s]
+backtest loop:   6%|▌         | 49/871 [00:00<00:03, 232.09it/s]
+backtest loop:   8%|▊         | 73/871 [00:00<00:03, 233.99it/s]
+backtest loop:  11%|█▏        | 98/871 [00:00<00:03, 238.74it/s]
+backtest loop:  14%|█▍        | 123/871 [00:00<00:03, 240.49it/s]
+backtest loop:  17%|█▋        | 148/871 [00:00<00:02, 242.08it/s]
+backtest loop:  20%|█▉        | 173/871 [00:00<00:02, 244.34it/s]
+backtest loop:  23%|██▎       | 199/871 [00:00<00:02, 244.11it/s]
+backtest loop:  26%|██▌       | 224/871 [00:00<00:02, 243.31it/s]
+backtest loop:  29%|██▊       | 250/871 [00:01<00:02, 246.23it/s]
+backtest loop:  32%|███▏      | 276/871 [00:01<00:02, 246.12it/s]
+backtest loop:  35%|███▍      | 303/871 [00:01<00:02, 247.31it/s]
+backtest loop:  38%|███▊      | 329/871 [00:01<00:02, 245.62it/s]
+backtest loop:  41%|████      | 355/871 [00:01<00:02, 248.31it/s]
+backtest loop:  44%|████▍     | 383/871 [00:01<00:01, 252.04it/s]
+backtest loop:  47%|████▋     | 411/871 [00:01<00:01, 258.45it/s]
+backtest loop:  50%|█████     | 437/871 [00:01<00:01, 257.33it/s]
+backtest loop:  53%|█████▎    | 463/871 [00:01<00:01, 256.43it/s]
+backtest loop:  56%|█████▌    | 489/871 [00:01<00:01, 250.88it/s]
+backtest loop:  59%|█████▉    | 515/871 [00:02<00:01, 242.74it/s]
+backtest loop:  62%|██████▏   | 540/871 [00:02<00:01, 242.88it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  65%|██████▍   | 565/871 [00:02<00:01, 242.86it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  68%|██████▊   | 590/871 [00:02<00:01, 241.48it/s]
+backtest loop:  71%|███████   | 615/871 [00:02<00:01, 240.62it/s]
+backtest loop:  73%|███████▎  | 640/871 [00:02<00:00, 240.36it/s]
+backtest loop:  76%|███████▋  | 665/871 [00:02<00:00, 239.81it/s]
+backtest loop:  79%|███████▉  | 689/871 [00:02<00:00, 235.03it/s]
+backtest loop:  82%|████████▏ | 714/871 [00:02<00:00, 236.47it/s]
+backtest loop:  85%|████████▍ | 738/871 [00:03<00:00, 232.08it/s]
+backtest loop:  88%|████████▊ | 763/871 [00:03<00:00, 235.53it/s]
+backtest loop:  90%|█████████ | 787/871 [00:03<00:00, 235.78it/s]
+backtest loop:  93%|█████████▎| 811/871 [00:03<00:00, 181.70it/s]
+backtest loop:  96%|█████████▌| 833/871 [00:03<00:00, 190.71it/s]
+backtest loop:  98%|█████████▊| 856/871 [00:03<00:00, 200.35it/s]
+backtest loop: 100%|██████████| 871/871 [00:03<00:00, 234.73it/s]
+[25934:MainThread](2026-07-20 23:22:51,638) INFO - qlib.workflow - [record_temp.py:520] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 188522547135824745
+[25934:MainThread](2026-07-20 23:22:51,641) INFO - qlib.workflow - [record_temp.py:545] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 188522547135824745
+[25934:MainThread](2026-07-20 23:22:51,936) INFO - qlib.timer - [log.py:127] - Time cost: 0.004s | waiting `async_log` Done

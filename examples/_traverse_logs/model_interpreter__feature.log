@@ -1,0 +1,38 @@
+Training until validation scores don't improve for 50 rounds
+[20]	train's l2: 0.990585	valid's l2: 0.99431
+[40]	train's l2: 0.986931	valid's l2: 0.993693
+[60]	train's l2: 0.984352	valid's l2: 0.99349
+[80]	train's l2: 0.982278	valid's l2: 0.993398
+[100]	train's l2: 0.980459	valid's l2: 0.993321
+[120]	train's l2: 0.978684	valid's l2: 0.993361
+[140]	train's l2: 0.976979	valid's l2: 0.993392
+Early stopping, best iteration is:
+[100]	train's l2: 0.980459	valid's l2: 0.993321
+feature importance:
+Column_38     182
+Column_39     179
+Column_25     179
+Column_26     158
+Column_96     148
+             ... 
+Column_108      7
+Column_73       5
+Column_103      3
+Column_12       0
+Column_98       0
+Length: 158, dtype: int32
+
+2026-07-17 09:41:35.532 | WARNING  | qlib.tests.data:qlib_data:195 - Data already exists: ~/.qlib/qlib_data/cn_data, the data download will be skipped
+	If downloading is required: `exists_skip=False` or `change target_dir`
+[7802:MainThread](2026-07-17 09:41:35,532) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[7802:MainThread](2026-07-17 09:41:36,430) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[7802:MainThread](2026-07-17 09:41:36,430) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[7802:MainThread](2026-07-17 09:42:02,485) INFO - qlib.timer - [log.py:127] - Time cost: 22.515s | Loading data Done
+[7802:MainThread](2026-07-17 09:42:02,756) INFO - qlib.timer - [log.py:127] - Time cost: 0.109s | DropnaLabel Done
+[7802:MainThread](2026-07-17 09:42:03,539) INFO - qlib.timer - [log.py:127] - Time cost: 0.782s | CSZScoreNorm Done
+[7802:MainThread](2026-07-17 09:42:03,546) INFO - qlib.timer - [log.py:127] - Time cost: 1.061s | fit & process data Done
+[7802:MainThread](2026-07-17 09:42:03,546) INFO - qlib.timer - [log.py:127] - Time cost: 23.578s | Init data Done
+[7802:MainThread](2026-07-17 09:42:16,854) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name Experiment.
+[7802:MainThread](2026-07-17 09:42:16,858) INFO - qlib.workflow - [exp.py:258] - Experiment 746052643216974049 starts running ...
+[7802:MainThread](2026-07-17 09:42:17,018) INFO - qlib.workflow - [recorder.py:345] - Recorder a737347304e4413b9fe76283c2980a0d starts running under Experiment 746052643216974049 ...
+[7802:MainThread](2026-07-17 09:42:17,362) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | waiting `async_log` Done

@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>环境搭建与数据准备 · Qlib 学习教程</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>Qlib 教程</h1>
+    <div class="sub">从入门到实战</div>
+    <nav>
+      <a href="index.html"><span class="num">home</span>首页</a>
+      <a href="ch01.html"><span class="num">01</span>简介与架构</a>
+      <a href="ch02.html" class="active"><span class="num">02</span>环境与数据</a>
+      <a href="ch03.html"><span class="num">03</span>数据层</a>
+      <a href="ch04.html"><span class="num">04</span>数据集与处理器</a>
+      <a href="ch05.html"><span class="num">05</span>模型</a>
+      <a href="ch06.html"><span class="num">06</span>策略与回测</a>
+      <a href="ch07.html"><span class="num">07</span>工作流</a>
+      <a href="ch08.html"><span class="num">08</span>综合实战</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <span class="tag">CHAPTER 02</span>
+    <h1>环境搭建与数据准备</h1>
+    <p class="lead">工欲善其事，必先利其器。本章带你把 Qlib 在本机装好、把中国 A 股数据下好，并成功执行第一行 <code>qlib.init()</code>——为后续所有实战打下地基。</p>
+
+    <h2>1. 为什么不能只用 pip install</h2>
+    <p>很多人第一次接触 Qlib，习惯性地敲下 <code>pip install pyqlib</code> 或 <code>pip install -e .</code>，然后在计算滚动因子时莫名其妙地报错或者性能奇慢。原因藏在一个容易被忽略的细节里：<b>Qlib 的核心计算依赖两个用 Cython 写的 C++ 扩展</b>。</p>
+    <p>打个比方：Qlib 的 Python 代码像一份「宜家家具的说明书」，而这两个 Cython 文件是「还没组装的木板」。<code>pip install</code> 只把说明书放进了你家，但木板（<code>.pyx</code> 源文件）还需要一台电锯（C++ 编译器）现场加工成能用的家具（<code>.so</code> 动态库）。这一步就是编译。</p>
+
+    <p>这两个扩展位于 <code>qlib/data/_libs/</code>：</p>
+    <div class="diagram"><pre>
+qlib/data/_libs/
+├── __init__.py
+├── rolling.pyx      &lt;- 滚动窗口算子 (Rolling)，如 Ref/Mean/Std
+└── expanding.pyx    &lt;- 扩展窗口算子 (Expanding)，如累计统计
+</pre></div>
+
+    <p>它们负责 Qlib 表达式引擎里最热的滚动/扩展窗口计算。<code>setup.py:9-24</code> 明确把它们声明为需要编译的 <code>Extension</code>，语言是 <code>c++</code>。而 <code>pyproject.toml</code> 的构建系统虽然列了 cython/numpy 依赖，但普通的 editable 安装并不会稳妥地触发这两个扩展的原地编译，因此仓库额外提供了 <code>Makefile</code> 来兜底。</p>
+
+    <div class="callout"><span class="t">提示</span>判断扩展是否编译成功，最简单的办法是看 <code>qlib/data/_libs/</code> 目录下有没有出现 <code>rolling*.so</code> 和 <code>expanding*.so</code>（Windows 上是 <code>.pyd</code>）。有则说明「木板已组装」。</div>
+
+    <h2>2. 用 Makefile 正确安装</h2>
+    <p>Qlib 仓库根目录的 <code>Makefile</code> 把安装流程封装成了几个语义清晰的目标（target）。核心是理解 <code>prerequisite</code> 这个「先决步骤」——它专门负责编译上面那两个 Cython 扩展。</p>
+
+    <p>看 <code>Makefile:61-69</code> 的逻辑（简化版）：如果目录里已存在 <code>.so</code> 就跳过，否则先装 <code>cython numpy</code>，再调用 setuptools 把 <code>rolling.pyx</code> / <code>expanding.pyx</code> 就地（<code>--inplace</code>）编译成动态库。</p>
+
+    <pre><code><span class="cmt"># Makefile 中的关键目标组合</span>
+<span class="fn">install</span>: prerequisite dependencies   <span class="cmt"># 编译扩展 + 以 editable 方式安装核心</span>
+<span class="fn">dev</span>:     prerequisite all            <span class="cmt"># 编译扩展 + 安装全部可选依赖组</span></code></pre>
+
+    <p>因此在你 <code>git clone</code> 仓库后，推荐这样安装（先建议用 conda 建一个干净环境）：</p>
+
+    <pre><code><span class="cmt"># 1) 建一个隔离环境（Python 3.8~3.12 均可，见 pyproject.toml classifiers）</span>
+conda create -n qlib python=3.10 -y
+conda activate qlib
+
+<span class="cmt"># 2) 进入仓库根目录</span>
+cd /path/to/qlib
+
+<span class="cmt"># 3) 只装核心（含扩展编译）——日常研究足够</span>
+make install
+
+<span class="cmt"># 或：连同 dev/lint/docs/test/analysis/rl 等全部可选依赖一起装</span>
+make dev</code></pre>
+
+    <div class="callout warn"><span class="t">陷阱</span>不要只跑 <code>pip install -e .</code> 就以为装好了。它对应的只是 <code>Makefile</code> 里的 <code>dependencies</code> 目标（<code>Makefile:76-77</code>），<b>缺了 <code>prerequisite</code> 编译步骤</b>。若你坚持用 pip，请务必先手动执行 <code>make prerequisite</code> 或运行 <code>python setup.py build_ext --inplace</code> 编译扩展。</div>
+
+    <p>如果没有 <code>make</code>（例如某些 Windows 环境），可以手动复刻 <code>prerequisite</code> 的核心动作：</p>
+    <pre><code>pip install --upgrade setuptools wheel cython numpy
+python setup.py build_ext --inplace   <span class="cmt"># 生成 rolling.so / expanding.so</span>
+pip install -e .</code></pre>
+
+    <h2>3. 看懂可选依赖组</h2>
+    <p>Qlib 把「非人人都需要」的依赖拆成了若干可选组，定义在 <code>pyproject.toml:59-108</code> 的 <code>[project.optional-dependencies]</code> 里。安装时用中括号选装，例如 <code>pip install -e .[rl]</code>。下面是各组用途速查：</p>
+
+    <table>
+      <thead><tr><th>组名</th><th>包含的关键依赖</th><th>什么时候需要</th></tr></thead>
+      <tbody>
+        <tr><td><code>dev</code></td><td>pytest, statsmodels</td><td>开发/跑单元测试</td></tr>
+        <tr><td><code>rl</code></td><td>torch, tianshou&lt;=0.4.10, <b>numpy&lt;2.0.0</b></td><td>强化学习模块（如 order execution）</td></tr>
+        <tr><td><code>lint</code></td><td>black, pylint, flake8, mypy</td><td>代码风格与静态检查</td></tr>
+        <tr><td><code>docs</code></td><td>sphinx, sphinx_rtd_theme</td><td>本地构建文档</td></tr>
+        <tr><td><code>test</code></td><td>yahooquery, baostock</td><td>PIT/数据抓取相关测试</td></tr>
+        <tr><td><code>analysis</code></td><td>plotly, statsmodels</td><td>交互式绘图与分析报告</td></tr>
+        <tr><td><code>client</code></td><td>python-socketio&lt;6, tables</td><td>连接远程数据服务（client 模式）</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout danger"><span class="t">重点：torch 不是核心依赖</span>注意 <code>dependencies</code>（<code>pyproject.toml:27-57</code>）里<b>没有 torch</b>。深度学习模型属于 <code>rl</code> 组或需你自行安装。更要命的是 <code>rl</code> 组会把 <b>numpy 锁死在 &lt;2.0.0</b>（<code>pyproject.toml:70</code>）——因为 macOS 上部分 PyTorch 版本尚不完全支持 numpy 2.x。如果你既要跑 GBDT 又要跑神经网络，装 <code>rl</code> 组后就别再随手把 numpy 升级到 2.x 了，否则可能触发 ABI 不兼容的诡异崩溃。</div>
+
+    <div class="callout tip"><span class="t">建议</span>只想快速上手 LightGBM/Alpha158 基线？<code>lightgbm</code> 已在核心依赖里，直接 <code>make install</code> 即可，无需任何可选组。等要玩深度模型时再 <code>pip install -e .[rl]</code>。</div>
+
+    <h2>4. 下载数据</h2>
+    <p>装好代码只是一半，Qlib 还需要「粮食」——历史行情数据。官方提供了打包好的中国 A 股日频数据，用 <code>scripts/get_data.py</code> 一键下载。这个脚本本质上是用 <code>fire</code> 把 <code>qlib.tests.data.GetData</code> 类暴露成命令行（见 <code>scripts/get_data.py:4-8</code>）。</p>
+
+    <pre><code><span class="cmt"># 下载精简版中国 A 股日线数据（体积小，适合入门）</span>
+python scripts/get_data.py qlib_data \
+    --name qlib_data_simple \
+    --target_dir ~/.qlib/qlib_data/cn_data \
+    --interval 1d \
+    --region cn</code></pre>
+
+    <p>参数逐一对照 <code>GetData.qlib_data</code> 的签名（<code>qlib/tests/data.py:153-161</code>）：</p>
+    <ul>
+      <li><code>--name qlib_data_simple</code>：数据集名称。可选 <code>qlib_data</code>（全量）或 <code>qlib_data_simple</code>（精简版，下载更快）。</li>
+      <li><code>--target_dir ~/.qlib/qlib_data/cn_data</code>：数据落盘目录，也是后面 <code>init</code> 的 <code>provider_uri</code>。</li>
+      <li><code>--interval 1d</code>：频率，日频。也支持 <code>1min</code> 分钟线（目录名通常用 <code>cn_data_1min</code>）。</li>
+      <li><code>--region cn</code>：区域，中国 A 股。美股用 <code>us</code>。</li>
+    </ul>
+
+    <div class="diagram"><pre>
+~/.qlib/qlib_data/cn_data/     &lt;- 这就是 provider_uri
+├── calendars/                 &lt;- 交易日历
+├── instruments/               &lt;- 股票池 (all / csi300 / csi500 ...)
+└── features/                  &lt;- 每只股票的 $close/$volume 等二进制特征
+</pre></div>
+
+    <div class="callout warn"><span class="t">注意</span><code>qlib_data</code> 默认会先删除 <code>target_dir</code> 下已存在的旧数据（<code>delete_old=True</code>），再解压新数据。若你担心误删，可加 <code>--exists_skip True</code> 让已存在时跳过下载（<code>qlib/tests/data.py:194</code>）。数据默认放在 <code>~/.qlib/qlib_data/</code> 下，记住这个约定路径，几乎所有教程与示例配置都以它为默认 <code>provider_uri</code>。</div>
+
+    <h2>5. 初始化 qlib.init()</h2>
+    <p>数据到位后，任何 Qlib 的数据/模型 API 都必须在一次成功的 <code>qlib.init()</code> 之后才能使用。可以把 <code>init</code> 理解成「开机」：它读取配置、注册 provider、把 <code>provider_uri</code> 指向的数据目录挂上，之后 <code>D.features</code>、模型训练、回测才认得数据在哪。</p>
+
+    <pre><code><span class="kw">import</span> qlib
+<span class="kw">from</span> qlib.constant <span class="kw">import</span> REG_CN
+
+qlib.<span class="fn">init</span>(
+    provider_uri=<span class="str">"~/.qlib/qlib_data/cn_data"</span>,  <span class="cmt"># 就是刚才 target_dir</span>
+    region=REG_CN,                             <span class="cmt"># "cn"，见 qlib/constant.py:10</span>
+)</code></pre>
+
+    <p><code>init</code> 定义在 <code>qlib/__init__.py:25</code>。它会遍历 <code>provider_uri</code>，对本地路径检查是否存在（不存在会打印 error 提示，<code>qlib/__init__.py:65-72</code>），最后调用 <code>C.register()</code> 完成注册，并打印 <code>qlib successfully initialized</code>。</p>
+
+    <p>除了直接调 <code>init</code>，源码里还提供了两个更省心的入口：</p>
+    <ul>
+      <li><code>init_from_yaml_conf(conf_path)</code>（<code>qlib/__init__.py:188</code>）：从一个 YAML 配置文件读取参数再 <code>init</code>。工作流（<code>qrun</code>）走的就是这条路。</li>
+      <li><code>auto_init()</code>（<code>qlib/__init__.py:243</code>）：自动向上查找项目里的 <code>config.yaml</code> 并据此初始化；找不到就用默认配置。它默认带 <code>skip_if_reg=True</code>，即「已初始化过就跳过」，方便在脚本被多次导入时避免重复注册导致的 recorder 丢失。</li>
+    </ul>
+
+    <div class="callout"><span class="t">提示</span><code>init</code> 里的 <code>skip_if_reg</code> 参数（<code>qlib/__init__.py:47-52</code>）很实用：在一次实验 <code>R.start</code> 运行途中若不小心再次 <code>init</code>，会丢失当前 recorder；设为 True 可跳过重复初始化保护现场。</div>
+
+    <h2>6. macOS 上的 OpenMP 坑</h2>
+    <p>在 macOS（尤其 Apple Silicon）上，LightGBM、numpy/scipy 的底层 OpenMP 库有时会因多个运行时（如 Homebrew 的 <code>libomp</code> 与 conda 自带的）同时加载而冲突，表现为 Python 进程直接 <b>Segmentation fault</b> 闪退，且没有可读的 Python 堆栈——非常迷惑。</p>
+
+    <p>最稳妥的规避手段是把 OpenMP 线程数强制设为 1，让它退化成单线程避免竞态：</p>
+    <pre><code><span class="cmt"># 在运行 Python 之前，于 shell 里导出环境变量</span>
+export OMP_NUM_THREADS=1
+export MKL_NUM_THREADS=1
+export KMP_DUPLICATE_LIB_OK=TRUE   <span class="cmt"># 允许重复加载 libomp（临时缓解）</span>
+
+python your_script.py</code></pre>
+
+    <p>也可以在 Python 代码最顶部（<b>务必在 import numpy / lightgbm 之前</b>）设置：</p>
+    <pre><code><span class="kw">import</span> os
+os.environ[<span class="str">"OMP_NUM_THREADS"</span>] = <span class="str">"1"</span>
+os.environ[<span class="str">"KMP_DUPLICATE_LIB_OK"</span>] = <span class="str">"TRUE"</span>
+
+<span class="kw">import</span> qlib  <span class="cmt"># 之后再导入</span></code></pre>
+
+    <div class="callout danger"><span class="t">danger</span><code>KMP_DUPLICATE_LIB_OK=TRUE</code> 只是「让程序别崩」的应急开关，可能掩盖真正的库冲突。长期方案是保证环境里只有一份 <code>libomp</code>（比如统一用 conda 装 <code>llvm-openmp</code>，避免和 Homebrew 混装）。</div>
+
+    <h2>7. 装好后的验证：最小可运行片段</h2>
+    <p>把前面的步骤串起来，用下面这段「体检代码」确认环境、数据、扩展三者都就绪。能打印出 K 线数据，就说明一切正常。</p>
+
+    <pre><code><span class="kw">import</span> os
+os.environ.setdefault(<span class="str">"OMP_NUM_THREADS"</span>, <span class="str">"1"</span>)  <span class="cmt"># macOS 保险</span>
+
+<span class="kw">import</span> qlib
+<span class="kw">from</span> qlib.constant <span class="kw">import</span> REG_CN
+<span class="kw">from</span> qlib.data <span class="kw">import</span> D
+
+<span class="cmt"># 1) 初始化</span>
+qlib.<span class="fn">init</span>(provider_uri=<span class="str">"~/.qlib/qlib_data/cn_data"</span>, region=REG_CN)
+
+<span class="cmt"># 2) 看看交易日历（验证 calendars 目录）</span>
+cal = D.<span class="fn">calendar</span>(start_time=<span class="str">"2020-01-01"</span>, end_time=<span class="str">"2020-01-10"</span>, freq=<span class="str">"day"</span>)
+<span class="fn">print</span>(<span class="str">"最近交易日:"</span>, cal[-3:])
+
+<span class="cmt"># 3) 取一只股票的行情特征（验证 features 目录 + Cython 扩展）</span>
+df = D.<span class="fn">features</span>(
+    instruments=[<span class="str">"SH600000"</span>],
+    fields=[<span class="str">"$close"</span>, <span class="str">"$volume"</span>, <span class="str">"Ref($close, 1)"</span>, <span class="str">"Mean($close, 5)"</span>],
+    start_time=<span class="str">"2020-01-01"</span>,
+    end_time=<span class="str">"2020-01-10"</span>,
+    freq=<span class="str">"day"</span>,
+)
+<span class="fn">print</span>(df)</code></pre>
+
+    <p>其中 <code>Ref</code> 与 <code>Mean</code> 正是走 <code>rolling.pyx</code> 编译出的算子——如果这一步没报 <code>ImportError</code> 并正常出结果，说明 Cython 扩展编译成功。<code>D.features</code> 的签名见 <code>qlib/data/data.py:1162</code>，<code>D.calendar</code> 见 <code>qlib/data/data.py:71</code>。</p>
+
+    <div class="callout tip"><span class="t">成功标志</span>控制台先出现一行 <code>qlib successfully initialized based on client settings.</code>，随后打印出一张带 <code>$close / $volume</code> 列的 DataFrame，即大功告成，可以进入第 3 章学习数据层了。</div>
+
+    <div class="exercises">
+      <h2>📝 课后练习题</h2>
+
+      <div class="q"><b>1.（概念题）为什么单纯 <code>pip install -e .</code> 安装 Qlib 后可能出问题？正确的安装命令是什么？</b>
+        <details><summary>参考答案</summary><div class="a">因为 Qlib 依赖两个 Cython 编写的 C++ 扩展 <code>rolling.pyx</code> 和 <code>expanding.pyx</code>（位于 <code>qlib/data/_libs/</code>），它们承担滚动/扩展窗口计算。<code>pip install -e .</code> 只对应 Makefile 的 <code>dependencies</code> 目标，缺少编译扩展的 <code>prerequisite</code> 步骤。正确做法是 <code>make install</code>（= prerequisite + dependencies）或 <code>make dev</code>；无 make 时先 <code>python setup.py build_ext --inplace</code> 再 <code>pip install -e .</code>。</div></details>
+      </div>
+
+      <div class="q"><b>2.（概念题）<code>rl</code> 可选依赖组会对 numpy 版本做什么限制？为什么？</b>
+        <details><summary>参考答案</summary><div class="a">见 <code>pyproject.toml:67-71</code>，<code>rl</code> 组把 numpy 锁在 <code>&lt;2.0.0</code>，并安装 <code>torch</code> 与 <code>tianshou&lt;=0.4.10</code>。原因是在 macOS 上部分 PyTorch 版本不完全支持 numpy 2.x，为避免 ABI 冲突而降版。此外 torch 并不在核心 <code>dependencies</code> 里，是可选依赖。</div></details>
+      </div>
+
+      <div class="q"><b>3.（代码填空）补全下载精简版 A 股日频数据的命令。</b>
+        <pre><code>python scripts/get_data.py qlib_data \
+    --name ______ \
+    --target_dir ______ \
+    --interval ______ \
+    --region ______</code></pre>
+        <details><summary>参考答案</summary><div class="a"><code>--name qlib_data_simple</code>、<code>--target_dir ~/.qlib/qlib_data/cn_data</code>、<code>--interval 1d</code>、<code>--region cn</code>。数据默认落在 <code>~/.qlib/qlib_data/</code>，其中 <code>target_dir</code> 即后续 <code>init</code> 的 <code>provider_uri</code>。</div></details>
+      </div>
+
+      <div class="q"><b>4.（改错题）下面的代码在 <code>qlib.init()</code> 之前就调用了数据 API，会出问题。请指出并改正。</b>
+        <pre><code><span class="kw">from</span> qlib.data <span class="kw">import</span> D
+df = D.<span class="fn">features</span>([<span class="str">"SH600000"</span>], [<span class="str">"$close"</span>])
+<span class="kw">import</span> qlib
+qlib.<span class="fn">init</span>(provider_uri=<span class="str">"~/.qlib/qlib_data/cn_data"</span>)</code></pre>
+        <details><summary>参考答案</summary><div class="a">任何数据/模型 API 都必须在成功 <code>qlib.init()</code> 之后调用。应先 <code>import qlib</code> 并 <code>qlib.init(provider_uri=..., region=REG_CN)</code>，再调用 <code>D.features(...)</code>。此外最好显式传入 <code>region=REG_CN</code>。</div></details>
+      </div>
+
+      <div class="q"><b>5.（思考题）在 macOS 上运行时进程直接 Segmentation fault 且没有 Python 堆栈，你会怎么排查与缓解？</b>
+        <details><summary>参考答案</summary><div class="a">大概率是 OpenMP 库（libomp）被多个运行时重复加载引发的冲突。应急手段：在启动前设 <code>OMP_NUM_THREADS=1</code>、<code>MKL_NUM_THREADS=1</code>，必要时 <code>KMP_DUPLICATE_LIB_OK=TRUE</code>（在 import numpy/lightgbm 之前设置）。根治方案是保证环境只存在一份 libomp，例如统一用 conda 的 <code>llvm-openmp</code>，避免与 Homebrew 混装。</div></details>
+      </div>
+
+      <div class="q"><b>6.（思考题）<code>auto_init()</code> 与直接 <code>init()</code> 有何区别？它默认的 <code>skip_if_reg=True</code> 解决了什么问题？</b>
+        <details><summary>参考答案</summary><div class="a"><code>auto_init()</code>（<code>qlib/__init__.py:243</code>）会向上查找项目里的 <code>config.yaml</code> 并据此初始化，找不到才退回默认 <code>init</code>，适合项目化脚本免手写路径。它默认 <code>skip_if_reg=True</code>：若 Qlib 已注册过则跳过重复初始化，避免在实验 <code>R.start</code> 运行中被再次 init 而丢失当前 recorder。</div></details>
+      </div>
+    </div>
+
+    <div class="pager">
+      <a class="prev" href="ch01.html"><span class="lbl">← 上一章</span><span class="ttl">Qlib 简介与架构概览</span></a>
+      <a class="next" href="ch03.html"><span class="lbl">下一章 →</span><span class="ttl">数据层 Data Layer</span></a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

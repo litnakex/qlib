@@ -1,0 +1,36 @@
+TypeError: TabnetModel.__init__() got an unexpected keyword argument 'n_jobs'
+
+[56810:MainThread](2026-07-19 11:43:49,654) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[56810:MainThread](2026-07-19 11:43:49,662) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[56810:MainThread](2026-07-19 11:43:49,664) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[56810:MainThread](2026-07-19 11:43:49,664) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[56810:MainThread](2026-07-19 11:43:49,676) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name trav_deep_TabNet_TabNet_Alpha360_5.
+[56810:MainThread](2026-07-19 11:43:49,684) INFO - qlib.workflow - [exp.py:258] - Experiment 498506757619735129 starts running ...
+[56810:MainThread](2026-07-19 11:43:50,137) INFO - qlib.workflow - [recorder.py:345] - Recorder bfa1f6b8d1194ae29f08be6484ac1573 starts running under Experiment 498506757619735129 ...
+[56810:MainThread](2026-07-19 11:43:51,732) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | waiting `async_log` Done
+[56810:MainThread](2026-07-19 11:43:51,734) ERROR - qlib.workflow - [utils.py:41] - An exception has been raised[TypeError: TabnetModel.__init__() got an unexpected keyword argument 'n_jobs'].
+  File "/Users/xuxin/miniforge3/envs/qlib/bin/qrun", line 6, in <module>
+    sys.exit(run())
+             ^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/cli/run.py", line 153, in run
+    fire.Fire(workflow)
+  File "/Users/xuxin/miniforge3/envs/qlib/lib/python3.12/site-packages/fire/core.py", line 135, in Fire
+    component_trace = _Fire(component, args, parsed_flag_args, context, name)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/miniforge3/envs/qlib/lib/python3.12/site-packages/fire/core.py", line 468, in _Fire
+    component, remaining_args = _CallAndUpdateTrace(
+                                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/miniforge3/envs/qlib/lib/python3.12/site-packages/fire/core.py", line 684, in _CallAndUpdateTrace
+    component = fn(*varargs, **kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/cli/run.py", line 147, in workflow
+    recorder = task_train(config.get("task"), experiment_name=experiment_name)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/model/trainer.py", line 127, in task_train
+    _exe_task(task_config)
+  File "/Users/xuxin/Documents/dev/qlib/qlib/model/trainer.py", line 45, in _exe_task
+    model: Model = init_instance_by_config(task_config["model"], accept_types=Model)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/utils/mod.py", line 184, in init_instance_by_config
+    return klass(**cls_kwargs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

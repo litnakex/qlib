@@ -1,0 +1,33 @@
+UnpicklingError: Forbidden class: qlib.contrib.data.handler.Alpha158. Only whitelisted classes are allowed for security reasons. This is to prevent arbitrary code execution through pickle deserialization.
+
+2026-07-17 09:42:22.275 | WARNING  | qlib.tests.data:qlib_data:195 - Data already exists: ~/.qlib/qlib_data/cn_data, the data download will be skipped
+	If downloading is required: `exists_skip=False` or `change target_dir`
+[8247:MainThread](2026-07-17 09:42:22,275) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[8247:MainThread](2026-07-17 09:42:23,460) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[8247:MainThread](2026-07-17 09:42:23,461) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[8247:MainThread](2026-07-17 09:42:44,118) INFO - qlib.timer - [log.py:127] - Time cost: 20.651s | Loading data Done
+[8247:MainThread](2026-07-17 09:42:44,119) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | fit & process data Done
+[8247:MainThread](2026-07-17 09:42:44,119) INFO - qlib.timer - [log.py:127] - Time cost: 20.652s | Init data Done
+[8247:MainThread](2026-07-17 09:42:44,380) ERROR - qlib.workflow - [utils.py:41] - An exception has been raised[UnpicklingError: Forbidden class: qlib.contrib.data.handler.Alpha158. Only whitelisted classes are allowed for security reasons. This is to prevent arbitrary code execution through pickle deserialization.].
+  File "/Users/xuxin/Documents/dev/qlib/examples/rolling_process_data/workflow.py", line 134, in <module>
+    fire.Fire(RollingDataWorkflow)
+  File "/Users/xuxin/miniforge3/envs/qlib/lib/python3.12/site-packages/fire/core.py", line 135, in Fire
+    component_trace = _Fire(component, args, parsed_flag_args, context, name)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/miniforge3/envs/qlib/lib/python3.12/site-packages/fire/core.py", line 468, in _Fire
+    component, remaining_args = _CallAndUpdateTrace(
+                                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/miniforge3/envs/qlib/lib/python3.12/site-packages/fire/core.py", line 684, in _CallAndUpdateTrace
+    component = fn(*varargs, **kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/examples/rolling_process_data/workflow.py", line 51, in rolling_process
+    pre_handler = self._load_pre_handler("pre_handler.pkl")
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/examples/rolling_process_data/workflow.py", line 45, in _load_pre_handler
+    pre_handler = restricted_pickle_load(file_dataset)
+                  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/utils/pickle_utils.py", line 118, in restricted_pickle_load
+    return RestrictedUnpickler(file).load()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/utils/pickle_utils.py", line 92, in find_class
+    raise pickle.UnpicklingError(

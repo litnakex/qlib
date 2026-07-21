@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>策略与回测 Strategy &amp; Backtest · Qlib 学习教程</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>Qlib 教程</h1>
+    <div class="sub">从入门到实战</div>
+    <nav>
+      <a href="index.html"><span class="num">home</span>首页</a>
+      <a href="ch01.html"><span class="num">01</span>简介与架构</a>
+      <a href="ch02.html"><span class="num">02</span>环境与数据</a>
+      <a href="ch03.html"><span class="num">03</span>数据层</a>
+      <a href="ch04.html"><span class="num">04</span>数据集与处理器</a>
+      <a href="ch05.html"><span class="num">05</span>模型</a>
+      <a href="ch06.html" class="active"><span class="num">06</span>策略与回测</a>
+      <a href="ch07.html"><span class="num">07</span>工作流</a>
+      <a href="ch08.html"><span class="num">08</span>综合实战</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <span class="tag">CHAPTER 06</span>
+    <h1>策略与回测 Strategy &amp; Backtest</h1>
+    <p class="lead">模型算出了每只股票的「分数」，接下来谁来决定买卖？谁来撮合成交、扣手续费、算涨跌停？本章带你走完「预测信号 → 交易决策 → 回测执行 → 组合状态」这条完整的链路。</p>
+
+    <h2>一、从「分数」到「买卖」：策略在做什么</h2>
+    <p>想象你请了一位分析师（<b>模型</b>），他每天早上给全市场几千只股票各打一个分——分数越高越看好。但分析师只负责「看好」，不负责「下单」。真正要回答「今天买哪几只、卖哪几只、各买多少手」的，是<b>策略（Strategy）</b>。</p>
+    <p>在 Qlib 里，策略的职责被抽象成一个方法：拿到当期信号，产出一组订单。所有策略都继承自 <code>qlib/strategy/base.py:23</code> 的 <code>BaseStrategy</code>，核心是这个抽象方法：</p>
+<pre><code><span class="kw">class</span> <span class="fn">BaseStrategy</span>:
+    <span class="kw">def</span> <span class="fn">generate_trade_decision</span>(self, execute_result: list = <span class="kw">None</span>):
+        <span class="cmt"># 在每个交易 bar 生成交易决策（订单列表）</span>
+        <span class="cmt"># execute_result 是上一步的成交结果，首次调用可能为 None</span>
+        <span class="kw">raise</span> NotImplementedError</code></pre>
+    <p>策略通过几个 property 拿到运行时所需的一切：<code>self.trade_calendar</code>（交易日历，当前走到第几步）、<code>self.trade_position</code>（当前持仓）、<code>self.trade_exchange</code>（交易所，用来判断可否成交、撮合订单）。这些都由回测框架在初始化时通过 <code>common_infra</code> / <code>level_infra</code> 注入。</p>
+    <div class="callout"><span class="t">提示</span>策略本身<b>不直接改持仓</b>，它只「产出决策」。真正扣钱、加仓、算成本的是 Executor 和 Exchange。策略与执行分离，是 Qlib 回测能支持多层嵌套、多频率的关键设计。</div>
+
+    <div class="diagram"><pre>
+   model.predict            generate_trade_decision        deal_order
+  ┌─────────────┐  signal  ┌──────────────┐  订单list  ┌──────────────────┐
+  │   Model     │ ───────► │   Strategy   │ ─────────► │ Executor(Exchange)│
+  │ (打分)      │          │ (选股/调仓)  │            │ (撮合/扣成本/限价)│
+  └─────────────┘          └──────────────┘            └────────┬─────────┘
+                                                                │ 更新
+                                                                ▼
+                                                    ┌──────────────────────┐
+                                                    │  Account / Position   │
+                                                    │  (现金/持仓/净值曲线) │
+                                                    └──────────────────────┘
+    </pre></div>
+
+    <h2>二、signal 到底是什么：模型元组 or 现成分数</h2>
+    <p>信号策略都继承自 <code>BaseSignalStrategy</code>（<code>qlib/contrib/strategy/signal_strategy.py:25</code>），构造时接受一个 <code>signal</code> 参数。这个参数非常灵活，内部统一交给 <code>create_signal_from</code>（<code>qlib/backtest/signal.py:88</code>）转换成 <code>Signal</code> 对象：</p>
+<pre><code><span class="kw">def</span> <span class="fn">create_signal_from</span>(obj):
+    <span class="kw">if</span> isinstance(obj, Signal):        <span class="cmt"># 已经是 Signal，直接用</span>
+        <span class="kw">return</span> obj
+    <span class="kw">elif</span> isinstance(obj, (tuple, list)):  <span class="cmt"># (model, dataset) 元组 → 现场预测</span>
+        <span class="kw">return</span> ModelSignal(*obj)
+    <span class="kw">elif</span> isinstance(obj, (dict, str)):    <span class="cmt"># 配置字典/字符串 → init_instance_by_config</span>
+        <span class="kw">return</span> init_instance_by_config(obj)
+    <span class="kw">elif</span> isinstance(obj, (pd.DataFrame, pd.Series)):  <span class="cmt"># 预先算好的分数</span>
+        <span class="kw">return</span> SignalWCache(signal=obj)</code></pre>
+    <p>换句话说，你有两条常见路子：</p>
+    <ul>
+      <li><b>传 <code>(model, dataset)</code> 元组</b>：会走 <code>ModelSignal</code>，在初始化时立刻调用 <code>model.predict(dataset)</code> 把分数算出来缓存起来。<code>examples/workflow_by_code.py:41</code> 用的就是 <code>"signal": (model, dataset)</code>。</li>
+      <li><b>传一个已经算好的 <code>pd.Series</code>/<code>pd.DataFrame</code></b>：走 <code>SignalWCache</code>，直接把分数缓存。适合你已经离线预测好、或想复用别人的预测结果。</li>
+    </ul>
+    <p>信号的标准格式是一个 <code>MultiIndex</code>（instrument, datetime）的 Series，值就是分数。策略每一步会调用 <code>self.signal.get_signal(start_time, end_time)</code> 取出「这一期」的截面分数。</p>
+    <div class="callout tip"><span class="t">小贴士</span>老代码里 <code>TopkDropoutStrategy(model=..., dataset=...)</code> 的写法已被标记为 <code>DeprecationWarning</code>（见 <code>signal_strategy.py:60</code>），内部会自动转成 <code>signal = (model, dataset)</code>。新项目请直接用 <code>signal</code>。</div>
+
+    <h2>三、TopkDropoutStrategy：最经典的调仓逻辑</h2>
+    <p>Qlib 里最常用的选股策略是 <code>TopkDropoutStrategy</code>。它的思路可以用一句话概括：<b>始终持有分数最高的 topk 只股票，但每期最多只换掉 n_drop 只，避免频繁全仓换手。</b></p>
+    <p>两个核心参数（<code>signal_strategy.py:81</code>）：</p>
+    <ul>
+      <li><code>topk</code>：组合里始终持有的股票数量。例如 <code>topk=50</code> 就是满仓 50 只。</li>
+      <li><code>n_drop</code>：每个调仓日<b>最多</b>换出（卖出）几只。例如 <code>n_drop=5</code> 表示每期卖掉当前持仓里分数最低的 5 只，再买入 5 只新的高分股票。</li>
+    </ul>
+    <p>其它常用参数：<code>method_sell="bottom"</code>（卖分数最低的）、<code>method_buy="top"</code>（买分数最高的）、<code>hold_thresh=1</code>（最短持有天数）、<code>only_tradable</code>（是否跳过停牌不可交易的股票）、<code>forbid_all_trade_at_limit=True</code>（涨跌停时是否禁止一切交易）。</p>
+
+    <p>调仓的核心在 <code>generate_trade_decision</code>（<code>signal_strategy.py:138</code>）。我们拆解它的骨架看看它每一步在干什么：</p>
+<pre><code><span class="kw">def</span> <span class="fn">generate_trade_decision</span>(self, execute_result=<span class="kw">None</span>):
+    <span class="cmt"># 1. 定位当前是第几个交易步，取出这一期的信号</span>
+    trade_step = self.trade_calendar.get_trade_step()
+    trade_start_time, trade_end_time = self.trade_calendar.get_step_time(trade_step)
+    pred_start_time, pred_end_time = self.trade_calendar.get_step_time(trade_step, shift=<span class="str">1</span>)
+    pred_score = self.signal.get_signal(start_time=pred_start_time, end_time=pred_end_time)
+    <span class="kw">if</span> pred_score <span class="kw">is</span> <span class="kw">None</span>:
+        <span class="kw">return</span> TradeDecisionWO([], self)   <span class="cmt"># 当期没信号，不交易</span>
+
+    current_temp = copy.deepcopy(self.trade_position)   <span class="cmt"># 拷贝当前持仓</span>
+    current_stock_list = current_temp.get_stock_list()
+
+    <span class="cmt"># 2. 把当前持仓按分数从高到低排序（last）</span>
+    last = pred_score.reindex(current_stock_list).sort_values(ascending=<span class="kw">False</span>).index
+
+    <span class="cmt"># 3. 从「未持有」的股票里，选分数最高的若干只作为候选买入（today）</span>
+    today = get_first_n(
+        pred_score[~pred_score.index.isin(last)].sort_values(ascending=<span class="kw">False</span>).index,
+        self.n_drop + self.topk - len(last),
+    )
+
+    <span class="cmt"># 4. 把 last + today 合并再排序，从底部选 n_drop 只真正卖出（sell）</span>
+    comb = pred_score.reindex(last.union(pd.Index(today))).sort_values(ascending=<span class="kw">False</span>).index
+    sell = last[last.isin(get_last_n(comb, self.n_drop))]
+
+    <span class="cmt"># 5. 真正买入的数量 = 卖出腾出的仓位 + 还没满的仓位</span>
+    buy = today[: len(sell) + self.topk - len(last)]
+    <span class="cmt"># ...对 sell / buy 逐只生成 Order，check_order 后 deal_order 撮合...</span>
+    <span class="kw">return</span> TradeDecisionWO(sell_order_list + buy_order_list, self)</code></pre>
+    <p>关键巧思在第 4 步：先把「打算卖的」和「打算买的」放一起排序，只从<b>整体底部</b>挑 <code>n_drop</code> 只卖。这样能避免「卖掉高分股票、买入低分股票」的愚蠢换手——如果新候选还不如手里的，就干脆不换。</p>
+    <div class="callout warn"><span class="t">陷阱</span><code>pred_score</code> 若是多列 DataFrame，策略只会取第一列（<code>signal_strategy.py:146</code>）：<code>pred_score = pred_score.iloc[:, 0]</code>。多因子信号需要自己先合成成单列分数。</div>
+
+    <h2>四、Exchange：成本、限价与成交价</h2>
+    <p>光有订单还不够，还得有个「交易所」把订单变成真实成交，并且真实地扣手续费、挡住涨跌停。这就是 <code>Exchange</code>（<code>qlib/backtest/exchange.py:28</code>）。它的构造参数几乎就是回测里最影响收益的一组假设：</p>
+    <ul>
+      <li><code>open_cost</code>（默认 0.0015）：买入（开仓）成本比例，按成交额比例收取。</li>
+      <li><code>close_cost</code>（默认 0.0025）：卖出（平仓）成本比例——A 股卖出多一道印花税，所以通常比 open_cost 高。</li>
+      <li><code>min_cost</code>（默认 5.0）：最低佣金，绝对金额。哪怕成交额很小，也至少收 5 元（<code>exchange.py:948</code>：<code>trade_cost = max(trade_val * cost_ratio, self.min_cost)</code>）。</li>
+      <li><code>limit_threshold</code>：涨跌停阈值。如 <code>0.095</code> 表示涨跌幅超过 ±9.5% 视为触及涨跌停，此时按规则禁止交易（<code>check_stock_limit</code>，<code>exchange.py:338</code>）。</li>
+      <li><code>deal_price</code>：成交价字段。可以是单个字符串如 <code>"close"</code>，也可以是 <code>(&lt;买价&gt;, &lt;卖价&gt;)</code> 元组。字符串会自动补上 <code>$</code> 前缀成为表达式 <code>$close</code>。</li>
+    </ul>
+    <p><code>examples/workflow_by_code.py:51</code> 里的 <code>exchange_kwargs</code> 是最标准的示例：</p>
+<pre><code><span class="str">"exchange_kwargs"</span>: {
+    <span class="str">"freq"</span>: <span class="str">"day"</span>,
+    <span class="str">"limit_threshold"</span>: <span class="str">0.095</span>,   <span class="cmt"># ±9.5% 视为涨跌停</span>
+    <span class="str">"deal_price"</span>: <span class="str">"close"</span>,     <span class="cmt"># 以收盘价成交</span>
+    <span class="str">"open_cost"</span>: <span class="str">0.0005</span>,      <span class="cmt"># 买入万5</span>
+    <span class="str">"close_cost"</span>: <span class="str">0.0015</span>,     <span class="cmt"># 卖出千1.5</span>
+    <span class="str">"min_cost"</span>: <span class="str">5</span>,             <span class="cmt"># 最低佣金5元</span>
+}</code></pre>
+    <p>策略调仓时会先调 <code>trade_exchange.is_stock_tradable(...)</code>（<code>exchange.py:404</code>）判断这只票当日是否停牌/触及涨跌停，不可交易就跳过；再用 <code>check_order</code> 校验、<code>deal_order</code>（<code>exchange.py:421</code>）真正撮合并返回成交额、成本、成交价。</p>
+    <div class="callout danger"><span class="t">务必注意</span>成本参数看着都是小数，但复利放大后对长期收益影响极大。回测里把 <code>close_cost</code> 从 0.0015 调到 0.003，年化收益可能腰斩。做实盘估算时，宁可把成本设得略高，也别过度乐观。</div>
+
+    <h2>五、Executor / Account / Position：谁来推进时间</h2>
+    <p>如果说 Strategy 是「决策者」、Exchange 是「撮合台」，那 <b>Executor（执行器）</b> 就是「时间的推进器」。它按交易日历一步步走，每一步：向策略要决策 → 交给 Exchange 撮合 → 用成交结果更新 Account/Position → 进入下一步。</p>
+    <p>Qlib 提供两种执行器（<code>qlib/backtest/executor.py</code>）：</p>
+    <ul>
+      <li><b><code>SimulatorExecutor</code></b>（<code>executor.py:513</code>）：最常用的模拟执行器，逐 step 撮合。核心参数 <code>time_per_step="day"</code> 指定每步的频率，<code>generate_portfolio_metrics=True</code> 让它顺便产出净值曲线等组合指标。</li>
+      <li><b><code>NestedExecutor</code></b>（<code>executor.py:310</code>）：嵌套执行器，支持「多层/多频率」。典型用法是外层日线策略决定「今天买 100 万某股票」，内层再用一个高频（如分钟级）策略/执行器把这 100 万拆单执行，模拟真实的日内成交与冲击成本。</li>
+    </ul>
+    <div class="diagram"><pre>
+   NestedExecutor (day)
+   ┌───────────────────────────────────────────────┐
+   │  日线策略: 今天买 A 100万 / 卖 B 50万           │
+   │        │  把「日订单」作为 outer_trade_decision │
+   │        ▼                                        │
+   │   SimulatorExecutor (1min)                      │
+   │   ┌───────────────────────────────────────┐    │
+   │   │ 分钟策略: 把日订单拆成 240 根 bar 执行 │    │
+   │   └───────────────────────────────────────┘    │
+   └───────────────────────────────────────────────┘
+    </pre></div>
+    <p>撮合完成后，组合状态由两个对象维护：</p>
+    <ul>
+      <li><b><code>Account</code></b>（<code>qlib/backtest/account.py</code>）：账户总览，持有现金、当前 <code>Position</code>、并记录每步的组合指标（收益、净值）。回测入口通过 <code>create_account_instance</code> 用 <code>account</code>（一个数字或 <code>{"cash": ..., "SH600000": {...}}</code> 字典）初始化它。</li>
+      <li><b><code>Position</code></b>（<code>qlib/backtest/position.py</code>）：持仓明细，记录每只股票的数量、成本、持有天数等。策略里的 <code>current_temp.get_stock_list()</code>、<code>get_cash()</code>、<code>get_stock_amount(code)</code> 都是它提供的。</li>
+    </ul>
+    <p>而每一条「订单」用 <code>Order</code>（<code>qlib/backtest/decision.py:37</code>）表示，关键字段是 <code>stock_id</code>、<code>amount</code>、<code>direction</code>（<code>Order.SELL=0</code> / <code>Order.BUY=1</code>）、<code>start_time</code>/<code>end_time</code>。策略产出的一批订单被打包成 <code>TradeDecisionWO</code>（Trade Decision With Order，<code>decision.py:547</code>）返回给执行器。</p>
+
+    <h2>六、把三段拼起来：port_analysis_config 与 backtest 入口</h2>
+    <p>整个回测的配置被组织成一个字典 <code>port_analysis_config</code>，它正好对应上面三大主角：<b>executor（怎么推进）</b>、<b>strategy（怎么决策）</b>、<b>backtest（时间/账户/交易所假设）</b>。这段配置来自 <code>examples/workflow_by_code.py:28</code>：</p>
+<pre><code>port_analysis_config = {
+    <span class="str">"executor"</span>: {                                  <span class="cmt"># ① 执行器</span>
+        <span class="str">"class"</span>: <span class="str">"SimulatorExecutor"</span>,
+        <span class="str">"module_path"</span>: <span class="str">"qlib.backtest.executor"</span>,
+        <span class="str">"kwargs"</span>: {
+            <span class="str">"time_per_step"</span>: <span class="str">"day"</span>,               <span class="cmt"># 每步一个交易日</span>
+            <span class="str">"generate_portfolio_metrics"</span>: <span class="kw">True</span>,   <span class="cmt"># 产出净值等指标</span>
+        },
+    },
+    <span class="str">"strategy"</span>: {                                  <span class="cmt"># ② 策略</span>
+        <span class="str">"class"</span>: <span class="str">"TopkDropoutStrategy"</span>,
+        <span class="str">"module_path"</span>: <span class="str">"qlib.contrib.strategy.signal_strategy"</span>,
+        <span class="str">"kwargs"</span>: {
+            <span class="str">"signal"</span>: (model, dataset),         <span class="cmt"># (模型, 数据集) 元组</span>
+            <span class="str">"topk"</span>: <span class="str">50</span>,                          <span class="cmt"># 满仓持有 50 只</span>
+            <span class="str">"n_drop"</span>: <span class="str">5</span>,                          <span class="cmt"># 每期最多换 5 只</span>
+        },
+    },
+    <span class="str">"backtest"</span>: {                                  <span class="cmt"># ③ 回测时间/账户/交易所</span>
+        <span class="str">"start_time"</span>: <span class="str">"2017-01-01"</span>,
+        <span class="str">"end_time"</span>: <span class="str">"2020-08-01"</span>,
+        <span class="str">"account"</span>: <span class="str">100000000</span>,               <span class="cmt"># 初始资金 1 亿</span>
+        <span class="str">"benchmark"</span>: CSI300_BENCH,           <span class="cmt"># 基准指数（用于计算超额收益）</span>
+        <span class="str">"exchange_kwargs"</span>: {                  <span class="cmt"># 交给 Exchange 的参数</span>
+            <span class="str">"freq"</span>: <span class="str">"day"</span>,
+            <span class="str">"limit_threshold"</span>: <span class="str">0.095</span>,
+            <span class="str">"deal_price"</span>: <span class="str">"close"</span>,
+            <span class="str">"open_cost"</span>: <span class="str">0.0005</span>,
+            <span class="str">"close_cost"</span>: <span class="str">0.0015</span>,
+            <span class="str">"min_cost"</span>: <span class="str">5</span>,
+        },
+    },
+}</code></pre>
+    <p>底层的编程式入口是 <code>qlib.backtest.backtest</code>（<code>qlib/backtest/__init__.py:217</code>）。它做的事是：先用 <code>get_strategy_executor</code> 把配置实例化成 strategy 和 executor（并注入 <code>common_infra</code>），再调 <code>backtest_loop</code> 跑完整个日历：</p>
+<pre><code><span class="kw">from</span> qlib.backtest <span class="kw">import</span> backtest, executor
+
+portfolio_metric_dict, indicator_dict = backtest(
+    start_time=<span class="str">"2017-01-01"</span>,
+    end_time=<span class="str">"2020-08-01"</span>,
+    strategy=strategy_config,      <span class="cmt"># 即 port_analysis_config["strategy"]</span>
+    executor=executor_config,      <span class="cmt"># 即 port_analysis_config["executor"]</span>
+    benchmark=<span class="str">"SH000300"</span>,
+    account=<span class="str">100000000</span>,
+    exchange_kwargs=exchange_kwargs,
+)</code></pre>
+    <div class="callout tip"><span class="t">小贴士</span>日常你几乎不会手写 <code>backtest()</code> 调用。更常见的是把 <code>port_analysis_config</code> 交给 <code>PortAnaRecord</code>（<code>workflow_by_code.py:84</code>），它会在实验里自动跑回测并把绩效指标记录下来。工作流与实验管理正是<b>下一章</b>的主题。</div>
+
+    <div class="exercises">
+      <h2>📝 课后练习题</h2>
+
+      <div class="q"><b>1.（概念）TopkDropoutStrategy 里 <code>topk=30</code>、<code>n_drop=3</code> 分别代表什么？为什么要有 n_drop 这个「换出上限」？</b>
+        <details><summary>参考答案</summary><div class="a"><code>topk=30</code> 表示组合始终持有分数最高的 30 只股票；<code>n_drop=3</code> 表示每个调仓日<b>最多</b>卖出（换出）3 只、再买入相应数量的新高分股票。设置 n_drop 是为了控制换手率：如果每期都全仓按最新分数重排，会产生巨大的交易成本，且分数的短期波动会导致频繁无意义的买卖。限制每期只动 3 只，能在「跟随信号」和「控制成本」之间取得平衡。</div></details>
+      </div>
+
+      <div class="q"><b>2.（代码理解）下面这行来自 <code>create_signal_from</code>，请说明什么样的 <code>signal</code> 参数会走到 <code>ModelSignal</code>，它在初始化时会立即做什么？
+<pre><code><span class="kw">elif</span> isinstance(obj, (tuple, list)):
+    <span class="kw">return</span> ModelSignal(*obj)</code></pre></b>
+        <details><summary>参考答案</summary><div class="a">当 <code>signal</code> 是一个元组或列表（典型是 <code>(model, dataset)</code>）时会走 <code>ModelSignal</code>。它在 <code>__init__</code> 里立即调用 <code>model.predict(dataset)</code> 算出全部预测分数，若返回的是 DataFrame 就取第一列（<code>iloc[:, 0]</code>），然后把分数缓存起来（继承自 <code>SignalWCache</code>）。因此后续每步取信号只是查缓存，不会重复预测。</div></details>
+      </div>
+
+      <div class="q"><b>3.（改错）某同学想让回测更贴近 A 股实际，写了如下 exchange_kwargs，但发现涨跌停完全没被拦截。问题出在哪？
+<pre><code><span class="str">"exchange_kwargs"</span>: {
+    <span class="str">"deal_price"</span>: <span class="str">"close"</span>,
+    <span class="str">"limit_thresh"</span>: <span class="str">0.1</span>,
+}</code></pre></b>
+        <details><summary>参考答案</summary><div class="a">参数名拼错了。正确的键是 <code>limit_threshold</code>（见 <code>qlib/backtest/__init__.py:43</code> 的 <code>get_exchange</code> 签名），而不是 <code>limit_thresh</code>。写错的键会被 <code>**kwargs</code> 悄悄吞掉而不报错，导致 <code>limit_threshold</code> 用默认值（来自全局配置 <code>C.limit_threshold</code>，可能为 None，即不设涨跌停）。改成 <code>"limit_threshold": 0.1</code> 即可。这类「拼错参数名被静默忽略」是回测配置里非常常见的坑。</div></details>
+      </div>
+
+      <div class="q"><b>4.（概念）Strategy、Exchange、Executor 三者的职责边界是什么？为什么策略里明明有 <code>current_temp = copy.deepcopy(self.trade_position)</code>，却不能直接在上面改仓？</b>
+        <details><summary>参考答案</summary><div class="a">Strategy 负责「产出决策（订单列表）」，Exchange 负责「撮合成交、扣成本、判断可交易性」，Executor 负责「按日历推进时间、驱动前两者、更新 Account/Position」。策略拿到的是持仓的<b>深拷贝</b>，只是用来在生成订单时做「假设性推演」（比如判断卖出后腾出多少现金），真正的持仓修改由 Executor 在撮合成交后统一完成。这种「决策与执行分离」的设计，才使得 NestedExecutor 的多层嵌套、多频率执行成为可能。</div></details>
+      </div>
+
+      <div class="q"><b>5.（思考）你有一份离线算好的预测分数 <code>pred.pkl</code>（MultiIndex 为 instrument/datetime 的 Series），不想再传 model。该怎样把它接入策略？内部会用哪个 Signal 类？</b>
+        <details><summary>参考答案</summary><div class="a">直接把这个 <code>pd.Series</code> 作为 <code>signal</code> 传给策略即可，例如 <code>TopkDropoutStrategy(signal=pred, topk=50, n_drop=5)</code>。<code>create_signal_from</code> 检测到它是 <code>pd.Series</code>/<code>pd.DataFrame</code>，会用 <code>SignalWCache</code> 包装并缓存。这样回测就完全脱离了模型，适合复用他人预测、或把「训练/预测」与「回测」解耦成两个独立步骤。</div></details>
+      </div>
+
+      <div class="q"><b>6.（思考）什么场景下需要用 <code>NestedExecutor</code> 而不是普通的 <code>SimulatorExecutor</code>？它能帮你更真实地建模哪种成本？</b>
+        <details><summary>参考答案</summary><div class="a">当你的下单量足够大、日内成交价格/冲击成本不可忽略时，就适合用 NestedExecutor。外层用日线策略决定「今天买卖什么、买多少」，内层再嵌套一个高频（如分钟级）执行器把日订单拆单执行。这样能建模<b>市场冲击成本（market impact）与执行滑点</b>——大单不可能全部按某一个价格瞬间成交。对小资金、低频策略而言普通 SimulatorExecutor 就够了；只有对交易执行本身敏感（如高频、大资金）时，多层嵌套才有价值。</div></details>
+      </div>
+    </div>
+
+    <h2>📎 附录：Qlib 内置策略全览</h2>
+    <p>Qlib 的策略分布在几个模块里，按<b>用途</b>可分成三大类。理解分类比记住类名更重要——它决定了你在什么场景该用哪个。所有类均可对照源码阅读：<code>qlib/strategy/base.py</code>、<code>qlib/contrib/strategy/*.py</code>、<code>qlib/rl/*</code>、<code>qlib/workflow/online/strategy.py</code>。</p>
+
+    <div class="diagram"><pre>
+策略三大类（按用途）
+────────────────────────────────────────────────────────
+① 组合策略 (Portfolio)   —— 选股 + 决定买卖哪些、各多少
+   信号驱动：TopkDropout / WeightStrategyBase / EnhancedIndexing / SoftTopk
+   输入：模型预测分数 signal；输出：调仓订单
+
+② 执行策略 (Execution)   —— 已知"要交易 X 股"，决定"这一天/这段时间怎么拆单成交"
+   规则驱动：TWAP / SBB / AC / Random / File / SingleOrder
+   输入：上层传下来的 outer_trade_decision；输出：拆分后的子订单
+   常配合 NestedExecutor 用作"内层"
+
+③ 强化学习策略 (RL)      —— 用训练好的 policy 决定动作（多为执行层）
+   RLStrategy / RLIntStrategy / SAOE 系列
+────────────────────────────────────────────────────────
+    </pre></div>
+
+    <div class="callout"><span class="t">一句话抓住区别</span>
+      <b>组合策略</b>回答「买<b>什么</b>」（which stocks），<b>执行策略</b>回答「<b>怎么</b>买这批既定的量」（how to fill）。日频回测通常只用组合策略；「日频选股 + 日内执行」的嵌套回测里，外层放组合策略、内层放执行策略。所有策略都继承 <code>BaseStrategy</code>（<code>base.py:23</code>）并实现 <code>generate_trade_decision()</code>。
+    </div>
+
+    <h3>一、组合策略（信号驱动，qlib/contrib/strategy/signal_strategy.py）</h3>
+    <table>
+      <tr><th>策略</th><th>主要逻辑</th><th>关键参数</th><th>应用场景</th></tr>
+      <tr>
+        <td><code>TopkDropoutStrategy</code></td>
+        <td>按模型分数排序，<b>持有分数最高的 topk 只</b>；每期把持仓中最差的 <code>n_drop</code> 只换成榜单上更好的 <code>n_drop</code> 只（"保持前 K、滚动换出 N"）。等权持仓。</td>
+        <td><code>topk</code> 持仓数；<code>n_drop</code> 每期换手数；<code>method_sell/buy</code>（bottom/top/random）；<code>hold_thresh</code> 最短持有天数；<code>only_tradable</code> 是否跳过停牌；<code>forbid_all_trade_at_limit</code> 涨跌停是否禁交易。</td>
+        <td><b>最常用的基准组合策略</b>。几乎所有 benchmark（LightGBM/GRU…）都用它。适合"选股打分 → 等权持有换手"的经典多头策略。<code>n_drop</code> 小则低换手低成本、反应慢；大则相反。</td>
+      </tr>
+      <tr>
+        <td><code>WeightStrategyBase</code></td>
+        <td><b>抽象基类</b>：不直接选股，而是要求子类实现 <code>generate_target_weight_position(score, current, ...)</code> 给出<b>目标权重</b>，再由 <code>OrderGenerator</code> 把"当前持仓→目标权重"转成订单。</td>
+        <td><code>order_generator_cls_or_obj</code>：订单生成器（默认 <code>OrderGenWOInteract</code>，不考虑当日成交反馈）。</td>
+        <td>当你想做<b>非等权、按权重配置</b>的组合时的父类。自己继承它实现权重逻辑即可，无需关心下单细节。</td>
+      </tr>
+      <tr>
+        <td><code>EnhancedIndexingStrategy</code></td>
+        <td><b>增强指数化</b>：结合主动与被动管理，在<b>跑赢基准指数</b>的同时用风险模型<b>控制跟踪误差/风险暴露</b>。内部用二次规划优化器（<code>optimizer/enhanced_indexing.py</code>）在因子暴露、行业、个股偏离等约束下求最优权重。</td>
+        <td><code>riskmodel_root</code> 风险模型数据路径（需 factor_exp/factor_cov/specific_risk 等）；<code>market</code> 基准（默认 csi500）；<code>turn_limit</code> 换手限制；<code>optimizer_kwargs</code>。</td>
+        <td>机构化的<b>指数增强产品</b>：既要超额收益又要严控相对基准的偏离。需要额外准备风险模型数据（可用 <code>qlib.model.riskmodel</code> 生成）。</td>
+      </tr>
+      <tr>
+        <td><code>SoftTopkStrategy</code><br/><span style="color:var(--muted);font-size:12px">(cost_control.py)</span></td>
+        <td>继承 <code>WeightStrategyBase</code> 的<b>带成本/换手约束</b>的 topk 权重策略：目标是每只 <code>risk_degree/topk</code> 的等权，但用 <code>trade_impact_limit</code> <b>限制单只每期的权重变动幅度</b>，卖出确定性、买入按缺口比例分配预算，从而平滑换手、控制冲击成本。</td>
+        <td><code>topk</code> 持仓数；<code>risk_degree</code> 目标投资比例（默认 0.95）；<code>trade_impact_limit</code>/<code>max_sold_weight</code> 单只每期最大权重变动。</td>
+        <td>关注<b>交易成本与冲击</b>的场景：不想像 TopkDropout 那样一次性大幅换仓，而是渐进调仓。</td>
+      </tr>
+    </table>
+
+    <h3>二、执行策略（规则驱动，qlib/contrib/strategy/rule_strategy.py）</h3>
+    <p>这类策略<b>不选股</b>——它们接收上层传来的 <code>outer_trade_decision</code>（"今天要买/卖这些股票各多少"），负责把这批既定交易量在更细的时间粒度上<b>拆分执行</b>，目标是降低成交冲击、贴近某个基准价。常作为 <code>NestedExecutor</code> 的内层。</p>
+    <table>
+      <tr><th>策略</th><th>主要逻辑</th><th>应用场景</th></tr>
+      <tr>
+        <td><code>TWAPStrategy</code></td>
+        <td><b>时间加权平均价</b>（Time-Weighted Average Price）：把一笔订单的总量<b>平均摊到剩余的每个时间步</b>匀速成交（向上取整处理零头）。最简单、最经典的执行基准。</td>
+        <td>执行层<b>基准算法</b>：评估其它执行策略好坏的对照；也用于"不想暴露交易意图、匀速铺量"的场景。</td>
+      </tr>
+      <tr>
+        <td><code>SBBStrategyBase</code></td>
+        <td><b>抽象基类</b>——(S)elect the (B)etter one among every two adjacent (B)ars：在<b>相邻两根 K 线中择优</b>成交。奇数步先预测价格趋势（TREND_SHORT/MID/LONG），据此决定在两根 bar 中的哪一根多买/多卖。子类需实现 <code>_pred_price_trend</code>。</td>
+        <td>比 TWAP 更聪明的执行框架：想利用短期趋势择时下单，但只在"两两相邻 bar"的局部做选择。</td>
+      </tr>
+      <tr>
+        <td><code>SBBStrategyEMA</code></td>
+        <td>SBB 的具体实现，用 <b>EMA 双均线信号</b> <code>EMA($close,10)-EMA($close,20)</code> 判断价格趋势方向，再据 SBB 逻辑择优成交。</td>
+        <td>开箱即用的"趋势择时执行"：认为短期均线金叉/死叉能指示当根 bar 该多买还是多卖。</td>
+      </tr>
+      <tr>
+        <td><code>ACStrategy</code></td>
+        <td><b>Almgren-Chriss 最优执行模型</b>：在<b>市场冲击成本</b>与<b>价格波动风险</b>之间做权衡，用波动率（对数收益的滚动标准差）和风险厌恶参数求解最优成交节奏。<code>lamb</code> 风险厌恶、<code>eta</code> 冲击系数、<code>window_size</code> 波动率窗口。</td>
+        <td>学术界经典的<b>最优交易执行</b>：大单拆分时，既怕冲击成本（拆太快）又怕价格漂移风险（拆太慢），用数学模型求平衡。</td>
+      </tr>
+      <tr>
+        <td><code>RandomOrderStrategy</code></td>
+        <td>按 <code>sample_ratio</code> 从股票池随机抽样，以历史均量的 <code>volume_ratio</code> 比例<b>随机下单</b>。</td>
+        <td><b>测试/压力/数据生成</b>：构造随机交易流来测试执行环境、生成 RL 训练数据，而非真实盈利策略。</td>
+      </tr>
+      <tr>
+        <td><code>FileOrderStrategy</code></td>
+        <td>从 <b>CSV / DataFrame 读取预先写好的订单</b>（datetime, instrument, amount, direction）直接执行。</td>
+        <td><b>回放外部订单</b>：把别处（其它系统、人工、离线优化）产生的订单清单导入 qlib 回测；或复现固定交易序列。</td>
+      </tr>
+      <tr>
+        <td><code>SingleOrderStrategy</code><br/><span style="color:var(--muted);font-size:12px">(rl/strategy/single_order.py)</span></td>
+        <td>只生成<b>恰好一笔订单</b>的极简策略。</td>
+        <td>单订单执行研究（尤其 RL 订单执行）的<b>最小载体</b>：把"执行这一笔单"作为一个可被优化的环境。</td>
+      </tr>
+    </table>
+
+    <h3>三、强化学习策略（qlib/strategy/base.py + qlib/rl/）</h3>
+    <p>RL 策略把"决策"交给训练好的 <b>policy（策略网络）</b>，主要用于<b>订单执行</b>层（Single-Asset Order Execution, SAOE），需安装 <code>rl</code> 依赖。</p>
+    <table>
+      <tr><th>策略</th><th>主要逻辑</th><th>应用场景</th></tr>
+      <tr>
+        <td><code>RLStrategy</code></td>
+        <td>RL 策略基类：持有一个 <code>policy</code>，其余交由子类。</td>
+        <td>所有 RL 策略的父类。</td>
+      </tr>
+      <tr>
+        <td><code>RLIntStrategy</code></td>
+        <td>(RL)+(Int)erpreter：加入 <b>state_interpreter</b>（把回测执行结果翻译成 RL 状态）与 <b>action_interpreter</b>（把 policy 动作翻译成订单）。决策流程：解释状态 → policy 出动作 → 解释成订单。</td>
+        <td>把训练好的 RL agent<b>接入 qlib 回测/执行</b>的通用桥梁。</td>
+      </tr>
+      <tr>
+        <td><code>SAOEStrategy</code> / <code>SAOEIntStrategy</code> / <code>ProxySAOEStrategy</code><br/><span style="color:var(--muted);font-size:12px">(rl/order_execution/strategy.py)</span></td>
+        <td>面向<b>单资产订单执行</b>的 SAOE 系列：在给定"要在某时间窗内成交 X 股"的目标下，用 RL 决定每一步的成交量以最小化成本。<code>ProxySAOEStrategy</code> 提供进程/环境代理。</td>
+        <td><b>智能订单执行</b>研究与落地（见 <code>examples/rl_order_execution/</code>）：让 RL 学出比 TWAP/AC 更优的拆单节奏。</td>
+      </tr>
+    </table>
+
+    <h3>四、在线服务策略（qlib/workflow/online/strategy.py）</h3>
+    <p>注意：这里的"策略"是<b>另一个维度</b>——不是交易决策，而是<b>模型/任务的在线更新策略</b>，配合 Online Manager 使用。</p>
+    <table>
+      <tr><th>策略</th><th>主要逻辑</th><th>应用场景</th></tr>
+      <tr>
+        <td><code>OnlineStrategy</code></td>
+        <td>抽象基类：定义"任务如何生成、模型如何更新、信号如何准备"的在线运维流程。</td>
+        <td>在线服务的编排接口。</td>
+      </tr>
+      <tr>
+        <td><code>RollingStrategy</code></td>
+        <td><b>滚动更新</b>：随时间推移周期性用最新数据重新训练/滚动模型任务，应对市场分布漂移。</td>
+        <td><b>模型上线后的持续迭代</b>：定期滚动重训，保持模型对最新行情的适应力（对比"训练一次用到底"）。</td>
+      </tr>
+    </table>
+
+    <div class="callout tip"><span class="t">怎么选</span>
+      <ul>
+        <li>做<b>选股回测</b>（大多数情况）→ <code>TopkDropoutStrategy</code>；想要按权重/控成本 → <code>WeightStrategyBase</code> 子类 / <code>SoftTopkStrategy</code>；要指数增强 → <code>EnhancedIndexingStrategy</code>。</li>
+        <li>做<b>成交执行</b>研究（拆单） → 先用 <code>TWAPStrategy</code> 打基准，再比 <code>SBBStrategyEMA</code> / <code>ACStrategy</code> / RL 的 SAOE 系列。</li>
+        <li>要<b>回放外部订单</b> → <code>FileOrderStrategy</code>；要<b>随机数据</b> → <code>RandomOrderStrategy</code>。</li>
+        <li>要<b>模型上线滚动更新</b> → <code>RollingStrategy</code>（这是运维策略，不是交易策略）。</li>
+      </ul>
+    </div>
+
+    <div class="pager">
+      <a class="prev" href="ch05.html"><span class="lbl">← 上一章</span><span class="ttl">模型 Model</span></a>
+      <a class="next" href="ch07.html"><span class="lbl">下一章 →</span><span class="ttl">工作流与实验管理</span></a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

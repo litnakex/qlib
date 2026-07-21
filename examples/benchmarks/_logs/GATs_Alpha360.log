@@ -1,0 +1,332 @@
+'The following are prediction results of the GATs model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000    0.007724
+           SH600008    0.090314
+           SH600009    0.141816
+           SH600010   -0.004798
+           SH600015   -0.005995
+{'IC': np.float64(0.04712758021357204),
+ 'ICIR': np.float64(0.3531955202456443),
+ 'Rank IC': np.float64(0.05877442766871019),
+ 'Rank ICIR': np.float64(0.4623329176704101)}
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean               0.000476
+std                0.004819
+annualized_return  0.113343
+information_ratio  1.524511
+max_drawdown      -0.069536
+'The following are analysis results of the excess return with cost(1day).'
+                       risk
+mean               0.000332
+std                0.004818
+annualized_return  0.079131
+information_ratio  1.064582
+max_drawdown      -0.074058
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0
+
+[23093:MainThread](2026-07-08 11:58:52,936) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[23093:MainThread](2026-07-08 11:58:52,943) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[23093:MainThread](2026-07-08 11:58:52,945) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[23093:MainThread](2026-07-08 11:58:52,945) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[23093:MainThread](2026-07-08 11:58:52,952) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name deep_GATs_Alpha360.
+[23093:MainThread](2026-07-08 11:58:52,957) INFO - qlib.workflow - [exp.py:258] - Experiment 577288619155830734 starts running ...
+[23093:MainThread](2026-07-08 11:58:53,625) INFO - qlib.workflow - [recorder.py:345] - Recorder 3bb1bc06594944318252874fc6fca1fc starts running under Experiment 577288619155830734 ...
+[23093:MainThread](2026-07-08 11:58:56,006) INFO - qlib.GATs - [pytorch_gats.py:63] - GATs pytorch version...
+[23093:MainThread](2026-07-08 11:58:56,006) INFO - qlib.GATs - [pytorch_gats.py:81] - GATs parameters setting:
+d_feat : 6
+hidden_size : 64
+num_layers : 2
+dropout : 0.7
+n_epochs : 200
+lr : 0.0001
+metric : loss
+early_stop : 20
+optimizer : adam
+loss_type : mse
+base_model : LSTM
+model_path : /Users/xuxin/Documents/dev/qlib/examples/benchmarks/LSTM/model_lstm_csi300.pkl
+device : cpu
+use_GPU : False
+seed : None
+[23093:MainThread](2026-07-08 11:58:56,009) INFO - qlib.GATs - [pytorch_gats.py:127] - model:
+GATModel(
+  (rnn): LSTM(6, 64, num_layers=2, batch_first=True, dropout=0.7)
+  (transformation): Linear(in_features=64, out_features=64, bias=True)
+  (fc): Linear(in_features=64, out_features=64, bias=True)
+  (fc_out): Linear(in_features=64, out_features=1, bias=True)
+  (leaky_relu): LeakyReLU(negative_slope=0.01)
+  (softmax): Softmax(dim=1)
+)
+[23093:MainThread](2026-07-08 11:58:56,009) INFO - qlib.GATs - [pytorch_gats.py:128] - model size: 0.0574 MB
+[23093:MainThread](2026-07-08 12:00:38,867) INFO - qlib.timer - [log.py:127] - Time cost: 101.658s | Loading data Done
+/Users/xuxin/.local/lib/python3.12/site-packages/numpy/lib/_nanfunctions_impl.py:1215: RuntimeWarning: All-NaN slice encountered
+  return fnb._ureduce(a, func=_nanmedian, keepdims=keepdims,
+[23093:MainThread](2026-07-08 12:00:49,657) INFO - qlib.timer - [log.py:127] - Time cost: 9.175s | RobustZScoreNorm Done
+[23093:MainThread](2026-07-08 12:00:50,696) INFO - qlib.timer - [log.py:127] - Time cost: 1.036s | Fillna Done
+[23093:MainThread](2026-07-08 12:00:52,336) INFO - qlib.timer - [log.py:127] - Time cost: 0.485s | DropnaLabel Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:358: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[cols] = t
+[23093:MainThread](2026-07-08 12:00:52,570) INFO - qlib.timer - [log.py:127] - Time cost: 0.234s | CSRankNorm Done
+[23093:MainThread](2026-07-08 12:00:52,589) INFO - qlib.timer - [log.py:127] - Time cost: 13.721s | fit & process data Done
+[23093:MainThread](2026-07-08 12:00:52,589) INFO - qlib.timer - [log.py:127] - Time cost: 115.381s | Init data Done
+[23093:MainThread](2026-07-08 12:00:52,590) WARNING - qlib.utils - [__init__.py:849] - The parameter `reweighter` with value `None` is ignored.
+[23093:MainThread](2026-07-08 12:00:53,585) INFO - qlib.GATs - [pytorch_gats.py:257] - Loading pretrained model...
+[23093:MainThread](2026-07-08 12:00:53,604) INFO - qlib.GATs - [pytorch_gats.py:266] - Loading pretrained model Done...
+[23093:MainThread](2026-07-08 12:00:53,605) INFO - qlib.GATs - [pytorch_gats.py:269] - training...
+[23093:MainThread](2026-07-08 12:00:53,605) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch0:
+[23093:MainThread](2026-07-08 12:00:53,606) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:03:31,566) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:05:10,926) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.989961, valid -0.993817
+[23093:MainThread](2026-07-08 12:05:10,930) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch1:
+[23093:MainThread](2026-07-08 12:05:10,930) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:07:46,657) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:09:26,699) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.987109, valid -0.992558
+[23093:MainThread](2026-07-08 12:09:26,701) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch2:
+[23093:MainThread](2026-07-08 12:09:26,701) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:12:02,907) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:13:42,694) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.985870, valid -0.992083
+[23093:MainThread](2026-07-08 12:13:42,696) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch3:
+[23093:MainThread](2026-07-08 12:13:42,696) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:16:19,394) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:17:58,370) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.985454, valid -0.991731
+[23093:MainThread](2026-07-08 12:17:58,372) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch4:
+[23093:MainThread](2026-07-08 12:17:58,372) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:20:35,976) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:22:14,838) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.985203, valid -0.991748
+[23093:MainThread](2026-07-08 12:22:14,839) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch5:
+[23093:MainThread](2026-07-08 12:22:14,839) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:24:52,143) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:26:31,431) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.985048, valid -0.991669
+[23093:MainThread](2026-07-08 12:26:31,433) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch6:
+[23093:MainThread](2026-07-08 12:26:31,433) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:29:09,253) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:30:49,867) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.984336, valid -0.991605
+[23093:MainThread](2026-07-08 12:30:49,869) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch7:
+[23093:MainThread](2026-07-08 12:30:49,869) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:33:28,860) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:35:07,250) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.984354, valid -0.991496
+[23093:MainThread](2026-07-08 12:35:07,252) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch8:
+[23093:MainThread](2026-07-08 12:35:07,252) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:37:47,045) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:39:22,285) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.984159, valid -0.991275
+[23093:MainThread](2026-07-08 12:39:22,288) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch9:
+[23093:MainThread](2026-07-08 12:39:22,288) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:41:40,191) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:43:00,686) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.983764, valid -0.992076
+[23093:MainThread](2026-07-08 12:43:00,686) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch10:
+[23093:MainThread](2026-07-08 12:43:00,687) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:45:08,190) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:46:29,080) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.983387, valid -0.992223
+[23093:MainThread](2026-07-08 12:46:29,080) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch11:
+[23093:MainThread](2026-07-08 12:46:29,080) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:48:37,253) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:49:58,242) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.982981, valid -0.992535
+[23093:MainThread](2026-07-08 12:49:58,242) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch12:
+[23093:MainThread](2026-07-08 12:49:58,242) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:52:07,347) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:53:28,066) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.982976, valid -0.992327
+[23093:MainThread](2026-07-08 12:53:28,066) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch13:
+[23093:MainThread](2026-07-08 12:53:28,066) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:55:35,567) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 12:56:56,676) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.982672, valid -0.991801
+[23093:MainThread](2026-07-08 12:56:56,677) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch14:
+[23093:MainThread](2026-07-08 12:56:56,677) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 12:59:04,879) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:00:24,833) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.982738, valid -0.992270
+[23093:MainThread](2026-07-08 13:00:24,833) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch15:
+[23093:MainThread](2026-07-08 13:00:24,834) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:02:34,351) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:03:56,287) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.982599, valid -0.992018
+[23093:MainThread](2026-07-08 13:03:56,288) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch16:
+[23093:MainThread](2026-07-08 13:03:56,288) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:06:05,202) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:07:25,257) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.982260, valid -0.991330
+[23093:MainThread](2026-07-08 13:07:25,258) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch17:
+[23093:MainThread](2026-07-08 13:07:25,258) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:09:33,694) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:11:01,453) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.982259, valid -0.992892
+[23093:MainThread](2026-07-08 13:11:01,454) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch18:
+[23093:MainThread](2026-07-08 13:11:01,454) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:13:08,886) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:14:18,034) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.982005, valid -0.992104
+[23093:MainThread](2026-07-08 13:14:18,034) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch19:
+[23093:MainThread](2026-07-08 13:14:18,034) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:16:07,618) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:17:16,778) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.982869, valid -0.992949
+[23093:MainThread](2026-07-08 13:17:16,778) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch20:
+[23093:MainThread](2026-07-08 13:17:16,778) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:19:05,839) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:20:15,061) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.982083, valid -0.991242
+[23093:MainThread](2026-07-08 13:20:15,063) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch21:
+[23093:MainThread](2026-07-08 13:20:15,063) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:22:03,969) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:23:13,328) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.981139, valid -0.992654
+[23093:MainThread](2026-07-08 13:23:13,328) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch22:
+[23093:MainThread](2026-07-08 13:23:13,329) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:25:02,786) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:26:12,646) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.980995, valid -0.992145
+[23093:MainThread](2026-07-08 13:26:12,646) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch23:
+[23093:MainThread](2026-07-08 13:26:12,647) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:28:03,142) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:29:13,481) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.981074, valid -0.992802
+[23093:MainThread](2026-07-08 13:29:13,481) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch24:
+[23093:MainThread](2026-07-08 13:29:13,482) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:31:04,990) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:32:16,764) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.981182, valid -0.993732
+[23093:MainThread](2026-07-08 13:32:16,764) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch25:
+[23093:MainThread](2026-07-08 13:32:16,764) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:34:10,613) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:35:21,774) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.980584, valid -0.991458
+[23093:MainThread](2026-07-08 13:35:21,774) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch26:
+[23093:MainThread](2026-07-08 13:35:21,774) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:37:14,459) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:38:25,768) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.980401, valid -0.991919
+[23093:MainThread](2026-07-08 13:38:25,768) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch27:
+[23093:MainThread](2026-07-08 13:38:25,768) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:40:18,551) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:41:29,678) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.980643, valid -0.992856
+[23093:MainThread](2026-07-08 13:41:29,678) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch28:
+[23093:MainThread](2026-07-08 13:41:29,678) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:43:22,484) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:44:33,757) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.980006, valid -0.992859
+[23093:MainThread](2026-07-08 13:44:33,757) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch29:
+[23093:MainThread](2026-07-08 13:44:33,757) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:46:26,960) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:47:37,881) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.979932, valid -0.992965
+[23093:MainThread](2026-07-08 13:47:37,881) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch30:
+[23093:MainThread](2026-07-08 13:47:37,882) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:49:30,112) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:50:41,026) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.980081, valid -0.992253
+[23093:MainThread](2026-07-08 13:50:41,027) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch31:
+[23093:MainThread](2026-07-08 13:50:41,027) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:52:33,394) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:53:44,631) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.979905, valid -0.991749
+[23093:MainThread](2026-07-08 13:53:44,631) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch32:
+[23093:MainThread](2026-07-08 13:53:44,631) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:55:36,765) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:56:48,028) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.980131, valid -0.993807
+[23093:MainThread](2026-07-08 13:56:48,029) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch33:
+[23093:MainThread](2026-07-08 13:56:48,029) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 13:58:39,567) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 13:59:51,046) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.979562, valid -0.992839
+[23093:MainThread](2026-07-08 13:59:51,046) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch34:
+[23093:MainThread](2026-07-08 13:59:51,046) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 14:01:48,341) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 14:03:01,721) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.979907, valid -0.993458
+[23093:MainThread](2026-07-08 14:03:01,721) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch35:
+[23093:MainThread](2026-07-08 14:03:01,721) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 14:04:56,106) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 14:06:09,459) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.978783, valid -0.992698
+[23093:MainThread](2026-07-08 14:06:09,459) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch36:
+[23093:MainThread](2026-07-08 14:06:09,459) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 14:08:05,372) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 14:09:19,490) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.978914, valid -0.991681
+[23093:MainThread](2026-07-08 14:09:19,491) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch37:
+[23093:MainThread](2026-07-08 14:09:19,491) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 14:11:14,445) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 14:12:27,264) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.978894, valid -0.991691
+[23093:MainThread](2026-07-08 14:12:27,265) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch38:
+[23093:MainThread](2026-07-08 14:12:27,265) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 14:14:20,972) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 14:15:33,268) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.980295, valid -0.995339
+[23093:MainThread](2026-07-08 14:15:33,268) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch39:
+[23093:MainThread](2026-07-08 14:15:33,268) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 14:17:31,840) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 14:18:47,679) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.978762, valid -0.993115
+[23093:MainThread](2026-07-08 14:18:47,679) INFO - qlib.GATs - [pytorch_gats.py:273] - Epoch40:
+[23093:MainThread](2026-07-08 14:18:47,679) INFO - qlib.GATs - [pytorch_gats.py:274] - training...
+[23093:MainThread](2026-07-08 14:20:48,698) INFO - qlib.GATs - [pytorch_gats.py:276] - evaluating...
+[23093:MainThread](2026-07-08 14:22:04,305) INFO - qlib.GATs - [pytorch_gats.py:279] - train -0.979896, valid -0.995397
+[23093:MainThread](2026-07-08 14:22:04,306) INFO - qlib.GATs - [pytorch_gats.py:291] - early stop
+[23093:MainThread](2026-07-08 14:22:04,306) INFO - qlib.GATs - [pytorch_gats.py:294] - best score: -0.991242 @ 20
+[23093:MainThread](2026-07-08 14:22:04,429) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[23093:MainThread](2026-07-08 14:22:38,054) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 577288619155830734
+/Users/xuxin/.local/lib/python3.12/site-packages/pandas/core/nanops.py:1632: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+[23093:MainThread](2026-07-08 14:22:38,419) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+[23093:MainThread](2026-07-08 14:22:47,324) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[23093:MainThread](2026-07-08 14:22:47,325) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[23093:MainThread](2026-07-08 14:22:47,327) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[23093:MainThread](2026-07-08 14:22:47,327) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[23093:MainThread](2026-07-08 14:22:55,226) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[23093:MainThread](2026-07-08 14:22:55,226) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[23093:MainThread](2026-07-08 14:22:55,231) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x138bc9040>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   3%|▎         | 24/871 [00:00<00:03, 223.33it/s]
+backtest loop:   6%|▌         | 49/871 [00:00<00:03, 235.95it/s]
+backtest loop:   8%|▊         | 74/871 [00:00<00:03, 239.70it/s]
+backtest loop:  12%|█▏        | 101/871 [00:00<00:03, 249.19it/s]
+backtest loop:  15%|█▍        | 129/871 [00:00<00:02, 254.52it/s]
+backtest loop:  18%|█▊        | 158/871 [00:00<00:02, 263.99it/s]
+backtest loop:  21%|██        | 185/871 [00:00<00:02, 259.18it/s]
+backtest loop:  24%|██▍       | 211/871 [00:00<00:02, 257.33it/s]
+backtest loop:  27%|██▋       | 239/871 [00:00<00:02, 258.81it/s]
+backtest loop:  31%|███       | 267/871 [00:01<00:02, 263.30it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  34%|███▍      | 294/871 [00:01<00:02, 261.58it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  37%|███▋      | 323/871 [00:01<00:02, 269.95it/s]
+backtest loop:  40%|████      | 351/871 [00:01<00:01, 264.00it/s]
+backtest loop:  43%|████▎     | 378/871 [00:01<00:01, 249.22it/s]
+backtest loop:  46%|████▋     | 404/871 [00:01<00:01, 245.69it/s]
+backtest loop:  49%|████▉     | 429/871 [00:01<00:01, 241.00it/s]
+backtest loop:  52%|█████▏    | 454/871 [00:01<00:01, 242.28it/s]
+backtest loop:  55%|█████▍    | 479/871 [00:01<00:01, 241.88it/s]
+backtest loop:  58%|█████▊    | 504/871 [00:02<00:01, 243.32it/s]
+backtest loop:  61%|██████    | 529/871 [00:02<00:01, 229.66it/s]
+backtest loop:  63%|██████▎   | 553/871 [00:02<00:01, 225.02it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  66%|██████▌   | 576/871 [00:02<00:01, 221.30it/s]
+backtest loop:  69%|██████▉   | 600/871 [00:02<00:01, 222.66it/s]
+backtest loop:  72%|███████▏  | 623/871 [00:02<00:01, 221.61it/s]
+backtest loop:  74%|███████▍  | 646/871 [00:02<00:01, 214.76it/s]
+backtest loop:  77%|███████▋  | 668/871 [00:02<00:00, 211.89it/s]
+backtest loop:  79%|███████▉  | 690/871 [00:02<00:00, 209.32it/s]
+backtest loop:  82%|████████▏ | 714/871 [00:02<00:00, 214.10it/s]
+backtest loop:  85%|████████▍ | 737/871 [00:03<00:00, 216.88it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  87%|████████▋ | 760/871 [00:03<00:00, 220.23it/s]
+backtest loop:  90%|████████▉ | 783/871 [00:03<00:00, 222.80it/s]
+backtest loop:  93%|█████████▎| 807/871 [00:03<00:00, 225.83it/s]
+backtest loop:  95%|█████████▌| 831/871 [00:03<00:00, 228.09it/s]
+backtest loop:  98%|█████████▊| 854/871 [00:03<00:00, 177.13it/s]
+backtest loop: 100%|██████████| 871/871 [00:03<00:00, 230.10it/s]
+[23093:MainThread](2026-07-08 14:22:59,041) INFO - qlib.workflow - [record_temp.py:520] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 577288619155830734
+[23093:MainThread](2026-07-08 14:22:59,045) INFO - qlib.workflow - [record_temp.py:545] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 577288619155830734
+[23093:MainThread](2026-07-08 14:22:59,360) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | waiting `async_log` Done

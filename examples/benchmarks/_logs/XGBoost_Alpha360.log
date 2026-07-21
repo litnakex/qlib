@@ -1,0 +1,134 @@
+[0]	train-rmse:0.99819	valid-rmse:0.99855
+[20]	train-rmse:0.98900	valid-rmse:0.99667
+[40]	train-rmse:0.98239	valid-rmse:0.99644
+[60]	train-rmse:0.97718	valid-rmse:0.99640
+[80]	train-rmse:0.97297	valid-rmse:0.99647
+[100]	train-rmse:0.96863	valid-rmse:0.99667
+[103]	train-rmse:0.96818	valid-rmse:0.99670
+'The following are prediction results of the XGBModel model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000    0.005398
+           SH600008    0.032735
+           SH600009    0.036149
+           SH600010   -0.017907
+           SH600015   -0.023262
+{'IC': np.float64(0.0408915700848214),
+ 'ICIR': np.float64(0.31033186734156687),
+ 'Rank IC': np.float64(0.04665319647790821),
+ 'Rank ICIR': np.float64(0.3887978832454195)}
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean               0.000341
+std                0.005055
+annualized_return  0.081093
+information_ratio  1.039881
+max_drawdown      -0.086863
+'The following are analysis results of the excess return with cost(1day).'
+                       risk
+mean               0.000178
+std                0.005055
+annualized_return  0.042393
+information_ratio  0.543605
+max_drawdown      -0.102226
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0
+
+[93291:MainThread](2026-07-07 17:13:56,262) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[93291:MainThread](2026-07-07 17:13:56,269) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[93291:MainThread](2026-07-07 17:13:56,272) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[93291:MainThread](2026-07-07 17:13:56,273) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[93291:MainThread](2026-07-07 17:13:56,281) INFO - qlib.workflow - [exp.py:258] - Experiment 182806524023049206 starts running ...
+[93291:MainThread](2026-07-07 17:13:56,850) INFO - qlib.workflow - [recorder.py:345] - Recorder 1a2cba779bba46eb8ae8a633e35969fc starts running under Experiment 182806524023049206 ...
+[93291:MainThread](2026-07-07 17:16:23,441) INFO - qlib.timer - [log.py:127] - Time cost: 144.449s | Loading data Done
+[93291:MainThread](2026-07-07 17:16:25,080) INFO - qlib.timer - [log.py:127] - Time cost: 0.374s | DropnaLabel Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:358: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[cols] = t
+[93291:MainThread](2026-07-07 17:16:25,333) INFO - qlib.timer - [log.py:127] - Time cost: 0.252s | CSRankNorm Done
+[93291:MainThread](2026-07-07 17:16:25,350) INFO - qlib.timer - [log.py:127] - Time cost: 1.909s | fit & process data Done
+[93291:MainThread](2026-07-07 17:16:25,350) INFO - qlib.timer - [log.py:127] - Time cost: 146.359s | Init data Done
+/Users/xuxin/miniforge3/envs/qlib/lib/python3.12/site-packages/xgboost/callback.py:385: UserWarning: [17:16:28] WARNING: /Users/runner/work/xgboost/xgboost/src/learner.cc:793: 
+Parameters: { "n_estimators" } are not used.
+
+  self.starting_round = model.num_boosted_rounds()
+[93291:MainThread](2026-07-07 17:17:01,547) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[93291:MainThread](2026-07-07 17:17:02,409) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 182806524023049206
+/Users/xuxin/.local/lib/python3.12/site-packages/pandas/core/nanops.py:1632: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+[93291:MainThread](2026-07-07 17:17:02,745) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+[93291:MainThread](2026-07-07 17:17:22,401) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[93291:MainThread](2026-07-07 17:17:22,402) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[93291:MainThread](2026-07-07 17:17:22,404) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[93291:MainThread](2026-07-07 17:17:22,405) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[93291:MainThread](2026-07-07 17:17:31,308) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[93291:MainThread](2026-07-07 17:17:31,308) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[93291:MainThread](2026-07-07 17:17:31,314) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x13603c680>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   2%|▏         | 19/871 [00:00<00:04, 187.44it/s]
+backtest loop:   5%|▍         | 41/871 [00:00<00:04, 205.66it/s]
+backtest loop:   7%|▋         | 62/871 [00:00<00:03, 204.25it/s]
+backtest loop:  10%|▉         | 84/871 [00:00<00:03, 209.60it/s]
+backtest loop:  12%|█▏        | 105/871 [00:00<00:03, 203.42it/s]
+backtest loop:  15%|█▍        | 127/871 [00:00<00:03, 207.82it/s]
+backtest loop:  17%|█▋        | 150/871 [00:00<00:03, 212.86it/s]
+backtest loop:  20%|█▉        | 172/871 [00:00<00:03, 202.36it/s]
+backtest loop:  23%|██▎       | 198/871 [00:00<00:03, 217.90it/s]
+backtest loop:  25%|██▌       | 222/871 [00:01<00:02, 224.39it/s]
+backtest loop:  28%|██▊       | 247/871 [00:01<00:02, 231.34it/s]
+backtest loop:  31%|███       | 271/871 [00:01<00:02, 226.71it/s]
+backtest loop:  34%|███▍      | 294/871 [00:01<00:02, 221.35it/s]
+backtest loop:  36%|███▋      | 317/871 [00:01<00:02, 223.37it/s]
+backtest loop:  39%|███▉      | 340/871 [00:01<00:02, 225.13it/s]
+backtest loop:  42%|████▏     | 363/871 [00:01<00:02, 224.85it/s]
+backtest loop:  44%|████▍     | 386/871 [00:01<00:02, 226.08it/s]
+backtest loop:  47%|████▋     | 409/871 [00:01<00:02, 221.76it/s]
+backtest loop:  50%|████▉     | 432/871 [00:01<00:02, 217.89it/s]
+backtest loop:  52%|█████▏    | 454/871 [00:02<00:01, 216.45it/s]
+backtest loop:  55%|█████▍    | 476/871 [00:02<00:01, 206.35it/s]
+backtest loop:  57%|█████▋    | 497/871 [00:02<00:01, 204.30it/s]
+backtest loop:  59%|█████▉    | 518/871 [00:02<00:01, 203.99it/s]
+backtest loop:  62%|██████▏   | 539/871 [00:02<00:01, 205.56it/s]
+backtest loop:  64%|██████▍   | 560/871 [00:02<00:01, 199.81it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  67%|██████▋   | 581/871 [00:02<00:01, 197.23it/s]
+backtest loop:  69%|██████▉   | 602/871 [00:02<00:01, 198.81it/s]
+backtest loop:  71%|███████▏  | 622/871 [00:02<00:01, 191.88it/s]
+backtest loop:  74%|███████▎  | 642/871 [00:03<00:01, 185.20it/s]
+backtest loop:  76%|███████▌  | 663/871 [00:03<00:01, 191.58it/s]
+backtest loop:  78%|███████▊  | 683/871 [00:03<00:00, 189.49it/s]
+backtest loop:  81%|████████  | 703/871 [00:03<00:00, 186.24it/s]
+backtest loop:  83%|████████▎ | 724/871 [00:03<00:00, 187.99it/s]
+backtest loop:  85%|████████▌ | 743/871 [00:03<00:00, 185.97it/s]
+backtest loop:  88%|████████▊ | 765/871 [00:03<00:00, 194.71it/s]
+backtest loop:  90%|█████████ | 787/871 [00:03<00:00, 198.46it/s]
+backtest loop:  93%|█████████▎| 809/871 [00:03<00:00, 204.22it/s]
+backtest loop:  95%|█████████▌| 830/871 [00:04<00:00, 204.32it/s]
+backtest loop:  98%|█████████▊| 851/871 [00:04<00:00, 199.76it/s]
+backtest loop: 100%|██████████| 871/871 [00:04<00:00, 205.40it/s]
+[93291:MainThread](2026-07-07 17:17:35,582) INFO - qlib.workflow - [record_temp.py:520] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 182806524023049206
+[93291:MainThread](2026-07-07 17:17:35,587) INFO - qlib.workflow - [record_temp.py:545] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 182806524023049206
+[93291:MainThread](2026-07-07 17:17:36,014) INFO - qlib.timer - [log.py:127] - Time cost: 0.005s | waiting `async_log` Done

@@ -1,0 +1,379 @@
+'The following are prediction results of the GeneralPTNN model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000    0.007465
+2017-01-04 SH600000    0.006662
+2017-01-05 SH600000    0.005950
+2017-01-06 SH600000    0.005514
+2017-01-09 SH600000    0.005330
+{'IC': np.float64(0.005932357556580225),
+ 'ICIR': np.float64(0.059090491308207725),
+ 'Rank IC': np.float64(0.01432012383141091),
+ 'Rank ICIR': np.float64(0.13569243734859876)}
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean              -0.000044
+std                0.004545
+annualized_return -0.010360
+information_ratio -0.147739
+max_drawdown      -0.105021
+'The following are analysis results of the excess return with cost(1day).'
+                       risk
+mean              -0.000211
+std                0.004544
+annualized_return -0.050200
+information_ratio -0.716083
+max_drawdown      -0.192896
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0
+
+[96949:MainThread](2026-07-20 17:31:43,152) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[96949:MainThread](2026-07-20 17:31:43,159) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[96949:MainThread](2026-07-20 17:31:43,161) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[96949:MainThread](2026-07-20 17:31:43,161) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[96949:MainThread](2026-07-20 17:31:43,165) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name trav_deep_GeneralPtNN_gru_1.
+[96949:MainThread](2026-07-20 17:31:43,168) INFO - qlib.workflow - [exp.py:258] - Experiment 256464126461882573 starts running ...
+[96949:MainThread](2026-07-20 17:31:43,757) INFO - qlib.workflow - [recorder.py:345] - Recorder 3ea9689f9dcd4a97a92f975218ab625b starts running under Experiment 256464126461882573 ...
+[96949:MainThread](2026-07-20 17:31:46,622) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:75] - GeneralPTNN pytorch version...
+[96949:MainThread](2026-07-20 17:31:46,624) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:93] - GeneralPTNN parameters setting:
+n_epochs : 200
+lr : 0.0002
+metric : loss
+batch_size : 800
+early_stop : 10
+optimizer : adam
+loss_type : mse
+device : cpu
+n_jobs : 0
+use_GPU : False
+weight_decay : 0.0
+seed : None
+pt_model_uri: qlib.contrib.model.pytorch_gru_ts.GRUModel
+pt_model_kwargs: {'d_feat': 20, 'hidden_size': 64, 'num_layers': 2, 'dropout': 0.0}
+[96949:MainThread](2026-07-20 17:31:46,625) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:130] - model:
+GRUModel(
+  (rnn): GRU(20, 64, num_layers=2, batch_first=True)
+  (fc_out): Linear(in_features=64, out_features=1, bias=True)
+)
+[96949:MainThread](2026-07-20 17:31:46,625) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:131] - model size: 0.0396 MB
+[96949:MainThread](2026-07-20 17:32:06,212) INFO - qlib.timer - [log.py:127] - Time cost: 17.388s | Loading data Done
+[96949:MainThread](2026-07-20 17:32:06,340) INFO - qlib.timer - [log.py:127] - Time cost: 0.011s | FilterCol Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:296: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[self.cols] = X
+[96949:MainThread](2026-07-20 17:32:06,586) INFO - qlib.timer - [log.py:127] - Time cost: 0.246s | RobustZScoreNorm Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:192: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[self.fields_group] = df[self.fields_group].fillna(self.fill_value)
+[96949:MainThread](2026-07-20 17:32:06,627) INFO - qlib.timer - [log.py:127] - Time cost: 0.041s | Fillna Done
+[96949:MainThread](2026-07-20 17:32:06,658) INFO - qlib.timer - [log.py:127] - Time cost: 0.015s | DropnaLabel Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:358: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[cols] = t
+[96949:MainThread](2026-07-20 17:32:06,813) INFO - qlib.timer - [log.py:127] - Time cost: 0.155s | CSRankNorm Done
+[96949:MainThread](2026-07-20 17:32:06,814) INFO - qlib.timer - [log.py:127] - Time cost: 0.602s | fit & process data Done
+[96949:MainThread](2026-07-20 17:32:06,814) INFO - qlib.timer - [log.py:127] - Time cost: 17.991s | Init data Done
+[96949:MainThread](2026-07-20 17:32:07,536) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:246] - Train samples: 478007
+[96949:MainThread](2026-07-20 17:32:07,536) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:247] - Valid samples: 128309
+[96949:MainThread](2026-07-20 17:32:07,538) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:295] - training...
+[96949:MainThread](2026-07-20 17:32:07,538) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch0:
+[96949:MainThread](2026-07-20 17:32:07,539) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:32:40,547) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:33:03,012) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch0: train 0.997599, valid 0.997275
+[96949:MainThread](2026-07-20 17:33:03,013) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch1:
+[96949:MainThread](2026-07-20 17:33:03,013) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:33:36,032) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:33:58,453) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch1: train 0.997587, valid 0.997235
+[96949:MainThread](2026-07-20 17:33:58,453) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch2:
+[96949:MainThread](2026-07-20 17:33:58,453) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:34:31,347) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:34:53,867) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch2: train 0.997639, valid 0.997244
+[96949:MainThread](2026-07-20 17:34:53,867) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch3:
+[96949:MainThread](2026-07-20 17:34:53,868) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:35:26,805) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:35:49,323) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch3: train 0.997831, valid 0.997457
+[96949:MainThread](2026-07-20 17:35:49,323) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch4:
+[96949:MainThread](2026-07-20 17:35:49,324) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:36:22,177) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:36:44,708) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch4: train 0.997601, valid 0.997280
+[96949:MainThread](2026-07-20 17:36:44,708) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch5:
+[96949:MainThread](2026-07-20 17:36:44,708) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:37:17,554) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:37:39,924) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch5: train 0.997612, valid 0.997240
+[96949:MainThread](2026-07-20 17:37:39,924) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch6:
+[96949:MainThread](2026-07-20 17:37:39,924) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:38:12,776) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:38:35,165) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch6: train 0.997656, valid 0.997346
+[96949:MainThread](2026-07-20 17:38:35,165) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch7:
+[96949:MainThread](2026-07-20 17:38:35,166) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:39:08,118) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:39:30,593) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch7: train 0.997566, valid 0.997230
+[96949:MainThread](2026-07-20 17:39:30,594) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch8:
+[96949:MainThread](2026-07-20 17:39:30,594) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:40:03,588) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:40:26,097) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch8: train 0.997574, valid 0.997224
+[96949:MainThread](2026-07-20 17:40:26,097) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch9:
+[96949:MainThread](2026-07-20 17:40:26,097) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:40:59,025) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:41:21,578) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch9: train 0.997579, valid 0.997242
+[96949:MainThread](2026-07-20 17:41:21,578) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch10:
+[96949:MainThread](2026-07-20 17:41:21,578) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:41:54,424) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:42:17,018) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch10: train 0.997628, valid 0.997256
+[96949:MainThread](2026-07-20 17:42:17,018) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch11:
+[96949:MainThread](2026-07-20 17:42:17,019) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:42:49,890) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:43:12,197) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch11: train 0.997593, valid 0.997243
+[96949:MainThread](2026-07-20 17:43:12,198) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch12:
+[96949:MainThread](2026-07-20 17:43:12,198) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:43:45,105) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:44:07,549) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch12: train 0.997527, valid 0.997224
+[96949:MainThread](2026-07-20 17:44:07,550) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch13:
+[96949:MainThread](2026-07-20 17:44:07,550) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:44:40,453) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:45:02,821) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch13: train 0.997601, valid 0.997235
+[96949:MainThread](2026-07-20 17:45:02,822) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch14:
+[96949:MainThread](2026-07-20 17:45:02,822) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:45:35,775) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:45:58,218) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch14: train 0.997592, valid 0.997247
+[96949:MainThread](2026-07-20 17:45:58,218) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch15:
+[96949:MainThread](2026-07-20 17:45:58,219) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:46:31,306) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:46:53,754) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch15: train 0.997601, valid 0.997217
+[96949:MainThread](2026-07-20 17:46:53,754) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch16:
+[96949:MainThread](2026-07-20 17:46:53,755) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:47:26,716) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:47:49,318) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch16: train 0.997519, valid 0.997222
+[96949:MainThread](2026-07-20 17:47:49,318) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch17:
+[96949:MainThread](2026-07-20 17:47:49,318) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:48:22,290) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:48:44,814) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch17: train 0.997595, valid 0.997249
+[96949:MainThread](2026-07-20 17:48:44,815) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch18:
+[96949:MainThread](2026-07-20 17:48:44,815) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:49:17,966) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:49:40,326) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch18: train 0.997632, valid 0.997246
+[96949:MainThread](2026-07-20 17:49:40,326) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch19:
+[96949:MainThread](2026-07-20 17:49:40,326) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:50:13,376) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:50:35,913) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch19: train 0.997583, valid 0.997240
+[96949:MainThread](2026-07-20 17:50:35,913) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch20:
+[96949:MainThread](2026-07-20 17:50:35,914) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:51:08,612) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:51:30,982) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch20: train 0.997600, valid 0.997219
+[96949:MainThread](2026-07-20 17:51:30,982) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch21:
+[96949:MainThread](2026-07-20 17:51:30,983) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:52:03,958) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:52:26,536) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch21: train 0.997550, valid 0.997218
+[96949:MainThread](2026-07-20 17:52:26,536) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch22:
+[96949:MainThread](2026-07-20 17:52:26,537) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:52:59,483) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:53:21,948) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch22: train 0.997524, valid 0.997231
+[96949:MainThread](2026-07-20 17:53:21,948) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch23:
+[96949:MainThread](2026-07-20 17:53:21,949) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:53:54,785) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:54:17,224) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch23: train 0.997551, valid 0.997212
+[96949:MainThread](2026-07-20 17:54:17,224) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch24:
+[96949:MainThread](2026-07-20 17:54:17,225) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:54:50,318) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:55:12,822) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch24: train 0.997606, valid 0.997215
+[96949:MainThread](2026-07-20 17:55:12,822) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch25:
+[96949:MainThread](2026-07-20 17:55:12,823) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:55:46,145) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:56:08,388) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch25: train 0.997496, valid 0.997211
+[96949:MainThread](2026-07-20 17:56:08,388) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch26:
+[96949:MainThread](2026-07-20 17:56:08,388) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:56:41,215) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:57:03,629) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch26: train 0.997535, valid 0.997215
+[96949:MainThread](2026-07-20 17:57:03,629) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch27:
+[96949:MainThread](2026-07-20 17:57:03,629) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:57:36,454) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:57:58,708) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch27: train 0.997539, valid 0.997213
+[96949:MainThread](2026-07-20 17:57:58,708) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch28:
+[96949:MainThread](2026-07-20 17:57:58,708) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:58:31,628) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:58:54,095) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch28: train 0.997604, valid 0.997212
+[96949:MainThread](2026-07-20 17:58:54,095) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch29:
+[96949:MainThread](2026-07-20 17:58:54,095) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 17:59:26,963) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 17:59:49,351) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch29: train 0.997609, valid 0.997214
+[96949:MainThread](2026-07-20 17:59:49,351) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch30:
+[96949:MainThread](2026-07-20 17:59:49,351) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:00:22,245) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:00:44,629) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch30: train 0.997512, valid 0.997214
+[96949:MainThread](2026-07-20 18:00:44,629) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch31:
+[96949:MainThread](2026-07-20 18:00:44,629) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:01:17,709) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:01:40,163) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch31: train 0.997586, valid 0.997213
+[96949:MainThread](2026-07-20 18:01:40,163) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch32:
+[96949:MainThread](2026-07-20 18:01:40,163) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:02:13,257) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:02:35,666) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch32: train 0.997455, valid 0.997218
+[96949:MainThread](2026-07-20 18:02:35,666) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch33:
+[96949:MainThread](2026-07-20 18:02:35,667) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:03:08,761) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:03:31,225) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch33: train 0.997555, valid 0.997219
+[96949:MainThread](2026-07-20 18:03:31,226) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch34:
+[96949:MainThread](2026-07-20 18:03:31,226) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:04:04,115) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:04:26,728) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch34: train 0.997571, valid 0.997213
+[96949:MainThread](2026-07-20 18:04:26,728) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch35:
+[96949:MainThread](2026-07-20 18:04:26,729) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:04:59,727) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:05:22,268) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch35: train 0.997519, valid 0.997210
+[96949:MainThread](2026-07-20 18:05:22,269) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch36:
+[96949:MainThread](2026-07-20 18:05:22,269) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:05:55,194) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:06:17,801) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch36: train 0.997581, valid 0.997211
+[96949:MainThread](2026-07-20 18:06:17,802) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch37:
+[96949:MainThread](2026-07-20 18:06:17,802) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:06:50,802) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:07:13,182) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch37: train 0.997583, valid 0.997213
+[96949:MainThread](2026-07-20 18:07:13,183) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch38:
+[96949:MainThread](2026-07-20 18:07:13,183) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:07:46,212) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:08:08,535) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch38: train 0.997475, valid 0.997213
+[96949:MainThread](2026-07-20 18:08:08,535) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch39:
+[96949:MainThread](2026-07-20 18:08:08,536) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:08:41,490) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:09:04,028) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch39: train 0.997502, valid 0.997213
+[96949:MainThread](2026-07-20 18:09:04,028) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch40:
+[96949:MainThread](2026-07-20 18:09:04,028) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:09:37,015) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:09:59,443) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch40: train 0.997544, valid 0.997213
+[96949:MainThread](2026-07-20 18:09:59,443) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch41:
+[96949:MainThread](2026-07-20 18:09:59,443) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:10:32,596) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:10:54,997) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch41: train 0.997562, valid 0.997211
+[96949:MainThread](2026-07-20 18:10:54,998) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch42:
+[96949:MainThread](2026-07-20 18:10:54,998) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:11:28,001) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:11:50,561) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch42: train 0.997641, valid 0.997212
+[96949:MainThread](2026-07-20 18:11:50,562) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch43:
+[96949:MainThread](2026-07-20 18:11:50,562) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:12:23,592) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:12:46,030) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch43: train 0.997506, valid 0.997213
+[96949:MainThread](2026-07-20 18:12:46,030) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch44:
+[96949:MainThread](2026-07-20 18:12:46,031) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:13:18,997) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:13:41,458) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch44: train 0.997518, valid 0.997213
+[96949:MainThread](2026-07-20 18:13:41,458) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:299] - Epoch45:
+[96949:MainThread](2026-07-20 18:13:41,458) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:300] - training...
+[96949:MainThread](2026-07-20 18:14:14,489) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:302] - evaluating...
+[96949:MainThread](2026-07-20 18:14:36,984) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:305] - Epoch45: train 0.997513, valid 0.997213
+[96949:MainThread](2026-07-20 18:14:36,984) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:324] - early stop
+[96949:MainThread](2026-07-20 18:14:36,985) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:327] - best score: 0.997210 @ 35 epoch
+[96949:MainThread](2026-07-20 18:14:37,008) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[96949:MainThread](2026-07-20 18:14:37,548) INFO - qlib.GeneralPTNN - [pytorch_general_nn.py:344] - Test samples: 261300
+[96949:MainThread](2026-07-20 18:14:46,385) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 256464126461882573
+[96949:MainThread](2026-07-20 18:14:46,682) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+[96949:MainThread](2026-07-20 18:14:54,446) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[96949:MainThread](2026-07-20 18:14:54,447) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[96949:MainThread](2026-07-20 18:14:54,449) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[96949:MainThread](2026-07-20 18:14:54,449) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[96949:MainThread](2026-07-20 18:15:02,239) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[96949:MainThread](2026-07-20 18:15:02,239) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[96949:MainThread](2026-07-20 18:15:02,244) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x12f1a4680>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   1%|▏         | 12/871 [00:00<00:07, 119.99it/s]
+backtest loop:   3%|▎         | 24/871 [00:00<00:07, 112.48it/s]
+backtest loop:   4%|▍         | 37/871 [00:00<00:07, 117.76it/s]
+backtest loop:   6%|▌         | 49/871 [00:00<00:07, 117.37it/s]
+backtest loop:   7%|▋         | 62/871 [00:00<00:06, 117.67it/s]
+backtest loop:   9%|▊         | 75/871 [00:00<00:06, 119.70it/s]
+backtest loop:  10%|▉         | 87/871 [00:00<00:06, 119.32it/s]
+backtest loop:  11%|█▏        | 99/871 [00:00<00:06, 119.30it/s]
+backtest loop:  13%|█▎        | 112/871 [00:00<00:06, 121.52it/s]
+backtest loop:  14%|█▍        | 125/871 [00:01<00:06, 120.94it/s]
+backtest loop:  16%|█▌        | 138/871 [00:01<00:05, 122.54it/s]
+backtest loop:  17%|█▋        | 151/871 [00:01<00:05, 121.63it/s]
+backtest loop:  19%|█▉        | 164/871 [00:01<00:05, 121.48it/s]
+backtest loop:  20%|██        | 177/871 [00:01<00:05, 123.07it/s]
+backtest loop:  22%|██▏       | 190/871 [00:01<00:05, 121.99it/s]
+backtest loop:  23%|██▎       | 203/871 [00:01<00:05, 123.02it/s]
+backtest loop:  25%|██▍       | 216/871 [00:01<00:05, 122.21it/s]
+backtest loop:  26%|██▋       | 229/871 [00:01<00:05, 121.54it/s]
+backtest loop:  28%|██▊       | 242/871 [00:02<00:05, 122.94it/s]
+backtest loop:  29%|██▉       | 255/871 [00:02<00:05, 122.67it/s]
+backtest loop:  31%|███       | 268/871 [00:02<00:04, 122.31it/s]
+backtest loop:  32%|███▏      | 281/871 [00:02<00:04, 122.63it/s]
+backtest loop:  34%|███▍      | 294/871 [00:02<00:04, 123.50it/s]
+backtest loop:  35%|███▌      | 307/871 [00:02<00:04, 119.85it/s]
+backtest loop:  37%|███▋      | 320/871 [00:02<00:04, 118.66it/s]
+backtest loop:  38%|███▊      | 332/871 [00:02<00:04, 116.65it/s]
+backtest loop:  39%|███▉      | 344/871 [00:02<00:04, 115.68it/s]
+backtest loop:  41%|████      | 357/871 [00:02<00:04, 117.42it/s]
+backtest loop:  42%|████▏     | 369/871 [00:03<00:04, 116.31it/s]
+backtest loop:  44%|████▍     | 382/871 [00:03<00:04, 118.50it/s]
+backtest loop:  45%|████▌     | 394/871 [00:03<00:04, 118.53it/s]
+backtest loop:  47%|████▋     | 407/871 [00:03<00:03, 120.49it/s]
+backtest loop:  48%|████▊     | 420/871 [00:03<00:03, 119.74it/s]
+backtest loop:  50%|████▉     | 432/871 [00:03<00:03, 119.63it/s]
+backtest loop:  51%|█████     | 444/871 [00:03<00:03, 118.54it/s]
+backtest loop:  52%|█████▏    | 457/871 [00:03<00:03, 118.40it/s]
+backtest loop:  54%|█████▍    | 470/871 [00:03<00:03, 119.65it/s]
+backtest loop:  55%|█████▌    | 482/871 [00:04<00:03, 118.41it/s]
+backtest loop:  57%|█████▋    | 495/871 [00:04<00:03, 117.58it/s]
+backtest loop:  58%|█████▊    | 508/871 [00:04<00:03, 119.04it/s]
+backtest loop:  60%|█████▉    | 520/871 [00:04<00:02, 117.09it/s]
+backtest loop:  61%|██████    | 533/871 [00:04<00:02, 118.37it/s]
+backtest loop:  63%|██████▎   | 545/871 [00:04<00:02, 117.96it/s]
+backtest loop:  64%|██████▍   | 558/871 [00:04<00:02, 119.35it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  66%|██████▌   | 571/871 [00:04<00:02, 119.18it/s]
+backtest loop:  67%|██████▋   | 584/871 [00:04<00:02, 120.38it/s]
+backtest loop:  69%|██████▊   | 597/871 [00:04<00:02, 119.74it/s]
+backtest loop:  70%|███████   | 610/871 [00:05<00:02, 118.79it/s]
+backtest loop:  72%|███████▏  | 623/871 [00:05<00:02, 120.33it/s]
+backtest loop:  73%|███████▎  | 636/871 [00:05<00:01, 119.36it/s]
+backtest loop:  75%|███████▍  | 649/871 [00:05<00:01, 120.57it/s]
+backtest loop:  76%|███████▌  | 662/871 [00:05<00:01, 119.51it/s]
+backtest loop:  77%|███████▋  | 674/871 [00:05<00:01, 116.39it/s]
+backtest loop:  79%|███████▉  | 687/871 [00:05<00:01, 117.97it/s]
+backtest loop:  80%|████████  | 699/871 [00:05<00:01, 117.04it/s]
+backtest loop:  82%|████████▏ | 712/871 [00:05<00:01, 118.30it/s]
+backtest loop:  83%|████████▎ | 724/871 [00:06<00:01, 117.28it/s]
+backtest loop:  85%|████████▍ | 736/871 [00:06<00:01, 116.49it/s]
+backtest loop:  86%|████████▌ | 748/871 [00:06<00:01, 116.16it/s]
+backtest loop:  87%|████████▋ | 761/871 [00:06<00:00, 118.50it/s]
+backtest loop:  89%|████████▊ | 773/871 [00:06<00:00, 117.70it/s]
+backtest loop:  90%|█████████ | 786/871 [00:06<00:00, 119.58it/s]
+backtest loop:  92%|█████████▏| 798/871 [00:06<00:00, 118.37it/s]
+backtest loop:  93%|█████████▎| 810/871 [00:06<00:00, 117.93it/s]
+backtest loop:  94%|█████████▍| 822/871 [00:06<00:00, 92.83it/s] 
+backtest loop:  96%|█████████▌| 833/871 [00:07<00:00, 96.50it/s]
+backtest loop:  97%|█████████▋| 846/871 [00:07<00:00, 101.88it/s]
+backtest loop:  99%|█████████▊| 859/871 [00:07<00:00, 107.72it/s]
+backtest loop: 100%|██████████| 871/871 [00:07<00:00, 109.92it/s]
+backtest loop: 100%|██████████| 871/871 [00:07<00:00, 117.53it/s]
+[96949:MainThread](2026-07-20 18:15:09,676) INFO - qlib.workflow - [record_temp.py:520] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 256464126461882573
+[96949:MainThread](2026-07-20 18:15:09,680) INFO - qlib.workflow - [record_temp.py:545] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 256464126461882573
+[96949:MainThread](2026-07-20 18:15:09,972) INFO - qlib.timer - [log.py:127] - Time cost: 0.002s | waiting `async_log` Done

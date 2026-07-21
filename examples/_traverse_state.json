@@ -1,0 +1,91 @@
+{
+  "root/workflow_by_code": {
+    "cmd": "python workflow_by_code.py",
+    "cwd": ".",
+    "sec": 84,
+    "log": "/Users/xuxin/Documents/dev/qlib/examples/_traverse_logs/root__workflow_by_code.log",
+    "status": "done",
+    "metrics": {
+      "IC": 0.048957761770173004,
+      "ICIR": 0.38877577095637916,
+      "Rank IC": 0.0505277928563265,
+      "Rank ICIR": 0.4078803113782606,
+      "ann_wo_cost": 0.179653,
+      "ir_wo_cost": 2.019134,
+      "mdd_wo_cost": -0.070401,
+      "ann_w_cost": 0.133179,
+      "ir_w_cost": 1.49739,
+      "mdd_w_cost": -0.081073
+    }
+  },
+  "data_demo/data_cache_demo": {
+    "cmd": "python data_cache_demo.py",
+    "cwd": "data_demo",
+    "sec": 103,
+    "log": "/Users/xuxin/Documents/dev/qlib/examples/_traverse_logs/data_demo__data_cache_demo.log",
+    "status": "failed",
+    "error": "AttributeError: 'YAML' object has no attribute 'safe_dump'\n[5221:MainThread](2026-07-17 09:38:18,642) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!\n[5182:MainThread](2026-07-17 09:38:54,158) ERROR - qlib.workflow - [utils.py:41] - An exception has been raised[AttributeError: 'YAML' object has no attribute 'safe_dump']."
+  },
+  "data_demo/data_mem_resuse_demo": {
+    "cmd": "python data_mem_resuse_demo.py",
+    "cwd": "data_demo",
+    "sec": 156,
+    "log": "/Users/xuxin/Documents/dev/qlib/examples/_traverse_logs/data_demo__data_mem_resuse_demo.log",
+    "status": "failed",
+    "error": "AttributeError: 'Alpha158' object has no attribute '_infer'\n[6313:MainThread](2026-07-17 09:39:57,430) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!\n[6313:MainThread](2026-07-17 09:41:29,411) ERROR - qlib.workflow - [utils.py:41] - An exception has been raised[AttributeError: 'Alpha158' object has no attribute '_infer']."
+  },
+  "model_interpreter/feature": {
+    "cmd": "python feature.py",
+    "cwd": "model_interpreter",
+    "sec": 48,
+    "log": "/Users/xuxin/Documents/dev/qlib/examples/_traverse_logs/model_interpreter__feature.log",
+    "status": "done",
+    "note": "运行成功",
+    "tail": "Column_96     148\n             ... \nColumn_108      7\nColumn_73       5\nColumn_103      3\nColumn_12       0\nColumn_98       0\nLength: 158, dtype: int32"
+  },
+  "rolling_process_data/workflow": {
+    "cmd": "python workflow.py rolling_process",
+    "cwd": "rolling_process_data",
+    "sec": 27,
+    "log": "/Users/xuxin/Documents/dev/qlib/examples/_traverse_logs/rolling_process_data__workflow.log",
+    "status": "failed",
+    "error": "UnpicklingError: Forbidden class: qlib.contrib.data.handler.Alpha158. Only whitelisted classes are allowed for security reasons. This is to prevent arbitrary code execution through pickle deserialization.\n[8247:MainThread](2026-07-17 09:42:44,380) ERROR - qlib.workflow - [utils.py:41] - An exception has been raised[UnpicklingError: Forbidden class: qlib.contrib.data.handler.Alpha158. Only whitelisted classes are allowed for security reasons. This is to prevent arbitrary code execution through pi"
+  },
+  "benchmarks_dynamic/baseline/rolling_benchmark": {
+    "cmd": "python rolling_benchmark.py run",
+    "cwd": "benchmarks_dynamic/baseline",
+    "sec": 40,
+    "log": "/Users/xuxin/Documents/dev/qlib/examples/_traverse_logs/benchmarks_dynamic__baseline__rolling_benchmark.log",
+    "status": "failed",
+    "error": "[8487:MainThread](2026-07-17 09:43:20,222) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!\n[8487:MainThread](2026-07-17 09:43:23,813) ERROR - qlib.workflow - [utils.py:41] - An exception has been raised[UnpicklingError: Forbidden class: qlib.contrib.data.handler.Alpha158. Only whitelisted classes are allowed for security reasons. This is to prevent arbitrary code execution through pickle deserialization.].\n    raise pickle.UnpicklingErro"
+  },
+  "portfolio/enhanced_indexing": {
+    "cmd": "qrun config_enhanced_indexing.yaml",
+    "cwd": "portfolio",
+    "sec": 2690,
+    "log": "/Users/xuxin/Documents/dev/qlib/examples/_traverse_logs/portfolio__enhanced_indexing.log",
+    "status": "failed",
+    "error": "BrokenPipeError: [Errno 32] Broken pipe\nTraceback (most recent call last):\nBrokenPipeError: [Errno 32] Broken pipe"
+  },
+  "nested_decision_execution/backtest": {
+    "cmd": "python workflow.py backtest",
+    "cwd": "nested_decision_execution",
+    "sec": 493,
+    "log": "/Users/xuxin/Documents/dev/qlib/examples/_traverse_logs/nested_decision_execution__backtest.log",
+    "status": "failed",
+    "error": "[47161:MainThread](2026-07-17 10:57:23,603) WARNING - qlib.data - [data.py:665] - load calendar error: freq=30min, future=True; return current calendar!\n[47161:MainThread](2026-07-17 10:57:23,729) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!\n[47161:MainThread](2026-07-17 10:57:47,872) ERROR - qlib.workflow - [utils.py:41] - An exception has been raised[IndexError: index 4943 is out of bounds for axis 0 with size 4943]."
+  },
+  "highfreq/tree_alpha158": {
+    "cmd": "qrun workflow_config_High_Freq_Tree_Alpha158.yaml",
+    "cwd": "highfreq",
+    "sec": 442,
+    "log": "/Users/xuxin/Documents/dev/qlib/examples/_traverse_logs/highfreq__tree_alpha158.log",
+    "status": "done",
+    "metrics": {
+      "IC": 0.035675648882389804,
+      "ICIR": 0.39721767147934367,
+      "Rank IC": 0.04393868823995672,
+      "Rank ICIR": 0.4908980803072881
+    }
+  }
+}

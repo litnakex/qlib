@@ -1,0 +1,292 @@
+'The following are prediction results of the IGMTF model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000   -0.002713
+           SH600008    0.078522
+           SH600009    0.132983
+           SH600010   -0.026099
+           SH600015   -0.039803
+{'IC': np.float64(0.046510824455484406),
+ 'ICIR': np.float64(0.3453286115537325),
+ 'Rank IC': np.float64(0.05813295313462148),
+ 'Rank ICIR': np.float64(0.4623927329963574)}
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean               0.000494
+std                0.003963
+annualized_return  0.117570
+information_ratio  1.923149
+max_drawdown      -0.042409
+'The following are analysis results of the excess return with cost(1day).'
+                       risk
+mean               0.000322
+std                0.003962
+annualized_return  0.076594
+information_ratio  1.253066
+max_drawdown      -0.047369
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0
+
+[30096:MainThread](2026-07-17 19:34:04,944) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[30096:MainThread](2026-07-17 19:34:04,951) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[30096:MainThread](2026-07-17 19:34:04,953) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[30096:MainThread](2026-07-17 19:34:04,953) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[30096:MainThread](2026-07-17 19:34:04,957) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name trav_deep_IGMTF_igmtf_Alpha360_1.
+[30096:MainThread](2026-07-17 19:34:04,960) INFO - qlib.workflow - [exp.py:258] - Experiment 129290841549796392 starts running ...
+[30096:MainThread](2026-07-17 19:34:05,808) INFO - qlib.workflow - [recorder.py:345] - Recorder 0f72716ad04745f0a2cdd20328ccd09a starts running under Experiment 129290841549796392 ...
+[30096:MainThread](2026-07-17 19:34:08,300) INFO - qlib.IGMTF - [pytorch_igmtf.py:62] - IMGTF pytorch version...
+[30096:MainThread](2026-07-17 19:34:08,301) INFO - qlib.IGMTF - [pytorch_igmtf.py:80] - IGMTF parameters setting:
+d_feat : 6
+hidden_size : 64
+num_layers : 2
+dropout : 0
+n_epochs : 200
+lr : 0.0001
+metric : ic
+early_stop : 20
+optimizer : adam
+loss_type : mse
+base_model : LSTM
+model_path : /Users/xuxin/Documents/dev/qlib/examples/benchmarks/LSTM/model_lstm_csi300.pkl
+visible_GPU : 0
+use_GPU : False
+seed : None
+[30096:MainThread](2026-07-17 19:34:08,301) INFO - qlib.IGMTF - [pytorch_igmtf.py:126] - model:
+IGMTFModel(
+  (rnn): LSTM(6, 64, num_layers=2, batch_first=True)
+  (lins): Sequential(
+    (linear0): Linear(in_features=64, out_features=64, bias=True)
+    (leakyrelu0): LeakyReLU(negative_slope=0.01)
+    (linear1): Linear(in_features=64, out_features=64, bias=True)
+    (leakyrelu1): LeakyReLU(negative_slope=0.01)
+  )
+  (fc_output): Linear(in_features=128, out_features=128, bias=True)
+  (project1): Linear(in_features=64, out_features=64, bias=False)
+  (project2): Linear(in_features=64, out_features=64, bias=False)
+  (fc_out_pred): Linear(in_features=128, out_features=1, bias=True)
+  (leaky_relu): LeakyReLU(negative_slope=0.01)
+)
+[30096:MainThread](2026-07-17 19:34:08,302) INFO - qlib.IGMTF - [pytorch_igmtf.py:127] - model size: 0.0809 MB
+[30096:MainThread](2026-07-17 19:34:57,713) INFO - qlib.timer - [log.py:127] - Time cost: 47.780s | Loading data Done
+/Users/xuxin/.local/lib/python3.12/site-packages/numpy/lib/_nanfunctions_impl.py:1215: RuntimeWarning: All-NaN slice encountered
+  return fnb._ureduce(a, func=_nanmedian, keepdims=keepdims,
+[30096:MainThread](2026-07-17 19:35:03,061) INFO - qlib.timer - [log.py:127] - Time cost: 4.992s | RobustZScoreNorm Done
+[30096:MainThread](2026-07-17 19:35:03,741) INFO - qlib.timer - [log.py:127] - Time cost: 0.680s | Fillna Done
+[30096:MainThread](2026-07-17 19:35:04,225) INFO - qlib.timer - [log.py:127] - Time cost: 0.219s | DropnaLabel Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:358: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[cols] = t
+[30096:MainThread](2026-07-17 19:35:04,383) INFO - qlib.timer - [log.py:127] - Time cost: 0.158s | CSRankNorm Done
+[30096:MainThread](2026-07-17 19:35:04,394) INFO - qlib.timer - [log.py:127] - Time cost: 6.681s | fit & process data Done
+[30096:MainThread](2026-07-17 19:35:04,394) INFO - qlib.timer - [log.py:127] - Time cost: 54.462s | Init data Done
+[30096:MainThread](2026-07-17 19:35:04,395) WARNING - qlib.utils - [__init__.py:849] - The parameter `reweighter` with value `None` is ignored.
+[30096:MainThread](2026-07-17 19:35:04,821) INFO - qlib.IGMTF - [pytorch_igmtf.py:282] - Loading pretrained model...
+[30096:MainThread](2026-07-17 19:35:04,830) INFO - qlib.IGMTF - [pytorch_igmtf.py:291] - Loading pretrained model Done...
+[30096:MainThread](2026-07-17 19:35:04,831) INFO - qlib.IGMTF - [pytorch_igmtf.py:294] - training...
+[30096:MainThread](2026-07-17 19:35:04,831) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch0:
+[30096:MainThread](2026-07-17 19:35:04,832) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+/Users/xuxin/Documents/dev/qlib/qlib/contrib/model/pytorch_igmtf.py:432: UserWarning: Sparse invariant checks are implicitly disabled. Memory errors (e.g. SEGFAULT) will occur when operating on a sparse tensor which violates the invariants, but checks incur performance overhead. To silence this warning, explicitly opt in or out. See `torch.sparse.check_sparse_tensor_invariants.__doc__` for guidance.  (Triggered internally at /Users/runner/work/pytorch/pytorch/aten/src/ATen/Context.cpp:767.)
+  mask = torch.sparse_coo_tensor(
+/Users/xuxin/Documents/dev/qlib/qlib/contrib/model/pytorch_igmtf.py:402: UserWarning: torch.sparse.SparseTensor(indices, values, shape, *, device=) is deprecated.  Please use torch.sparse_coo_tensor(indices, values, shape, dtype=, device=). (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/utils/tensor_new.cpp:656.)
+  return torch.sparse.FloatTensor(i, v * dv, s.size())
+[30096:MainThread](2026-07-17 19:37:32,475) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 19:38:40,852) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.125679, valid 0.078061
+[30096:MainThread](2026-07-17 19:38:40,854) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch1:
+[30096:MainThread](2026-07-17 19:38:40,854) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 19:41:08,461) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 19:42:16,586) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.128022, valid 0.084052
+[30096:MainThread](2026-07-17 19:42:16,586) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch2:
+[30096:MainThread](2026-07-17 19:42:16,587) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 19:44:44,188) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 19:45:52,016) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.129023, valid 0.083401
+[30096:MainThread](2026-07-17 19:45:52,016) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch3:
+[30096:MainThread](2026-07-17 19:45:52,017) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 19:48:19,663) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 19:49:28,178) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.130593, valid 0.084376
+[30096:MainThread](2026-07-17 19:49:28,179) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch4:
+[30096:MainThread](2026-07-17 19:49:28,179) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 19:51:56,562) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 19:53:05,135) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.130506, valid 0.081603
+[30096:MainThread](2026-07-17 19:53:05,135) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch5:
+[30096:MainThread](2026-07-17 19:53:05,136) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 19:55:32,850) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 19:56:41,643) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.131215, valid 0.086898
+[30096:MainThread](2026-07-17 19:56:41,644) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch6:
+[30096:MainThread](2026-07-17 19:56:41,644) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 19:59:10,905) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:00:19,796) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.132691, valid 0.088313
+[30096:MainThread](2026-07-17 20:00:19,797) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch7:
+[30096:MainThread](2026-07-17 20:00:19,797) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:02:50,245) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:04:00,131) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.133320, valid 0.087964
+[30096:MainThread](2026-07-17 20:04:00,131) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch8:
+[30096:MainThread](2026-07-17 20:04:00,132) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:06:30,027) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:07:40,109) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.134191, valid 0.089101
+[30096:MainThread](2026-07-17 20:07:40,110) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch9:
+[30096:MainThread](2026-07-17 20:07:40,111) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:10:10,133) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:11:19,618) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.136134, valid 0.089239
+[30096:MainThread](2026-07-17 20:11:19,619) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch10:
+[30096:MainThread](2026-07-17 20:11:19,619) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:13:48,374) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:14:56,915) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.136111, valid 0.085788
+[30096:MainThread](2026-07-17 20:14:56,915) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch11:
+[30096:MainThread](2026-07-17 20:14:56,915) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:17:25,898) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:18:35,180) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.135212, valid 0.090134
+[30096:MainThread](2026-07-17 20:18:35,181) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch12:
+[30096:MainThread](2026-07-17 20:18:35,181) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:21:04,430) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:22:13,299) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.138009, valid 0.086551
+[30096:MainThread](2026-07-17 20:22:13,299) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch13:
+[30096:MainThread](2026-07-17 20:22:13,300) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:24:42,754) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:25:51,763) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.139474, valid 0.088176
+[30096:MainThread](2026-07-17 20:25:51,764) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch14:
+[30096:MainThread](2026-07-17 20:25:51,764) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:28:21,919) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:29:31,295) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.137963, valid 0.082472
+[30096:MainThread](2026-07-17 20:29:31,295) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch15:
+[30096:MainThread](2026-07-17 20:29:31,295) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:32:01,186) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:33:10,714) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.141617, valid 0.087708
+[30096:MainThread](2026-07-17 20:33:10,714) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch16:
+[30096:MainThread](2026-07-17 20:33:10,714) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:35:40,995) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:36:51,264) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.142859, valid 0.084414
+[30096:MainThread](2026-07-17 20:36:51,264) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch17:
+[30096:MainThread](2026-07-17 20:36:51,264) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:39:22,284) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:40:32,167) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.143278, valid 0.084120
+[30096:MainThread](2026-07-17 20:40:32,167) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch18:
+[30096:MainThread](2026-07-17 20:40:32,167) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:43:01,617) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:44:11,316) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.143710, valid 0.086244
+[30096:MainThread](2026-07-17 20:44:11,316) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch19:
+[30096:MainThread](2026-07-17 20:44:11,317) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:46:41,648) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:47:50,858) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.140939, valid 0.087230
+[30096:MainThread](2026-07-17 20:47:50,858) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch20:
+[30096:MainThread](2026-07-17 20:47:50,858) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:50:21,370) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:51:30,906) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.146623, valid 0.087834
+[30096:MainThread](2026-07-17 20:51:30,906) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch21:
+[30096:MainThread](2026-07-17 20:51:30,907) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:54:00,977) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:55:10,228) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.146136, valid 0.087393
+[30096:MainThread](2026-07-17 20:55:10,228) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch22:
+[30096:MainThread](2026-07-17 20:55:10,228) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 20:57:40,361) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 20:58:49,784) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.145940, valid 0.084661
+[30096:MainThread](2026-07-17 20:58:49,784) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch23:
+[30096:MainThread](2026-07-17 20:58:49,785) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 21:01:20,001) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 21:02:30,179) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.144508, valid 0.088676
+[30096:MainThread](2026-07-17 21:02:30,179) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch24:
+[30096:MainThread](2026-07-17 21:02:30,180) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 21:05:01,798) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 21:06:11,831) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.148702, valid 0.086202
+[30096:MainThread](2026-07-17 21:06:11,831) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch25:
+[30096:MainThread](2026-07-17 21:06:11,831) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 21:08:42,321) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 21:09:52,713) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.150429, valid 0.087655
+[30096:MainThread](2026-07-17 21:09:52,714) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch26:
+[30096:MainThread](2026-07-17 21:09:52,714) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 21:12:22,996) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 21:13:32,609) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.150772, valid 0.085578
+[30096:MainThread](2026-07-17 21:13:32,609) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch27:
+[30096:MainThread](2026-07-17 21:13:32,609) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 21:16:03,924) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 21:17:13,294) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.152502, valid 0.084680
+[30096:MainThread](2026-07-17 21:17:13,295) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch28:
+[30096:MainThread](2026-07-17 21:17:13,295) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 21:19:42,824) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 21:20:52,328) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.153663, valid 0.081232
+[30096:MainThread](2026-07-17 21:20:52,328) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch29:
+[30096:MainThread](2026-07-17 21:20:52,329) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 21:23:22,537) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 21:24:32,309) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.153423, valid 0.087673
+[30096:MainThread](2026-07-17 21:24:32,310) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch30:
+[30096:MainThread](2026-07-17 21:24:32,310) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 21:27:02,086) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 21:28:11,280) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.152730, valid 0.079760
+[30096:MainThread](2026-07-17 21:28:11,280) INFO - qlib.IGMTF - [pytorch_igmtf.py:298] - Epoch31:
+[30096:MainThread](2026-07-17 21:28:11,281) INFO - qlib.IGMTF - [pytorch_igmtf.py:299] - training...
+[30096:MainThread](2026-07-17 21:30:41,675) INFO - qlib.IGMTF - [pytorch_igmtf.py:302] - evaluating...
+[30096:MainThread](2026-07-17 21:31:51,574) INFO - qlib.IGMTF - [pytorch_igmtf.py:305] - train 0.155335, valid 0.083335
+[30096:MainThread](2026-07-17 21:31:51,575) INFO - qlib.IGMTF - [pytorch_igmtf.py:317] - early stop
+[30096:MainThread](2026-07-17 21:31:51,575) INFO - qlib.IGMTF - [pytorch_igmtf.py:320] - best score: 0.090134 @ 11
+[30096:MainThread](2026-07-17 21:31:51,633) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[30096:MainThread](2026-07-17 21:33:11,494) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 129290841549796392
+[30096:MainThread](2026-07-17 21:33:11,780) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+[30096:MainThread](2026-07-17 21:33:20,108) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[30096:MainThread](2026-07-17 21:33:20,109) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[30096:MainThread](2026-07-17 21:33:20,111) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[30096:MainThread](2026-07-17 21:33:20,111) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[30096:MainThread](2026-07-17 21:33:28,230) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[30096:MainThread](2026-07-17 21:33:28,231) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[30096:MainThread](2026-07-17 21:33:28,236) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x487260e00>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   3%|▎         | 23/871 [00:00<00:03, 225.99it/s]
+backtest loop:   5%|▌         | 47/871 [00:00<00:03, 232.28it/s]
+backtest loop:   8%|▊         | 72/871 [00:00<00:03, 232.29it/s]
+backtest loop:  11%|█▏        | 98/871 [00:00<00:03, 242.34it/s]
+backtest loop:  14%|█▍        | 124/871 [00:00<00:03, 246.86it/s]
+backtest loop:  17%|█▋        | 150/871 [00:00<00:02, 251.09it/s]
+backtest loop:  20%|██        | 177/871 [00:00<00:02, 256.07it/s]
+backtest loop:  23%|██▎       | 204/871 [00:00<00:02, 254.42it/s]
+backtest loop:  27%|██▋       | 231/871 [00:00<00:02, 257.51it/s]
+backtest loop:  30%|██▉       | 258/871 [00:01<00:02, 255.13it/s]
+backtest loop:  33%|███▎      | 284/871 [00:01<00:02, 251.90it/s]
+backtest loop:  36%|███▌      | 311/871 [00:01<00:02, 252.69it/s]
+backtest loop:  39%|███▉      | 338/871 [00:01<00:02, 256.46it/s]
+backtest loop:  42%|████▏     | 364/871 [00:01<00:02, 252.81it/s]
+backtest loop:  45%|████▍     | 390/871 [00:01<00:01, 250.08it/s]
+backtest loop:  48%|████▊     | 416/871 [00:01<00:01, 247.64it/s]
+backtest loop:  51%|█████     | 442/871 [00:01<00:01, 245.69it/s]
+backtest loop:  54%|█████▎    | 467/871 [00:01<00:01, 245.34it/s]
+backtest loop:  56%|█████▋    | 492/871 [00:01<00:01, 244.47it/s]
+backtest loop:  59%|█████▉    | 517/871 [00:02<00:01, 243.67it/s]
+backtest loop:  62%|██████▏   | 542/871 [00:02<00:01, 244.13it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  65%|██████▌   | 568/871 [00:02<00:01, 246.73it/s]
+backtest loop:  68%|██████▊   | 594/871 [00:02<00:01, 250.15it/s]
+backtest loop:  71%|███████   | 620/871 [00:02<00:01, 245.29it/s]
+backtest loop:  74%|███████▍  | 645/871 [00:02<00:00, 244.93it/s]
+backtest loop:  77%|███████▋  | 670/871 [00:02<00:00, 240.47it/s]
+backtest loop:  80%|███████▉  | 695/871 [00:02<00:00, 239.21it/s]
+backtest loop:  83%|████████▎ | 720/871 [00:02<00:00, 242.20it/s]
+backtest loop:  86%|████████▌ | 745/871 [00:03<00:00, 238.25it/s]
+backtest loop:  88%|████████▊ | 770/871 [00:03<00:00, 240.29it/s]
+backtest loop:  91%|█████████▏| 795/871 [00:03<00:00, 241.01it/s]
+backtest loop:  94%|█████████▍| 820/871 [00:03<00:00, 238.13it/s]
+backtest loop:  97%|█████████▋| 845/871 [00:03<00:00, 239.69it/s]
+backtest loop: 100%|█████████▉| 870/871 [00:03<00:00, 241.04it/s]
+backtest loop: 100%|██████████| 871/871 [00:03<00:00, 238.69it/s]
+[30096:MainThread](2026-07-17 21:33:31,911) INFO - qlib.workflow - [record_temp.py:520] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 129290841549796392
+[30096:MainThread](2026-07-17 21:33:31,914) INFO - qlib.workflow - [record_temp.py:545] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 129290841549796392
+[30096:MainThread](2026-07-17 21:33:32,204) INFO - qlib.timer - [log.py:127] - Time cost: 0.001s | waiting `async_log` Done

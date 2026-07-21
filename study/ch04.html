@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据集与处理器 Dataset &amp; Handler · Qlib 学习教程</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>Qlib 教程</h1>
+    <div class="sub">从入门到实战</div>
+    <nav>
+      <a href="index.html"><span class="num">home</span>首页</a>
+      <a href="ch01.html"><span class="num">01</span>简介与架构</a>
+      <a href="ch02.html"><span class="num">02</span>环境与数据</a>
+      <a href="ch03.html"><span class="num">03</span>数据层</a>
+      <a href="ch04.html" class="active"><span class="num">04</span>数据集与处理器</a>
+      <a href="ch05.html"><span class="num">05</span>模型</a>
+      <a href="ch06.html"><span class="num">06</span>策略与回测</a>
+      <a href="ch07.html"><span class="num">07</span>工作流</a>
+      <a href="ch08.html"><span class="num">08</span>综合实战</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <span class="tag">CHAPTER 04</span>
+    <h1>数据集与处理器 Dataset &amp; Handler</h1>
+    <p class="lead">从磁盘上的原始行情，到模型能直接吃进去的干净张量——这中间的「厨房」就是 Handler 与 Dataset。本章带你看清这道桥梁的每一块砖。</p>
+
+    <h2>1. 为什么需要「桥梁」：从菜市场到餐盘</h2>
+    <p>
+      想象你要做一道菜。菜市场里的原料（原始行情数据 <code>$open</code>、<code>$close</code>、<code>$volume</code>）不能直接端上桌：蔬菜要洗、要切、要去掉烂叶，还要按菜谱把它们组合成「菜」（因子/特征）。
+      在 Qlib 里，把「买菜」交给上一章讲的<b>数据层（Data Layer）</b>，而<b>洗切摆盘</b>这一步，就交给本章的两位主角：
+    </p>
+    <ul>
+      <li><b>Handler（数据处理器/数据管家）</b>：负责「加载 → 算因子 → 清洗标准化」，产出一张干净的、带 <code>feature</code> / <code>label</code> 两组列的宽表（DataFrame）。</li>
+      <li><b>Dataset（数据集）</b>：在 Handler 之上，负责按<b>时间段</b>把数据切成 <code>train</code> / <code>valid</code> / <code>test</code>，喂给模型。</li>
+    </ul>
+
+    <div class="diagram"><pre>
+   原始行情            算因子/清洗              按时间切分
+ ┌──────────┐  load  ┌──────────────┐  fetch  ┌───────────────┐
+ │ Data     │ ─────▶ │  DataHandler │ ──────▶ │   DatasetH    │
+ │ Layer    │        │ (feature+    │         │ train/valid/  │ ──▶ Model
+ │ ($close…)│        │  label 宽表) │         │ test 三段     │
+ └──────────┘        └──────────────┘         └───────────────┘
+     菜市场              后厨(洗切摆盘)             分餐盘上桌
+    </pre></div>
+
+    <div class="callout"><span class="t">提示</span>
+      记住这条主线：<b>DataLoader 加载 → DataHandler 处理 → DatasetH 切分</b>。本章聚焦后两步，源码主要在
+      <code>qlib/data/dataset/handler.py</code>、<code>qlib/data/dataset/processor.py</code>、<code>qlib/data/dataset/__init__.py</code>。
+    </div>
+
+    <p>返回的宽表长这样（多级列索引，外层是「组名」feature / label，内层是具体字段），见 <code>qlib/data/dataset/handler.py:89</code> 的文档示例：</p>
+<pre><code>                          feature                              label
+                          $close     $volume  Ref($close,1)   LABEL0
+datetime   instrument
+2010-01-04 SH600000    81.807068  17145150.0   83.737389     0.0032
+           SH600004    13.313329  11800983.0   13.313329     0.0042</code></pre>
+
+    <h2>2. Handler 的三层继承：ABC → DataHandler → DataHandlerLP</h2>
+    <p>翻开 <code>qlib/data/dataset/handler.py</code>，你会看到三层由抽象到具体的类，像「接口 → 通用实现 → 高级实现」：</p>
+
+    <div class="diagram"><pre>
+ DataHandlerABC   只定义 fetch() 接口，不假设内部结构   (handler.py:25)
+        │
+ DataHandler      用一个 DataFrame 实现，含 loader/     (handler.py:67)
+        │         setup_data/fetch/config
+        │
+ DataHandlerLP    LP = Learnable Processor，          (handler.py:382)
+                  维护 3 份数据 + 可学习的处理链
+    </pre></div>
+
+    <ul>
+      <li><b>DataHandlerABC</b>（抽象接口）：只声明一个抽象方法 <code>fetch(selector, level, col_set, data_key)</code>，规定「怎么取数」的契约，不管数据怎么存。</li>
+      <li><b>DataHandler</b>（基础实现）：内部持有一个 <code>self._data</code>（由 DataLoader 加载得到），实现 <code>setup_data()</code> 加载、<code>fetch()</code> 取数、<code>config()</code> 改配置。</li>
+      <li><b>DataHandlerLP</b>（可学习处理器版）：最常用的一层。它在原始数据之上，跑一条「处理链」，同时产出<b>推理用</b>和<b>训练用</b>两份不同的数据。</li>
+    </ul>
+
+    <h3>DK_R / DK_I / DK_L：一份原料，三种成品</h3>
+    <p>DataHandlerLP 会把数据维护成三份（见 <code>handler.py:417-422</code>），用三个「data key」区分：</p>
+    <ul>
+      <li><code>DK_R = "raw"</code> → <code>self._data</code>：DataLoader 直接加载的<b>原始数据</b>。</li>
+      <li><code>DK_I = "infer"</code> → <code>self._infer</code>：经过 <b>infer_processors</b> 处理、给<b>推理/预测</b>用的数据。</li>
+      <li><code>DK_L = "learn"</code> → <code>self._learn</code>：经过 <b>learn_processors</b> 处理、给<b>模型训练</b>用的数据。</li>
+    </ul>
+
+    <div class="callout tip"><span class="t">类比</span>
+      同一批食材：给客人试吃的摆盘（infer，尽量还原真实场景），和厨师练习刀工时的版本（learn，可以扔掉不合格的样本、做更激进的归一化）——原料一样，但目的不同，所以处理方式不同。
+    </div>
+
+    <h2>3. infer_processors vs learn_processors：为什么要分家？</h2>
+    <p>
+      这是初学者最容易困惑的地方。为什么要维护两条处理链？核心原因是<b>「推理时能拿到的信息」和「训练时能利用的信息」不一样</b>，见 <code>handler.py:396-402</code> 的动机说明：
+    </p>
+    <ul>
+      <li><b>learn 阶段</b>可以「作弊」利用 label：比如 <code>DropnaLabel</code> 会把没有标签（未来收益缺失）的样本丢掉——训练时丢掉合理，因为没标签的样本没法算 loss。</li>
+      <li><b>infer 阶段</b>是真实预测场景，此时<b>还不知道未来的 label</b>，所以任何依赖 label 的处理都不能用。</li>
+    </ul>
+    <p>因此 Qlib 用 <code>is_for_infer()</code> 给处理器打标签：像 <code>DropnaLabel</code> 就返回 <code>False</code>（见 <code>processor.py:109</code>），一旦有人把它放进 <code>infer_processors</code>，<code>_run_proc_l</code> 会直接报错（<code>handler.py:534</code>）。</p>
+
+    <h3>两种拼接方式：PTYPE_I 与 PTYPE_A</h3>
+    <p>还有一组 <code>shared_processors</code>（共享处理链），它总是先跑。之后 infer 和 learn 怎么接，由 <code>process_type</code> 决定（<code>handler.py:552-609</code>）：</p>
+    <div class="diagram"><pre>
+PTYPE_I ("independent")  独立：
+  (raw)-[shared]-(shared_df)-[infer]-(infer_df)
+                        \
+                         -[learn]-(learn_df)
+
+PTYPE_A ("append")  追加（Alpha158/360 默认）：
+  (raw)-[shared]-[infer]-(infer_df)-[learn]-(learn_df)
+        learn 建立在 infer 的输出之上，再追加 learn 处理
+    </pre></div>
+    <div class="callout warn"><span class="t">陷阱</span>
+      <code>PTYPE_A</code> 意味着 learn 数据 = infer 数据再经过 learn_processors。所以像标准化这种放在 infer 里的处理，learn 数据也会继承。理解这一点，才能看懂 Alpha158 里 <code>infer_processors</code> 为空、只靠 learn 阶段加 <code>DropnaLabel</code> + label 归一化的设计。
+    </div>
+
+    <h3>关键方法速查（signatures）</h3>
+    <pre><code><span class="cmt"># 加载原始数据；DataHandlerLP 版会额外触发 fit + process_data</span>
+<span class="kw">def</span> <span class="fn">setup_data</span>(self, init_type=IT_FIT_SEQ, **kwargs)   <span class="cmt"># handler.py:633</span>
+
+<span class="cmt"># 统一取数接口；data_key 选 DK_R / DK_I / DK_L</span>
+<span class="kw">def</span> <span class="fn">fetch</span>(self, selector=slice(None,None), level=<span class="str">"datetime"</span>,
+          col_set=CS_ALL, data_key=DK_I, squeeze=False, proc_func=None)  <span class="cmt"># handler.py:673</span>
+
+<span class="cmt"># 改配置(时间范围/instruments)，用于反序列化后换时间段重跑</span>
+<span class="kw">def</span> <span class="fn">config</span>(self, processor_kwargs=None, **kwargs)          <span class="cmt"># handler.py:614</span></code></pre>
+
+    <h2>4. Processor 家族：洗切摆盘的具体工具</h2>
+    <p>处理器都继承自 <code>Processor</code>（<code>processor.py:35</code>），有两个核心方法：</p>
+    <ul>
+      <li><code>fit(df)</code>：<b>学习</b>处理参数（如均值、标准差）。默认空实现，需要参数的处理器才重写。</li>
+      <li><code>__call__(df)</code>：真正<b>应用</b>处理，返回处理后的 DataFrame（注意：可能原地修改！）。</li>
+    </ul>
+    <p>另外两个辅助方法：<code>is_for_infer()</code>（能否用于推理）、<code>readonly()</code>（是否只读，帮 Handler 决定要不要 copy）。常用处理器一览（均来自 <code>processor.py</code>）：</p>
+
+    <table>
+      <thead><tr><th>处理器</th><th>作用</th><th>要 fit?</th><th>行号</th></tr></thead>
+      <tbody>
+        <tr><td><code>Fillna</code></td><td>用固定值（默认 0）填 NaN</td><td>否</td><td>179</td></tr>
+        <tr><td><code>DropnaProcessor</code></td><td>按某组列丢掉含 NaN 的行</td><td>否</td><td>94</td></tr>
+        <tr><td><code>DropnaLabel</code></td><td>专丢 label 为空的样本，<b>仅训练用</b></td><td>否</td><td>105</td></tr>
+        <tr><td><code>ProcessInf</code></td><td>把 ±inf 替换为该列均值</td><td>否</td><td>161</td></tr>
+        <tr><td><code>ZScoreNorm</code></td><td>标准化 (x-mean)/std</td><td><b>是</b></td><td>228</td></tr>
+        <tr><td><code>RobustZScoreNorm</code></td><td>用中位数/MAD 的稳健标准化，可裁剪离群值</td><td><b>是</b></td><td>262</td></tr>
+        <tr><td><code>MinMaxNorm</code></td><td>归一化到 [0,1]</td><td><b>是</b></td><td>196</td></tr>
+        <tr><td><code>CSZScoreNorm</code></td><td>横截面（每日）ZScore</td><td>否</td><td>300</td></tr>
+        <tr><td><code>CSRankNorm</code></td><td>横截面按天排名再归一化</td><td>否</td><td>326</td></tr>
+      </tbody>
+    </table>
+
+    <h3>核心陷阱：fit 只能在训练集上做，避免数据泄露</h3>
+    <p>
+      看 <code>ZScoreNorm</code> 的构造函数（<code>processor.py:231</code>）：它要求传入 <code>fit_start_time</code> 与 <code>fit_end_time</code>。<code>fit()</code> 里会先把数据<b>裁到这段时间</b>再计算均值方差：
+    </p>
+<pre><code><span class="kw">def</span> <span class="fn">fit</span>(self, df=None):
+    df = fetch_df_by_index(df, slice(self.fit_start_time, self.fit_end_time), level=<span class="str">"datetime"</span>)
+    cols = get_group_columns(df, self.fields_group)
+    self.mean_train = np.nanmean(df[cols].values, axis=<span class="str">0</span>)  <span class="cmt"># 只用训练区间算均值</span>
+    self.std_train  = np.nanstd(df[cols].values, axis=<span class="str">0</span>)</code></pre>
+    <div class="callout danger"><span class="t">数据泄露警告</span>
+      如果 <code>fit_end_time</code> 覆盖到了测试集，测试期的均值/方差就「偷看」进了标准化参数——回测会虚高、上线暴雷。源码注释反复强调：<code>fit_end_time</code> <b>绝不能</b>包含任何测试数据的信息（<code>processor.py:232-233</code>）。正确做法：<b>在训练集上 fit，再把同一套参数应用到 valid/test</b>。
+    </div>
+    <p>而 <code>CSRankNorm</code> / <code>CSZScoreNorm</code> 是<b>横截面</b>操作——每天内部对所有股票做排名/标准化（<code>groupby("datetime")</code>），不依赖历史统计量，所以不需要 fit，也就没有泄露风险。</p>
+
+    <h2>5. Alpha158 与 Alpha360：开箱即用的因子集</h2>
+    <p>
+      每次都手写几百个因子太累。Qlib 在 <code>qlib/contrib/data/handler.py</code> 里预置了两个继承自 <code>DataHandlerLP</code> 的现成 Handler：
+    </p>
+    <ul>
+      <li><b>Alpha158</b>（<code>handler.py:98</code>）：约 158 个「加工好的」因子。特征配置 = K 线形态（kbar）+ 部分价格量（OPEN/HIGH/LOW/VWAP）+ 大量滚动统计量（rolling，如均线、波动、动量）。每支股票每天是一行、多列特征——是<b>树模型（LightGBM 等）</b>的常用输入。</li>
+      <li><b>Alpha360</b>（<code>handler.py:48</code>）：360 个「原始」因子 = 过去 60 天的 <code>close/open/high/low/vwap/volume</code>（6 × 60 = 360）。它基本是<b>原始行情的时间窗切片</b>，更适合能自己学特征的<b>深度模型（GRU/LSTM/Transformer）</b>。</li>
+    </ul>
+
+    <div class="callout tip"><span class="t">一句话区分</span>
+      Alpha158 = 「人工特征工程」后的因子（信息密度高，喂树模型）；Alpha360 = 「原始 60 天历史」的滑窗（让神经网络自己提特征）。
+    </div>
+
+    <p>看它们的默认处理链设计（<code>handler.py:37-45</code>），能把前面所有概念串起来：</p>
+<pre><code><span class="cmt"># Alpha360 的默认 infer 处理：先处理 inf → 标准化 → 填 NaN</span>
+_DEFAULT_INFER_PROCESSORS = [
+    {<span class="str">"class"</span>: <span class="str">"ProcessInf"</span>}, {<span class="str">"class"</span>: <span class="str">"ZScoreNorm"</span>}, {<span class="str">"class"</span>: <span class="str">"Fillna"</span>},
+]
+<span class="cmt"># learn 处理：丢掉无标签样本 + 对 label 做横截面 ZScore（仅训练用）</span>
+_DEFAULT_LEARN_PROCESSORS = [
+    {<span class="str">"class"</span>: <span class="str">"DropnaLabel"</span>},
+    {<span class="str">"class"</span>: <span class="str">"CSZScoreNorm"</span>, <span class="str">"kwargs"</span>: {<span class="str">"fields_group"</span>: <span class="str">"label"</span>}},
+]</code></pre>
+    <p>注意 Alpha158 默认 <code>infer_processors=[]</code>、<code>process_type=PTYPE_A</code>（<code>handler.py:105-109</code>），把标准化交给 config 里传入的处理器。而 <code>check_transform_proc</code>（<code>handler.py:12</code>）会自动把 <code>fit_start_time/fit_end_time</code> 注入到需要它们的处理器中——这正是前面「只在训练集 fit」的落地机制。</p>
+
+    <h2>6. DatasetH：把 Handler 与时间段组合起来</h2>
+    <p>
+      <code>DatasetH</code>（<code>qlib/data/dataset/__init__.py:72</code>）= <b>Dataset with (H)andler</b>。它只做两件事：持有一个 handler，加一个 <code>segments</code> 时间切分字典。
+    </p>
+<pre><code><span class="kw">def</span> <span class="fn">__init__</span>(self, handler, segments, fetch_kwargs={}, **kwargs):
+    self.handler  = init_instance_by_config(handler, accept_types=DataHandler)
+    self.segments = segments.copy()   <span class="cmt"># 如 {"train": (...), "valid": (...), "test": (...)}</span></code></pre>
+
+    <div class="callout warn"><span class="t">别搞混</span>
+      <b>segments（train/valid/test）</b>是<b>时间维度</b>的切分；<b>DK_I/DK_L</b>是<b>处理方式</b>的切分。两者正交！你完全可以「取 train 时间段、但用 infer 处理链（DK_I）」。源码注释专门澄清了这点（<code>handler.py:410-414</code>）。
+    </div>
+
+    <h3>prepare(...)：取出可用于建模的数据</h3>
+    <p>模型通过 <code>dataset.prepare(...)</code> 拿数据（<code>__init__.py:185</code>）。签名与真实用法：</p>
+<pre><code><span class="kw">def</span> <span class="fn">prepare</span>(self, segments, col_set=CS_ALL, data_key=DK_I, **kwargs)
+
+<span class="cmt"># 取训练集：feature+label 两组列，用 learn 处理链（含 DropnaLabel）</span>
+df_train = dataset.<span class="fn">prepare</span>(<span class="str">"train"</span>, col_set=[<span class="str">"feature"</span>, <span class="str">"label"</span>], data_key=DataHandlerLP.DK_L)
+<span class="cmt"># 取测试集：用 infer 处理链（不丢样本，还原真实推理）</span>
+df_test  = dataset.<span class="fn">prepare</span>(<span class="str">"test"</span>,  col_set=[<span class="str">"feature"</span>, <span class="str">"label"</span>], data_key=DataHandlerLP.DK_I)
+<span class="cmt"># 一次取多段</span>
+df_tr, df_va = dataset.<span class="fn">prepare</span>([<span class="str">"train"</span>, <span class="str">"valid"</span>])</code></pre>
+    <p>
+      这段用法正是 <code>qlib/model/base.py</code> 的 <code>Model.fit</code> 文档字符串里给出的范式：训练用 <code>DK_L</code>、预测用 <code>DK_I</code>。内部 <code>prepare</code> 会把段名映射成时间 slice，再调用 <code>handler.fetch(slc, col_set=..., data_key=...)</code>（<code>__init__.py:229-247</code>）。<code>X = df["feature"]</code>、<code>y = df["label"]</code> 即可拆出特征与标签。
+    </p>
+
+    <h3>用 init_instance_by_config 构造 Alpha158 DatasetH</h3>
+    <p>实战中几乎不手写 Python 构造，而是写 YAML 交给 <code>init_instance_by_config</code>（第 3 章讲过）。下面片段摘自 <code>examples/benchmarks/LightGBM/workflow_config_lightgbm_Alpha158.yaml</code>：</p>
+<pre><code>data_handler_config: &amp;dh_cfg
+    start_time: 2008-01-01
+    end_time: 2020-08-01
+    fit_start_time: 2008-01-01      <span class="cmt"># 只在这段上 fit 处理器！</span>
+    fit_end_time: 2014-12-31        <span class="cmt"># 不能越过 test 起点</span>
+    instruments: csi300
+
+dataset:
+    class: DatasetH
+    module_path: qlib.data.dataset
+    kwargs:
+        handler:
+            class: Alpha158
+            module_path: qlib.contrib.data.handler
+            kwargs: *dh_cfg
+        segments:
+            train: [2008-01-01, 2014-12-31]
+            valid: [2015-01-01, 2016-12-31]
+            test:  [2017-01-01, 2020-08-01]</code></pre>
+    <p>等价的 Python 手动构造（便于在 notebook 里调试）：</p>
+<pre><code><span class="kw">from</span> qlib.utils <span class="kw">import</span> init_instance_by_config
+ds = init_instance_by_config({
+    <span class="str">"class"</span>: <span class="str">"DatasetH"</span>, <span class="str">"module_path"</span>: <span class="str">"qlib.data.dataset"</span>,
+    <span class="str">"kwargs"</span>: {
+        <span class="str">"handler"</span>: {<span class="str">"class"</span>: <span class="str">"Alpha158"</span>,
+                    <span class="str">"module_path"</span>: <span class="str">"qlib.contrib.data.handler"</span>,
+                    <span class="str">"kwargs"</span>: {<span class="str">"instruments"</span>: <span class="str">"csi300"</span>,
+                               <span class="str">"start_time"</span>: <span class="str">"2008-01-01"</span>, <span class="str">"end_time"</span>: <span class="str">"2020-08-01"</span>,
+                               <span class="str">"fit_start_time"</span>: <span class="str">"2008-01-01"</span>, <span class="str">"fit_end_time"</span>: <span class="str">"2014-12-31"</span>}},
+        <span class="str">"segments"</span>: {<span class="str">"train"</span>: (<span class="str">"2008-01-01"</span>, <span class="str">"2014-12-31"</span>),
+                     <span class="str">"valid"</span>: (<span class="str">"2015-01-01"</span>, <span class="str">"2016-12-31"</span>),
+                     <span class="str">"test"</span>:  (<span class="str">"2017-01-01"</span>, <span class="str">"2020-08-01"</span>)},
+    }})
+df = ds.<span class="fn">prepare</span>(<span class="str">"train"</span>, col_set=[<span class="str">"feature"</span>, <span class="str">"label"</span>], data_key=<span class="str">"learn"</span>)</code></pre>
+
+    <div class="exercises">
+      <h2>📝 课后练习题</h2>
+
+      <div class="q"><b>1.（概念）DataHandlerLP 维护的 DK_R / DK_I / DK_L 三份数据分别是什么？谁给谁当输入？</b>
+        <details><summary>参考答案</summary><div class="a">
+          DK_R (raw, <code>self._data</code>) 是 DataLoader 加载的原始数据；DK_I (infer, <code>self._infer</code>) 是经 infer_processors 处理、供推理用；DK_L (learn, <code>self._learn</code>) 经 learn_processors 处理、供训练用。三者都先经 shared_processors。默认 <code>PTYPE_A</code> 下，learn 数据建立在 infer 输出之上再追加 learn 处理；<code>PTYPE_I</code> 下两条链各自独立从 shared 输出分叉。
+        </div></details>
+      </div>
+
+      <div class="q"><b>2.（概念）为什么 <code>DropnaLabel</code> 只能放进 learn_processors，不能放 infer_processors？</b>
+        <details><summary>参考答案</summary><div class="a">
+          它按 label 是否为空来丢样本。推理（infer）是真实预测场景，此时未来 label 未知，依赖 label 的处理不合法且会丢掉本该预测的样本。源码里 <code>DropnaLabel.is_for_infer()</code> 返回 <code>False</code>（processor.py:109），<code>_run_proc_l</code> 在处理 infer 链时用 <code>check_for_infer=True</code> 检查，遇到它会抛 TypeError（handler.py:534）。
+        </div></details>
+      </div>
+
+      <div class="q"><b>3.（改错）某同学把 ZScoreNorm 配成 <code>fit_start_time=2008-01-01, fit_end_time=2020-08-01</code>，而 test 段是 2017-2020。问题在哪？怎么改？</b>
+        <details><summary>参考答案</summary><div class="a">
+          <b>数据泄露</b>：<code>fit_end_time</code> 覆盖到了 test 区间，标准化用的均值/方差偷看了测试期数据，导致回测虚高、实盘失效。应把 <code>fit_end_time</code> 限制到 train 段末尾（如 2014-12-31），保证只在训练集上 fit，再把同一套参数应用到 valid/test。见 processor.py:232-233 的警告。
+        </div></details>
+      </div>
+
+      <div class="q"><b>4.（概念）Alpha158 与 Alpha360 的本质区别是什么？各自更适合哪类模型？</b>
+        <details><summary>参考答案</summary><div class="a">
+          Alpha158 是人工特征工程后的约 158 个因子（kbar 形态 + 价格 + 大量 rolling 统计量），信息密度高，适合 LightGBM 等树模型；Alpha360 是过去 60 天 × 6 个价量字段 = 360 个「原始滑窗」特征，几乎是原始行情，适合能自动提特征的深度模型（GRU/LSTM/Transformer）。见 contrib/data/handler.py。
+        </div></details>
+      </div>
+
+      <div class="q"><b>5.（填空）补全取训练/测试数据的调用，使其符合「训练用 learn 链、测试用 infer 链」的规范：<br>
+        <code>tr = ds.prepare("train", col_set=["feature","label"], data_key=____)</code><br>
+        <code>te = ds.prepare("test",  col_set=["feature","label"], data_key=____)</code></b>
+        <details><summary>参考答案</summary><div class="a">
+          训练用 <code>DataHandlerLP.DK_L</code>（即 <code>"learn"</code>），测试用 <code>DataHandlerLP.DK_I</code>（即 <code>"infer"</code>）。prepare 默认 <code>data_key=DK_I</code>，所以测试那行不写也行；但训练必须显式指定 DK_L，否则拿不到 DropnaLabel/label 归一化后的训练数据。
+        </div></details>
+      </div>
+
+      <div class="q"><b>6.（思考）segments 的 "train/valid/test" 和 data_key 的 DK_I/DK_L 是同一个维度的切分吗？举例说明二者可以自由组合。</b>
+        <details><summary>参考答案</summary><div class="a">
+          不是。segments 是<b>时间维度</b>切分（哪段日期），data_key 是<b>处理方式</b>切分（跑哪条处理链）。二者正交，可任意组合：例如 <code>prepare("train", data_key=DK_I)</code> 表示「取训练时间段、但用推理处理链」，常用于观察训练期在推理设定下的表现。源码 handler.py:410-414 专门澄清这两个概念不同。
+        </div></details>
+      </div>
+    </div>
+
+    <h2>📎 附录：Alpha158 与 Alpha360 因子全表</h2>
+    <p>下面逐一列出两套因子集里每个因子的<b>名称、qlib 表达式、含义与计算方法</b>。表达式全部摘自源码 <code>qlib/contrib/data/loader.py</code>（<code>Alpha158DL</code> / <code>Alpha360DL</code>），可对照阅读。</p>
+
+    <div class="callout"><span class="t">先记住几条通用约定</span>
+      <ul>
+        <li><code>$open/$high/$low/$close/$volume/$vwap</code> 是原始行情字段（开/高/低/收/成交量/成交均价）。</li>
+        <li><code>Ref($x, d)</code>：<b>d 天前</b>的 <code>$x</code>（d&gt;0 回看历史；d&lt;0 看未来，仅用于 label）。</li>
+        <li><b>大量因子都除以 <code>$close</code>（或 <code>$volume</code>）做归一化</b>——目的是<b>去掉量纲</b>，让不同价位的股票可比。所以「均线 MA5」在 qlib 里是 <code>Mean($close,5)/$close</code> 而非绝对均价。</li>
+        <li><code>+1e-12</code> 是防止分母为零的保护项，无实际含义。</li>
+        <li>滚动窗口默认取 <b>d ∈ {5, 10, 20, 30, 60}</b>（约一周~一季度）。</li>
+      </ul>
+    </div>
+
+    <h3>一、Alpha158（约 158 个「加工好」的因子）</h3>
+    <p>Alpha158 默认配置（<code>handler.py:140-149</code>）= <b>9 个 K 线形态</b> + <b>4 个当日价格</b> + <b>29 类 × 5 窗口 = 145 个滚动统计量</b>，合计 158。它信息密度高，是 <b>LightGBM 等树模型</b>的常用输入。</p>
+
+    <h4>1. K 线形态因子（kbar，9 个）——刻画单根 K 线的形状</h4>
+    <table>
+      <tr><th>名称</th><th>表达式</th><th>含义 / 计算</th></tr>
+      <tr><td><code>KMID</code></td><td><code>($close-$open)/$open</code></td><td>实体涨跌幅：收盘相对开盘的涨跌，衡量当日多空强弱。</td></tr>
+      <tr><td><code>KLEN</code></td><td><code>($high-$low)/$open</code></td><td>K 线全长（振幅）：最高最低之差占开盘价的比例，衡量当日波动幅度。</td></tr>
+      <tr><td><code>KMID2</code></td><td><code>($close-$open)/($high-$low+1e-12)</code></td><td>实体占振幅的比例：实体在整根 K 线里占多大，接近 ±1 表示单边、接近 0 表示上下影线长。</td></tr>
+      <tr><td><code>KUP</code></td><td><code>($high-Greater($open,$close))/$open</code></td><td>上影线长度 / 开盘价：<code>Greater(a,b)</code> 取较大者，即实体顶端到最高价的距离，反映上方抛压。</td></tr>
+      <tr><td><code>KUP2</code></td><td><code>($high-Greater($open,$close))/($high-$low+1e-12)</code></td><td>上影线占振幅的比例。</td></tr>
+      <tr><td><code>KLOW</code></td><td><code>(Less($open,$close)-$low)/$open</code></td><td>下影线长度 / 开盘价：<code>Less(a,b)</code> 取较小者，即实体底端到最低价的距离，反映下方承接。</td></tr>
+      <tr><td><code>KLOW2</code></td><td><code>(Less($open,$close)-$low)/($high-$low+1e-12)</code></td><td>下影线占振幅的比例。</td></tr>
+      <tr><td><code>KSFT</code></td><td><code>(2*$close-$high-$low)/$open</code></td><td>收盘在当日区间中的位置偏移 / 开盘价：收盘越靠近最高价该值越大，衡量收盘强度。</td></tr>
+      <tr><td><code>KSFT2</code></td><td><code>(2*$close-$high-$low)/($high-$low+1e-12)</code></td><td>收盘位置偏移占振幅的比例（标准化到 [-1,1] 附近）。</td></tr>
+    </table>
+
+    <h4>2. 当日价格因子（price，4 个）——归一化后的当日价</h4>
+    <p>默认只取当日（window=0）的 OPEN/HIGH/LOW/VWAP，都除以 <code>$close</code> 归一化（当日 close 归一后恒为 1，故不单列 CLOSE0）。</p>
+    <table>
+      <tr><th>名称</th><th>表达式</th><th>含义 / 计算</th></tr>
+      <tr><td><code>OPEN0</code></td><td><code>$open/$close</code></td><td>当日开盘价 / 收盘价，反映开盘相对收盘的高低。</td></tr>
+      <tr><td><code>HIGH0</code></td><td><code>$high/$close</code></td><td>当日最高价 / 收盘价。</td></tr>
+      <tr><td><code>LOW0</code></td><td><code>$low/$close</code></td><td>当日最低价 / 收盘价。</td></tr>
+      <tr><td><code>VWAP0</code></td><td><code>$vwap/$close</code></td><td>当日成交量加权均价 / 收盘价，反映收盘价在全天成交重心之上还是之下。</td></tr>
+    </table>
+
+    <h4>3. 滚动统计量因子（rolling，29 类 × 5 窗口 = 145 个）</h4>
+    <p>下表每一类都会在 <b>d ∈ {5,10,20,30,60}</b> 上各生成一个因子（如 <code>MA5, MA10, MA20, MA30, MA60</code>）。表达式中的 <code>d</code> 代表窗口天数。</p>
+    <table>
+      <tr><th>名称</th><th>表达式（以窗口 d 为例）</th><th>含义 / 计算</th></tr>
+      <tr><td><code>ROC{d}</code></td><td><code>Ref($close,d)/$close</code></td><td>变动率（Rate of Change）：d 天前收盘价与今日之比，反映 d 日动量/涨跌。</td></tr>
+      <tr><td><code>MA{d}</code></td><td><code>Mean($close,d)/$close</code></td><td>简单移动均线：过去 d 日收盘均价，归一化。&lt;1 表示今日价高于均线（偏强）。</td></tr>
+      <tr><td><code>STD{d}</code></td><td><code>Std($close,d)/$close</code></td><td>过去 d 日收盘价标准差，归一化——衡量近期波动率。</td></tr>
+      <tr><td><code>BETA{d}</code></td><td><code>Slope($close,d)/$close</code></td><td>过去 d 日收盘价对时间做线性回归的斜率，归一化——价格趋势的陡峭程度。</td></tr>
+      <tr><td><code>RSQR{d}</code></td><td><code>Rsquare($close,d)</code></td><td>上述线性回归的 R²，衡量趋势的「直线程度」（越接近 1 越像一条直线）。</td></tr>
+      <tr><td><code>RESI{d}</code></td><td><code>Resi($close,d)/$close</code></td><td>线性回归残差，归一化——价格偏离趋势线的程度。</td></tr>
+      <tr><td><code>MAX{d}</code></td><td><code>Max($high,d)/$close</code></td><td>过去 d 日最高价，归一化——上方阻力位。</td></tr>
+      <tr><td><code>MIN{d}</code></td><td><code>Min($low,d)/$close</code></td><td>过去 d 日最低价，归一化——下方支撑位。</td></tr>
+      <tr><td><code>QTLU{d}</code></td><td><code>Quantile($close,d,0.8)/$close</code></td><td>过去 d 日收盘价的 80% 分位数，归一化——偏高价位水平。</td></tr>
+      <tr><td><code>QTLD{d}</code></td><td><code>Quantile($close,d,0.2)/$close</code></td><td>过去 d 日收盘价的 20% 分位数，归一化——偏低价位水平。</td></tr>
+      <tr><td><code>RANK{d}</code></td><td><code>Rank($close,d)</code></td><td>今日收盘价在过去 d 日中的百分位排名，反映当前价格处于近期高位还是低位。</td></tr>
+      <tr><td><code>RSV{d}</code></td><td><code>($close-Min($low,d))/(Max($high,d)-Min($low,d)+1e-12)</code></td><td>未成熟随机值（KDJ 的 RSV）：收盘价在过去 d 日高低区间中的相对位置，0~1。</td></tr>
+      <tr><td><code>IMAX{d}</code></td><td><code>IdxMax($high,d)/d</code></td><td>距上一次最高价出现过了几天（占 d 的比例）——Aroon 指标组件，衡量创新高的近期程度。</td></tr>
+      <tr><td><code>IMIN{d}</code></td><td><code>IdxMin($low,d)/d</code></td><td>距上一次最低价出现过了几天（占 d 的比例）——Aroon 指标组件。</td></tr>
+      <tr><td><code>IMXD{d}</code></td><td><code>(IdxMax($high,d)-IdxMin($low,d))/d</code></td><td>最高价日与最低价日的时间差（占 d 的比例），正值大暗示近期先高后低（下行动量）。</td></tr>
+      <tr><td><code>CORR{d}</code></td><td><code>Corr($close, Log($volume+1), d)</code></td><td>过去 d 日「收盘价」与「对数成交量」的相关系数——量价配合度（价涨量增为正相关）。</td></tr>
+      <tr><td><code>CORD{d}</code></td><td><code>Corr($close/Ref($close,1), Log($volume/Ref($volume,1)+1), d)</code></td><td>过去 d 日「价格变动率」与「成交量变动率」的相关系数——量价变化的同步性。</td></tr>
+      <tr><td><code>CNTP{d}</code></td><td><code>Mean($close&gt;Ref($close,1), d)</code></td><td>过去 d 日中上涨天数的占比（涨的比例）。</td></tr>
+      <tr><td><code>CNTN{d}</code></td><td><code>Mean($close&lt;Ref($close,1), d)</code></td><td>过去 d 日中下跌天数的占比。</td></tr>
+      <tr><td><code>CNTD{d}</code></td><td><code>CNTP{d} - CNTN{d}</code></td><td>上涨天数占比减下跌天数占比——净上涨倾向。</td></tr>
+      <tr><td><code>SUMP{d}</code></td><td><code>Sum(Greater($close-Ref($close,1),0),d)/(Sum(Abs($close-Ref($close,1)),d)+1e-12)</code></td><td>过去 d 日「总涨幅 / 总绝对涨跌幅」——类似 RSI，衡量上涨力度占比。</td></tr>
+      <tr><td><code>SUMN{d}</code></td><td><code>Sum(Greater(Ref($close,1)-$close,0),d)/(Sum(Abs($close-Ref($close,1)),d)+1e-12)</code></td><td>过去 d 日「总跌幅 / 总绝对涨跌幅」，理论上 SUMN = 1 - SUMP。</td></tr>
+      <tr><td><code>SUMD{d}</code></td><td><code>(总涨幅 - 总跌幅)/(总绝对涨跌幅+1e-12)</code></td><td>涨跌力度之差的比值（SUMP - SUMN），近似 RSI 的方向强度。</td></tr>
+      <tr><td><code>VMA{d}</code></td><td><code>Mean($volume,d)/($volume+1e-12)</code></td><td>成交量移动均线：过去 d 日均量 / 今日量，&gt;1 表示今日缩量。</td></tr>
+      <tr><td><code>VSTD{d}</code></td><td><code>Std($volume,d)/($volume+1e-12)</code></td><td>过去 d 日成交量标准差，归一化——量能波动性。</td></tr>
+      <tr><td><code>WVMA{d}</code></td><td><code>Std(Abs($close/Ref($close,1)-1)*$volume,d)/(Mean(同前,d)+1e-12)</code></td><td>成交量加权的价格波动率：以「涨跌幅×成交量」的变异系数衡量放量波动。</td></tr>
+      <tr><td><code>VSUMP{d}</code></td><td><code>Sum(Greater($volume-Ref($volume,1),0),d)/(Sum(Abs($volume-Ref($volume,1)),d)+1e-12)</code></td><td>过去 d 日「总放量 / 总绝对变量」——成交量版的 SUMP。</td></tr>
+      <tr><td><code>VSUMN{d}</code></td><td><code>Sum(Greater(Ref($volume,1)-$volume,0),d)/(...+1e-12)</code></td><td>过去 d 日「总缩量 / 总绝对变量」，VSUMN = 1 - VSUMP。</td></tr>
+      <tr><td><code>VSUMD{d}</code></td><td><code>(总放量 - 总缩量)/(总绝对变量+1e-12)</code></td><td>放量与缩量之差的比值——成交量版 RSI 方向强度。</td></tr>
+    </table>
+    <div class="callout tip"><span class="t">数一数</span>29 类 × 5 窗口 = 145，加上 9 个 kbar + 4 个 price = <b>158</b>，因子集因此得名。你也可以在 handler config 里通过 <code>rolling.include/exclude</code> 只启用部分算子，因子数量随之变化。</div>
+
+    <h3>二、Alpha360（360 个「原始行情」因子）</h3>
+    <p>Alpha360 的哲学与 Alpha158 相反：<b>不做人工特征工程</b>，而是把<b>过去 60 天的 6 类价量原始序列</b>摊平成 360 列，交给模型（尤其是 GRU/LSTM/Transformer 等<b>时序深度模型</b>）自己提取特征。</p>
+    <p>6 类字段 × 60 天 = 360。每类都<b>除以当日 <code>$close</code>（成交量除以当日 <code>$volume</code>）归一化</b>：所以当日值恒为 1（<code>CLOSE0=1, VOLUME0=1</code>），越往前的天数是相对今日的比值。命名里的数字是「几天前」——<code>CLOSE59</code> 是 59 天前，<code>CLOSE0</code> 是今天。</p>
+    <table>
+      <tr><th>字段族</th><th>列名范围</th><th>表达式（第 i 天前，i=1..59；i=0 为当日）</th><th>含义 / 计算</th></tr>
+      <tr><td>收盘价</td><td><code>CLOSE0 … CLOSE59</code></td><td><code>Ref($close,i)/$close</code>（当日 <code>$close/$close</code>=1）</td><td>过去 60 日收盘价序列，相对今日收盘归一化。反映价格走势形态。</td></tr>
+      <tr><td>开盘价</td><td><code>OPEN0 … OPEN59</code></td><td><code>Ref($open,i)/$close</code></td><td>过去 60 日开盘价序列 / 今日收盘价。</td></tr>
+      <tr><td>最高价</td><td><code>HIGH0 … HIGH59</code></td><td><code>Ref($high,i)/$close</code></td><td>过去 60 日最高价序列 / 今日收盘价。</td></tr>
+      <tr><td>最低价</td><td><code>LOW0 … LOW59</code></td><td><code>Ref($low,i)/$close</code></td><td>过去 60 日最低价序列 / 今日收盘价。</td></tr>
+      <tr><td>成交均价</td><td><code>VWAP0 … VWAP59</code></td><td><code>Ref($vwap,i)/$close</code></td><td>过去 60 日成交量加权均价序列 / 今日收盘价。</td></tr>
+      <tr><td>成交量</td><td><code>VOLUME0 … VOLUME59</code></td><td><code>Ref($volume,i)/($volume+1e-12)</code></td><td>过去 60 日成交量序列 / 今日成交量。反映量能变化形态。</td></tr>
+    </table>
+    <div class="callout warn"><span class="t">为什么 Alpha360 更适合深度模型</span>它给的是<b>近乎原始的时间序列</b>，没有替你算好均线、RSI 这些「答案」。树模型难以从裸序列里自动发现时序模式，而 RNN/Transformer 天生擅长；反过来，把 Alpha360 喂给 LightGBM 通常不如 Alpha158。这就是「特征工程 vs 表示学习」的取舍。</div>
+
+    <h3>三、两套因子集的标签（label）</h3>
+    <p>因子是「输入 X」，标签是「要预测的 Y」。两套默认标签相同（<code>handler.py:89 / 151</code>）：</p>
+    <table>
+      <tr><th>名称</th><th>表达式</th><th>含义</th></tr>
+      <tr><td><code>LABEL0</code></td><td><code>Ref($close,-2)/Ref($close,-1) - 1</code></td><td><b>次日到后日的收益率</b>：<code>-1</code>=明天、<code>-2</code>=后天。即「明天按收盘买入、后天按收盘卖出」的收益。用未来价格（负 Ref）构造，仅出现在训练标签里，绝不会进入特征，因此不构成未来函数。</td></tr>
+    </table>
+    <div class="callout"><span class="t">变体</span><code>Alpha158vwap</code> / <code>Alpha360vwap</code> 把标签换成用 <code>$vwap</code> 计算（<code>Ref($vwap,-2)/Ref($vwap,-1)-1</code>），更贴近「均价成交」的现实假设。</div>
+
+    <div class="pager">
+      <a class="prev" href="ch03.html"><span class="lbl">← 上一章</span><span class="ttl">数据层 Data Layer</span></a>
+      <a class="next" href="ch05.html"><span class="lbl">下一章 →</span><span class="ttl">模型 Model</span></a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

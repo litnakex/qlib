@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>综合实战：端到端跑通一个量化流程 · Qlib 学习教程</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>Qlib 教程</h1>
+    <div class="sub">从入门到实战</div>
+    <nav>
+      <a href="index.html"><span class="num">home</span>首页</a>
+      <a href="ch01.html"><span class="num">01</span>简介与架构</a>
+      <a href="ch02.html"><span class="num">02</span>环境与数据</a>
+      <a href="ch03.html"><span class="num">03</span>数据层</a>
+      <a href="ch04.html"><span class="num">04</span>数据集与处理器</a>
+      <a href="ch05.html"><span class="num">05</span>模型</a>
+      <a href="ch06.html"><span class="num">06</span>策略与回测</a>
+      <a href="ch07.html"><span class="num">07</span>工作流</a>
+      <a href="ch08.html" class="active"><span class="num">08</span>综合实战</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <span class="tag">CHAPTER 08</span>
+    <h1>综合实战：端到端跑通一个量化流程</h1>
+    <p class="lead">前七章我们把 Qlib 拆成了一个个零件：数据、处理器、模型、策略、回测、工作流。这一章把它们重新拼成一台完整的机器——从零数据到一份带收益曲线的实验报告，走完整整一圈。</p>
+
+    <h2>1. 先看全景：一次完整流程长什么样</h2>
+    <p>想象你要开一家餐厅。前七章你分别学会了「进货（数据层）」「洗菜切配（处理器）」「厨师（模型）」「上菜顺序（策略）」「模拟营业算账（回测）」「记账本（工作流）」。现在，是时候把它们串成一条从食材到账单的完整流水线了。</p>
+    <div class="diagram"><pre>
+  下载数据        构建模型/数据集       训练         预测&amp;分析          回测          看报告
+ ┌────────┐     ┌──────────────┐   ┌───────┐   ┌────────────┐   ┌──────────┐   ┌────────┐
+ │GetData │ ──▶ │init_instance │──▶│ model │──▶│SignalRecord│──▶│PortAna   │──▶│ mlruns │
+ │qlib_data│    │ _by_config   │   │ .fit  │   │SigAnaRecord│   │Record    │   │ 结果   │
+ └────────┘     └──────────────┘   └───────┘   └────────────┘   └──────────┘   └────────┘
+   第2章           第4/5章           第5章        第4/7章           第6章          第7章
+    </pre></div>
+    <p>Qlib 提供两条等价的路径来走完这条流水线：</p>
+    <ul>
+      <li><b>路径 A（配置驱动 / qrun）</b>：把整条流水线写进一个 YAML 文件，一行命令跑完。适合复现基准、批量实验。</li>
+      <li><b>路径 B（代码驱动 / Python）</b>：用 Python 一步步搭积木，每一步都看得见、改得动。适合调试、二次开发、理解内部机制。</li>
+    </ul>
+    <div class="callout tip"><span class="t">提示</span>两条路径底层调用完全相同的组件，产出的结果也一致。官方脚本 <code>examples/workflow_by_code.py:8</code> 的注释就明确写着：这个脚本「nearly does the same thing as <code>qrun XXX.yaml</code>」。</div>
+
+    <h2>2. 路径 A：配置驱动，一行命令跑完</h2>
+    <p>这是最快的上手方式。三步走：装环境 → 下数据 → 跑配置。</p>
+
+    <h3>第一步：确保数据到位</h3>
+    <pre><code><span class="cmt"># 安装 qlib（若还没装，编译型 Cython 算子会一并构建）</span>
+pip install pyqlib
+
+<span class="cmt"># 下载中国 A 股日频数据到默认目录 ~/.qlib/qlib_data/cn_data</span>
+python -m qlib.run.get_data qlib_data \
+    --target_dir ~/.qlib/qlib_data/cn_data \
+    --region cn</code></pre>
+
+    <h3>第二步：用 qrun 跑 LightGBM + Alpha158 基准</h3>
+    <p><code>qrun</code> 是 Qlib 自带的命令行入口，参数就是一个 YAML 配置文件的路径：</p>
+    <pre><code><span class="cmt"># 进入仓库目录后执行</span>
+cd examples
+qrun benchmarks/LightGBM/workflow_config_lightgbm_Alpha158.yaml</code></pre>
+    <p>这个 YAML（见 <code>examples/benchmarks/LightGBM/workflow_config_lightgbm_Alpha158.yaml</code>）里其实就藏着整条流水线。拆开看，它的顶层字段和前面章节一一对应：</p>
+    <pre><code><span class="kw">qlib_init</span>:                <span class="cmt"># 第2章：初始化，指定数据目录和地区</span>
+    provider_uri: <span class="str">"~/.qlib/qlib_data/cn_data"</span>
+    region: cn
+market: &amp;market csi300     <span class="cmt"># 股票池：沪深300</span>
+benchmark: &amp;benchmark SH000300  <span class="cmt"># 业绩基准：沪深300指数</span>
+task:
+    model:                 <span class="cmt"># 第5章：模型 = LightGBM (LGBModel)</span>
+        class: LGBModel
+        module_path: qlib.contrib.model.gbdt
+    dataset:               <span class="cmt"># 第4章：DatasetH + Alpha158 处理器</span>
+        class: DatasetH
+        kwargs:
+            handler:
+                class: Alpha158
+            segments:      <span class="cmt"># 训练/验证/测试三段时间切分</span>
+                train: [2008-01-01, 2014-12-31]
+                valid: [2015-01-01, 2016-12-31]
+                test:  [2017-01-01, 2020-08-01]
+    record:                <span class="cmt"># 第7章：三个 Record 依次生成信号、分析、回测</span>
+        - class: SignalRecord
+        - class: SigAnaRecord
+        - class: PortAnaRecord</code></pre>
+    <div class="callout tip"><span class="t">提示</span>YAML 里的 <code>&amp;market</code> / <code>*market</code> 是 YAML 的锚点语法（anchor / alias），意思是「定义一次、多处引用」，避免重复写 <code>csi300</code>。</div>
+
+    <h3>第三步：查看结果</h3>
+    <p>跑完后，所有产物被记录进当前目录下的 <code>mlruns/</code> 文件夹（这正是第 7 章讲的 MLflow 后端）。启动 UI 浏览：</p>
+    <pre><code>mlflow ui   <span class="cmt"># 默认在 http://127.0.0.1:5000 打开</span></code></pre>
+    <p>你会在其中看到实验名、参数、IC/ICIR 等指标，以及回测生成的收益曲线图片和 <code>.pkl</code> 结果文件。</p>
+
+    <h2>3. 路径 B：代码驱动，逐段拆解 workflow_by_code.py</h2>
+    <p>YAML 太「黑箱」？我们把官方脚本 <code>examples/workflow_by_code.py</code> 一段段拆开，你会发现每一步都对应前面某一章的知识点——这就是本教程的「知识回环」。</p>
+
+    <h3>3.1 初始化：init（对应第 2 章）</h3>
+    <pre><code><span class="kw">import</span> qlib
+<span class="kw">from</span> qlib.constant <span class="kw">import</span> REG_CN
+<span class="kw">from</span> qlib.tests.data <span class="kw">import</span> GetData
+
+provider_uri = <span class="str">"~/.qlib/qlib_data/cn_data"</span>
+GetData().qlib_data(target_dir=provider_uri, region=REG_CN, exists_skip=<span class="kw">True</span>)
+qlib.init(provider_uri=provider_uri, region=REG_CN)</code></pre>
+    <p><code>GetData().qlib_data(...)</code> 若数据已存在会跳过下载（<code>exists_skip=True</code>）。<code>qlib.init</code> 是使用 Qlib 前的<b>必做</b>步骤：它告诉 Qlib 去哪读数据、按哪个市场的交易规则运行（<code>REG_CN</code> = 中国 A 股）。</p>
+
+    <h3>3.2 搭积木：init_instance_by_config（对应第 4、5 章）</h3>
+    <pre><code><span class="kw">from</span> qlib.utils <span class="kw">import</span> init_instance_by_config
+<span class="kw">from</span> qlib.tests.config <span class="kw">import</span> CSI300_GBDT_TASK
+
+model = init_instance_by_config(CSI300_GBDT_TASK[<span class="str">"model"</span>])
+dataset = init_instance_by_config(CSI300_GBDT_TASK[<span class="str">"dataset"</span>])</code></pre>
+    <p>这是 Qlib 最核心的「魔法」：<code>init_instance_by_config</code> 读一个含 <code>class</code> / <code>module_path</code> / <code>kwargs</code> 的字典，动态 import 并实例化对象。<code>CSI300_GBDT_TASK</code> 定义在 <code>qlib/tests/config.py:124</code>，它的 <code>model</code> 就是 LightGBM，<code>dataset</code> 就是 <code>DatasetH</code> 套 <code>Alpha158</code>——和路径 A 的 YAML 完全等价。这也解释了 YAML 为什么长那样：它就是这个字典的文本形式。</p>
+
+    <h3>3.3 配置回测：port_analysis_config（对应第 6 章）</h3>
+    <pre><code>port_analysis_config = {
+    <span class="str">"executor"</span>: {  <span class="cmt"># 执行器：逐日模拟</span>
+        <span class="str">"class"</span>: <span class="str">"SimulatorExecutor"</span>,
+        <span class="str">"kwargs"</span>: {<span class="str">"time_per_step"</span>: <span class="str">"day"</span>, <span class="str">"generate_portfolio_metrics"</span>: <span class="kw">True</span>},
+    },
+    <span class="str">"strategy"</span>: {  <span class="cmt"># 策略：每天持有打分最高的 topk 只，换掉 n_drop 只</span>
+        <span class="str">"class"</span>: <span class="str">"TopkDropoutStrategy"</span>,
+        <span class="str">"kwargs"</span>: {<span class="str">"signal"</span>: (model, dataset), <span class="str">"topk"</span>: <span class="kw">50</span>, <span class="str">"n_drop"</span>: <span class="kw">5</span>},
+    },
+    <span class="str">"backtest"</span>: {  <span class="cmt"># 回测环境：起止时间、初始资金、交易成本</span>
+        <span class="str">"start_time"</span>: <span class="str">"2017-01-01"</span>, <span class="str">"end_time"</span>: <span class="str">"2020-08-01"</span>,
+        <span class="str">"account"</span>: <span class="kw">100000000</span>,
+        <span class="str">"exchange_kwargs"</span>: {<span class="str">"limit_threshold"</span>: <span class="kw">0.095</span>, <span class="str">"deal_price"</span>: <span class="str">"close"</span>,
+            <span class="str">"open_cost"</span>: <span class="kw">0.0005</span>, <span class="str">"close_cost"</span>: <span class="kw">0.0015</span>, <span class="str">"min_cost"</span>: <span class="kw">5</span>},
+    },
+}</code></pre>
+    <p>这里 <code>topk=50, n_drop=5</code> 表示：每天持仓 50 只股票，剔除掉分数掉出前列的 5 只、再买入 5 只新的。<code>limit_threshold=0.095</code> 模拟 A 股涨跌停（±9.5% 附近不能成交）。这些正是第 6 章的策略与交易成本参数。</p>
+
+    <h3>3.4 启动实验 + 训练 + 三段记录（对应第 5、7 章）</h3>
+    <pre><code><span class="kw">from</span> qlib.workflow <span class="kw">import</span> R
+<span class="kw">from</span> qlib.workflow.record_temp <span class="kw">import</span> SignalRecord, SigAnaRecord, PortAnaRecord
+<span class="kw">from</span> qlib.utils <span class="kw">import</span> flatten_dict
+
+<span class="kw">with</span> R.start(experiment_name=<span class="str">"workflow"</span>):     <span class="cmt"># ① 开一个实验上下文</span>
+    R.log_params(**flatten_dict(CSI300_GBDT_TASK))  <span class="cmt"># ② 记录超参</span>
+    model.fit(dataset)                          <span class="cmt"># ③ 训练模型（第5章）</span>
+    R.save_objects(**{<span class="str">"params.pkl"</span>: model})   <span class="cmt"># ④ 保存模型</span>
+
+    recorder = R.get_recorder()                 <span class="cmt"># ⑤ 拿到本次记录器</span>
+    sr = SignalRecord(model, dataset, recorder) <span class="cmt"># ⑥ 生成预测信号</span>
+    sr.generate()
+
+    sar = SigAnaRecord(recorder)                <span class="cmt"># ⑦ 信号分析：IC/ICIR</span>
+    sar.generate()
+
+    par = PortAnaRecord(recorder, port_analysis_config, <span class="str">"day"</span>)  <span class="cmt"># ⑧ 组合回测</span>
+    par.generate()</code></pre>
+    <p>逐行对照知识点：</p>
+    <ul>
+      <li><b>① <code>R.start</code></b>：第 7 章的实验管理入口，<code>with</code> 块内的一切都会被记录进 <code>mlruns</code>，异常也会被妥善收尾。</li>
+      <li><b>③ <code>model.fit(dataset)</code></b>：第 5 章。模型从 dataset 的 <code>train</code>/<code>valid</code> 段取特征与标签开始学习。</li>
+      <li><b>⑥ <code>SignalRecord</code></b>：对 <code>test</code> 段做预测，把每只股票每天的打分（signal）存下来。</li>
+      <li><b>⑦ <code>SigAnaRecord</code></b>：只看预测分数与真实收益的相关性，产出 IC、ICIR、Rank IC 等（见 <code>qlib/workflow/record_temp.py:265</code>）。<b>它不涉及交易</b>，是纯粹的信号质量体检。</li>
+      <li><b>⑧ <code>PortAnaRecord</code></b>：把信号交给策略去真实「下单」，跑回测，产出年化收益、最大回撤、信息比率等（第 6 章）。</li>
+    </ul>
+    <div class="callout tip"><span class="t">提示</span>脚本里还有一行 <code>example_df = dataset.prepare("train")</code>（<code>workflow_by_code.py:64</code>），它演示了 dataset 可以独立取数据、脱离训练单独使用——调试特征时非常有用。</div>
+
+    <h2>4. 读懂输出：这些指标到底在说什么</h2>
+    <p>跑完后你会看到一堆指标。别被术语吓到，用大白话理解：</p>
+    <table>
+      <thead><tr><th>指标</th><th>通俗解释</th><th>看什么</th></tr></thead>
+      <tbody>
+        <tr><td><b>IC</b><br>(信息系数)</td><td>模型「打分」和「第二天实际涨跌」之间的相关系数。像考试预测准不准。</td><td>越高越好；日频 A 股能到 0.03~0.05 已算不错。</td></tr>
+        <tr><td><b>Rank IC</b></td><td>用排名算的 IC，只关心「谁比谁强」的顺序对不对，对极端值更稳健。</td><td>选股更看重它。</td></tr>
+        <tr><td><b>ICIR</b></td><td>IC 的均值 ÷ 标准差（<code>ic.mean()/ic.std()</code>）。衡量预测能力「稳不稳」，不只是「准不准」。</td><td>越高说明模型发挥稳定。</td></tr>
+        <tr><td><b>年化收益</b><br>(annualized_return)</td><td>把这段回测的收益折算成「一年能赚百分之几」。</td><td>要和基准（沪深300）对比才有意义。</td></tr>
+        <tr><td><b>最大回撤</b><br>(max_drawdown)</td><td>从最高点跌到最低点最惨亏了多少。衡量「最难受时有多难受」。</td><td>负值，绝对值越小越好。</td></tr>
+        <tr><td><b>信息比率</b><br>(information_ratio)</td><td>相对基准的超额收益 ÷ 超额收益的波动。衡量「性价比」——每承担一份风险换来多少超额收益。</td><td>越高越好，&gt;0.5 通常不错。</td></tr>
+      </tbody>
+    </table>
+    <div class="callout warn"><span class="t">注意</span>IC 高不等于赚钱！IC 只体现「信号质量」；能不能转化成收益，还取决于策略、换手成本、涨跌停约束。所以 Qlib 才要 <code>SigAnaRecord</code>（看信号）和 <code>PortAnaRecord</code>（看真金白银）两套报告一起看。</div>
+
+    <h2>5. 常见坑速查表</h2>
+    <table>
+      <thead><tr><th>症状</th><th>原因</th><th>解法</th></tr></thead>
+      <tbody>
+        <tr><td>import 报 Cython/扩展相关错误、算子跑不动</td><td>没编译 Cython 算子（源码安装时）</td><td>用 <code>pip install pyqlib</code>，或源码安装后执行 <code>python setup.py build_ext --inplace</code></td></tr>
+        <tr><td>报找不到数据 / 日历为空</td><td>没下数据或目录写错</td><td>先 <code>python -m qlib.run.get_data qlib_data --target_dir ~/.qlib/qlib_data/cn_data --region cn</code></td></tr>
+        <tr><td><code>Please run qlib.init()...</code></td><td>忘了初始化</td><td>任何数据操作前先 <code>qlib.init(provider_uri=..., region=REG_CN)</code></td></tr>
+        <tr><td>指标全为空 / 交易异常</td><td>region 与数据不匹配（美股数据配了 <code>REG_CN</code>）</td><td>中国数据用 <code>REG_CN</code>，美股用 <code>REG_US</code>，与下载时的 <code>--region</code> 保持一致</td></tr>
+        <tr><td>macOS 上进程直接 segfault / crash</td><td>OpenMP(OMP) 多线程库冲突</td><td>设环境变量 <code>export KMP_DUPLICATE_LIB_OK=TRUE</code>，或降低模型 <code>num_threads</code></td></tr>
+        <tr><td>回测收益诡异（要么爆赚要么不动）</td><td><code>topk</code>/<code>n_drop</code> 设得不合理</td><td><code>n_drop</code> 不应大于 <code>topk</code>；组合太小（如 topk=1）波动巨大，先用 topk=50, n_drop=5 的默认值</td></tr>
+      </tbody>
+    </table>
+
+    <h2>6. 下一步学什么</h2>
+    <p>跑通一条流水线只是起点。当你想让模型「活」起来、跟上市场变化，可以顺着这些方向深入，每个方向仓库里都有现成示例：</p>
+    <ul>
+      <li><b>Rolling 滚动训练</b>：市场会变，定期用最新数据重训模型。参考 <code>examples/model_rolling/</code> 与 <code>examples/benchmarks_dynamic/</code>。</li>
+      <li><b>在线服务（Online Serving）</b>：把模型部署成每日自动更新预测的服务。参考 <code>examples/online_srv/</code>。</li>
+      <li><b>强化学习（RL）</b>：用 RL 做订单执行、择时。参考 <code>examples/rl/</code> 与 <code>examples/rl_order_execution/</code>。</li>
+      <li><b>嵌套决策执行</b>：日频选股 + 日内高频执行的多层框架。参考 <code>examples/nested_decision_execution/</code>。</li>
+      <li><b>Meta-Learning / 超参搜索</b>：让模型学会「如何学习」，或自动调参。参考 <code>examples/hyperparameter/</code>。</li>
+      <li><b>自定义因子与模型</b>：写自己的 Alpha 表达式、接入自研模型——回到第 4、5 章，配合 <code>qlib/contrib/data/handler.py</code> 和 <code>qlib/contrib/model/</code> 自行扩展。</li>
+      <li><b>高频数据</b>：分钟级/orderbook 数据处理。参考 <code>examples/highfreq/</code> 与 <code>examples/orderbook_data/</code>。</li>
+    </ul>
+    <div class="callout tip"><span class="t">提示</span>无论走哪个方向，套路都一样：换掉流水线里的某个「零件」（换个模型、换个策略、加一层 rolling），其余骨架不变。这正是 Qlib 模块化设计的价值——你现在已经掌握了这套骨架。</div>
+
+    <div class="exercises">
+      <h2>📝 课后练习题</h2>
+      <div class="q"><b>1.（概念题）路径 A（qrun + YAML）和路径 B（Python 脚本）有什么关系？为什么说它们「几乎等价」？</b>
+        <details><summary>参考答案</summary><div class="a">两者底层调用完全相同的组件。YAML 里的 <code>class</code>/<code>module_path</code>/<code>kwargs</code> 结构，正是 <code>init_instance_by_config</code> 所读取的字典的文本形式；<code>qrun</code> 内部就是解析 YAML 后调用同样的 init → fit → 三个 Record 流程。所以产出结果一致。区别在于：YAML 适合快速复现和批量实验，Python 脚本适合调试与二次开发。</div></details>
+      </div>
+      <div class="q"><b>2.（概念题）SigAnaRecord 和 PortAnaRecord 分别回答什么问题？为什么两个都要看？</b>
+        <details><summary>参考答案</summary><div class="a"><code>SigAnaRecord</code> 只评估「信号质量」，产出 IC/ICIR/Rank IC，衡量预测分数与真实收益的相关性，不涉及交易。<code>PortAnaRecord</code> 把信号交给策略真实回测，产出年化收益、最大回撤、信息比率等真金白银的指标。两个都要看是因为：IC 高不代表能赚钱——收益还受策略、换手成本、涨跌停等约束影响。</div></details>
+      </div>
+      <div class="q"><b>3.（代码填空）补全启动实验并训练的关键三行（开实验上下文、训练、生成信号）。</b>
+        <pre><code><span class="kw">with</span> R.____(experiment_name=<span class="str">"workflow"</span>):
+    model.____(dataset)
+    sr = ____(model, dataset, R.get_recorder())
+    sr.generate()</code></pre>
+        <details><summary>参考答案</summary><div class="a">依次为：<code>R.start(...)</code>、<code>model.fit(dataset)</code>、<code>SignalRecord(model, dataset, R.get_recorder())</code>。</div></details>
+      </div>
+      <div class="q"><b>4.（改错题）某同学在 macOS 上运行脚本直接闪退（segfault），且他从没调用过 <code>qlib.init</code>，代码第一行就是 <code>dataset.prepare("train")</code>。请指出两处问题。</b>
+        <details><summary>参考答案</summary><div class="a">(1) 任何数据操作前必须先 <code>qlib.init(provider_uri=..., region=REG_CN)</code>，否则报未初始化错误。(2) macOS 的 segfault 通常是 OpenMP 库冲突，设置 <code>export KMP_DUPLICATE_LIB_OK=TRUE</code>（或减小模型 <code>num_threads</code>）可缓解。此外还需确保已下载数据。</div></details>
+      </div>
+      <div class="q"><b>5.（思考题）你把 <code>topk</code> 从 50 改成 5、<code>n_drop</code> 保持 5，回测收益波动骤然变大。为什么？</b>
+        <details><summary>参考答案</summary><div class="a">组合只持有 5 只股票时，单只股票的涨跌对总收益影响巨大，分散化不足，波动（和最大回撤）自然放大；同时 <code>n_drop=5</code> 意味着每天几乎把整个组合换一遍，换手率和交易成本也急剧上升。应保证 <code>n_drop</code> 远小于 <code>topk</code> 以维持稳定的分散组合。</div></details>
+      </div>
+      <div class="q"><b>6.（思考题）你的模型上线三个月后表现明显下滑。属于本章「下一步」的哪个方向？大致怎么做？</b>
+        <details><summary>参考答案</summary><div class="a">这是市场分布漂移问题，对应 <b>Rolling 滚动训练</b> / 在线服务方向。做法：定期（如每月/每季）用最新数据重新训练模型并更新预测，而非用一个一训永逸的静态模型。参考 <code>examples/model_rolling/</code> 和 <code>examples/online_srv/</code>。</div></details>
+      </div>
+    </div>
+
+    <div class="pager">
+      <a class="prev" href="ch07.html"><span class="lbl">← 上一章</span><span class="ttl">工作流与实验管理</span></a>
+      <a class="next" href="index.html"><span class="lbl">下一章 →</span><span class="ttl">返回首页</span></a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,255 @@
+'The following are prediction results of the GRU model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000    0.033898
+2017-01-04 SH600000    0.036826
+2017-01-05 SH600000    0.039753
+2017-01-06 SH600000    0.075528
+2017-01-09 SH600000    0.062080
+{'IC': np.float64(0.027858985935908406),
+ 'ICIR': np.float64(0.2134259055692475),
+ 'Rank IC': np.float64(0.04122318511853934),
+ 'Rank ICIR': np.float64(0.32850212758964853)}
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean               0.000361
+std                0.004120
+annualized_return  0.085968
+information_ratio  1.352505
+max_drawdown      -0.067849
+'The following are analysis results of the excess return with cost(1day).'
+                       risk
+mean               0.000196
+std                0.004121
+annualized_return  0.046602
+information_ratio  0.733036
+max_drawdown      -0.077986
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0
+
+[62283:MainThread](2026-07-08 10:43:59,387) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[62283:MainThread](2026-07-08 10:43:59,395) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[62283:MainThread](2026-07-08 10:43:59,396) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[62283:MainThread](2026-07-08 10:43:59,397) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[62283:MainThread](2026-07-08 10:43:59,402) INFO - qlib.workflow - [exp.py:258] - Experiment 218101357826886900 starts running ...
+[62283:MainThread](2026-07-08 10:44:00,067) INFO - qlib.workflow - [recorder.py:345] - Recorder c6897bba11624c3cb6c5e5c2d0d01f8c starts running under Experiment 218101357826886900 ...
+[62283:MainThread](2026-07-08 10:44:02,684) INFO - qlib.GRU - [pytorch_gru_ts.py:61] - GRU pytorch version...
+[62283:MainThread](2026-07-08 10:44:02,685) INFO - qlib.GRU - [pytorch_gru_ts.py:79] - GRU parameters setting:
+d_feat : 20
+hidden_size : 64
+num_layers : 2
+dropout : 0.0
+n_epochs : 200
+lr : 0.0002
+metric : loss
+batch_size : 800
+early_stop : 10
+optimizer : adam
+loss_type : mse
+device : cpu
+n_jobs : 0
+use_GPU : False
+seed : None
+[62283:MainThread](2026-07-08 10:44:02,686) INFO - qlib.GRU - [pytorch_gru_ts.py:124] - model:
+GRUModel(
+  (rnn): GRU(20, 64, num_layers=2, batch_first=True)
+  (fc_out): Linear(in_features=64, out_features=1, bias=True)
+)
+[62283:MainThread](2026-07-08 10:44:02,686) INFO - qlib.GRU - [pytorch_gru_ts.py:125] - model size: 0.0396 MB
+[62283:MainThread](2026-07-08 10:44:26,641) INFO - qlib.timer - [log.py:127] - Time cost: 22.980s | Loading data Done
+[62283:MainThread](2026-07-08 10:44:26,771) INFO - qlib.timer - [log.py:127] - Time cost: 0.011s | FilterCol Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:296: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[self.cols] = X
+[62283:MainThread](2026-07-08 10:44:27,029) INFO - qlib.timer - [log.py:127] - Time cost: 0.258s | RobustZScoreNorm Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:192: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[self.fields_group] = df[self.fields_group].fillna(self.fill_value)
+[62283:MainThread](2026-07-08 10:44:27,068) INFO - qlib.timer - [log.py:127] - Time cost: 0.039s | Fillna Done
+[62283:MainThread](2026-07-08 10:44:27,102) INFO - qlib.timer - [log.py:127] - Time cost: 0.015s | DropnaLabel Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:358: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[cols] = t
+[62283:MainThread](2026-07-08 10:44:27,264) INFO - qlib.timer - [log.py:127] - Time cost: 0.162s | CSRankNorm Done
+[62283:MainThread](2026-07-08 10:44:27,266) INFO - qlib.timer - [log.py:127] - Time cost: 0.624s | fit & process data Done
+[62283:MainThread](2026-07-08 10:44:27,266) INFO - qlib.timer - [log.py:127] - Time cost: 23.606s | Init data Done
+[62283:MainThread](2026-07-08 10:44:28,041) INFO - qlib.GRU - [pytorch_gru_ts.py:249] - training...
+[62283:MainThread](2026-07-08 10:44:28,041) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch0:
+[62283:MainThread](2026-07-08 10:44:28,042) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:45:02,844) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:45:26,727) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.994423, valid -0.994652
+[62283:MainThread](2026-07-08 10:45:26,729) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch1:
+[62283:MainThread](2026-07-08 10:45:26,729) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:46:00,522) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:46:23,695) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.992941, valid -0.994250
+[62283:MainThread](2026-07-08 10:46:23,695) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch2:
+[62283:MainThread](2026-07-08 10:46:23,696) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:46:57,179) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:47:23,182) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.992246, valid -0.993794
+[62283:MainThread](2026-07-08 10:47:23,186) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch3:
+[62283:MainThread](2026-07-08 10:47:23,187) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:47:57,597) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:48:20,818) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.990752, valid -0.993537
+[62283:MainThread](2026-07-08 10:48:20,818) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch4:
+[62283:MainThread](2026-07-08 10:48:20,819) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:48:55,003) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:49:18,989) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.989707, valid -0.993262
+[62283:MainThread](2026-07-08 10:49:18,991) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch5:
+[62283:MainThread](2026-07-08 10:49:18,992) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:49:52,280) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:50:15,675) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.988188, valid -0.993594
+[62283:MainThread](2026-07-08 10:50:15,675) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch6:
+[62283:MainThread](2026-07-08 10:50:15,675) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:50:49,123) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:51:12,575) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.987767, valid -0.993725
+[62283:MainThread](2026-07-08 10:51:12,575) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch7:
+[62283:MainThread](2026-07-08 10:51:12,575) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:51:45,717) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:52:08,995) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.986683, valid -0.994240
+[62283:MainThread](2026-07-08 10:52:08,996) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch8:
+[62283:MainThread](2026-07-08 10:52:08,996) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:52:43,823) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:53:07,390) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.986234, valid -0.994334
+[62283:MainThread](2026-07-08 10:53:07,390) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch9:
+[62283:MainThread](2026-07-08 10:53:07,390) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:53:42,160) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:54:06,490) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.986166, valid -0.995399
+[62283:MainThread](2026-07-08 10:54:06,490) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch10:
+[62283:MainThread](2026-07-08 10:54:06,490) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:54:41,534) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:55:06,432) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.984666, valid -0.995652
+[62283:MainThread](2026-07-08 10:55:06,432) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch11:
+[62283:MainThread](2026-07-08 10:55:06,433) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:55:39,632) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:56:02,847) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.983779, valid -0.993916
+[62283:MainThread](2026-07-08 10:56:02,847) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch12:
+[62283:MainThread](2026-07-08 10:56:02,847) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:56:37,124) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:57:00,044) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.983011, valid -0.995689
+[62283:MainThread](2026-07-08 10:57:00,045) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch13:
+[62283:MainThread](2026-07-08 10:57:00,045) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:57:34,020) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:57:57,546) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.981900, valid -0.994844
+[62283:MainThread](2026-07-08 10:57:57,546) INFO - qlib.GRU - [pytorch_gru_ts.py:253] - Epoch14:
+[62283:MainThread](2026-07-08 10:57:57,547) INFO - qlib.GRU - [pytorch_gru_ts.py:254] - training...
+[62283:MainThread](2026-07-08 10:58:30,582) INFO - qlib.GRU - [pytorch_gru_ts.py:256] - evaluating...
+[62283:MainThread](2026-07-08 10:58:53,776) INFO - qlib.GRU - [pytorch_gru_ts.py:259] - train -0.982154, valid -0.996777
+[62283:MainThread](2026-07-08 10:58:53,776) INFO - qlib.GRU - [pytorch_gru_ts.py:271] - early stop
+[62283:MainThread](2026-07-08 10:58:53,776) INFO - qlib.GRU - [pytorch_gru_ts.py:274] - best score: -0.993262 @ 4
+[62283:MainThread](2026-07-08 10:58:53,810) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[62283:MainThread](2026-07-08 10:59:03,681) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 218101357826886900
+[62283:MainThread](2026-07-08 10:59:03,985) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+[62283:MainThread](2026-07-08 10:59:12,347) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[62283:MainThread](2026-07-08 10:59:12,348) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[62283:MainThread](2026-07-08 10:59:12,350) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[62283:MainThread](2026-07-08 10:59:12,350) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[62283:MainThread](2026-07-08 10:59:20,514) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[62283:MainThread](2026-07-08 10:59:20,514) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[62283:MainThread](2026-07-08 10:59:20,520) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x1212bd8e0>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   1%|▏         | 11/871 [00:00<00:08, 107.17it/s]
+backtest loop:   3%|▎         | 22/871 [00:00<00:07, 107.84it/s]
+backtest loop:   4%|▍         | 34/871 [00:00<00:07, 110.99it/s]
+backtest loop:   5%|▌         | 47/871 [00:00<00:07, 115.63it/s]
+backtest loop:   7%|▋         | 59/871 [00:00<00:07, 115.63it/s]
+backtest loop:   8%|▊         | 72/871 [00:00<00:06, 116.57it/s]
+backtest loop:  10%|▉         | 84/871 [00:00<00:06, 113.32it/s]
+backtest loop:  11%|█         | 96/871 [00:00<00:07, 109.03it/s]
+backtest loop:  12%|█▏        | 107/871 [00:00<00:07, 108.27it/s]
+backtest loop:  14%|█▎        | 119/871 [00:01<00:06, 109.51it/s]
+backtest loop:  15%|█▌        | 131/871 [00:01<00:06, 110.89it/s]
+backtest loop:  16%|█▋        | 143/871 [00:01<00:06, 111.78it/s]
+backtest loop:  18%|█▊        | 155/871 [00:01<00:06, 111.39it/s]
+backtest loop:  19%|█▉        | 167/871 [00:01<00:06, 111.35it/s]
+backtest loop:  21%|██        | 179/871 [00:01<00:06, 109.51it/s]
+backtest loop:  22%|██▏       | 190/871 [00:01<00:06, 109.43it/s]
+backtest loop:  23%|██▎       | 203/871 [00:01<00:05, 113.10it/s]
+backtest loop:  25%|██▍       | 215/871 [00:01<00:05, 113.45it/s]
+backtest loop:  26%|██▌       | 227/871 [00:02<00:05, 114.81it/s]
+backtest loop:  27%|██▋       | 239/871 [00:02<00:05, 114.45it/s]
+backtest loop:  29%|██▉       | 252/871 [00:02<00:05, 116.84it/s]
+backtest loop:  30%|███       | 264/871 [00:02<00:05, 116.52it/s]
+backtest loop:  32%|███▏      | 276/871 [00:02<00:05, 116.35it/s]
+backtest loop:  33%|███▎      | 288/871 [00:02<00:05, 115.54it/s]
+backtest loop:  35%|███▍      | 301/871 [00:02<00:04, 117.44it/s]
+backtest loop:  36%|███▌      | 313/871 [00:02<00:04, 114.41it/s]
+backtest loop:  37%|███▋      | 325/871 [00:02<00:04, 112.90it/s]
+backtest loop:  39%|███▊      | 337/871 [00:02<00:04, 114.87it/s]
+backtest loop:  40%|████      | 349/871 [00:03<00:04, 115.44it/s]
+backtest loop:  42%|████▏     | 362/871 [00:03<00:04, 118.81it/s]
+backtest loop:  43%|████▎     | 374/871 [00:03<00:04, 118.21it/s]
+backtest loop:  44%|████▍     | 387/871 [00:03<00:04, 119.85it/s]
+backtest loop:  46%|████▌     | 399/871 [00:03<00:03, 118.27it/s]
+backtest loop:  47%|████▋     | 412/871 [00:03<00:03, 119.45it/s]
+backtest loop:  49%|████▊     | 424/871 [00:03<00:03, 118.10it/s]
+backtest loop:  50%|█████     | 437/871 [00:03<00:03, 118.89it/s]
+backtest loop:  52%|█████▏    | 450/871 [00:03<00:03, 119.50it/s]
+backtest loop:  53%|█████▎    | 462/871 [00:04<00:03, 114.94it/s]
+backtest loop:  54%|█████▍    | 474/871 [00:04<00:03, 112.75it/s]
+backtest loop:  56%|█████▌    | 486/871 [00:04<00:03, 113.11it/s]
+backtest loop:  57%|█████▋    | 498/871 [00:04<00:03, 113.09it/s]
+backtest loop:  59%|█████▊    | 510/871 [00:04<00:03, 112.81it/s]
+backtest loop:  60%|█████▉    | 522/871 [00:04<00:03, 114.68it/s]
+backtest loop:  61%|██████▏   | 534/871 [00:04<00:02, 115.74it/s]
+backtest loop:  63%|██████▎   | 546/871 [00:04<00:02, 114.28it/s]
+backtest loop:  64%|██████▍   | 558/871 [00:04<00:02, 115.65it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  66%|██████▌   | 571/871 [00:04<00:02, 115.56it/s]
+backtest loop:  67%|██████▋   | 583/871 [00:05<00:02, 116.46it/s]
+backtest loop:  68%|██████▊   | 595/871 [00:05<00:02, 114.97it/s]
+backtest loop:  70%|██████▉   | 607/871 [00:05<00:02, 116.21it/s]
+backtest loop:  71%|███████   | 619/871 [00:05<00:02, 117.06it/s]
+backtest loop:  72%|███████▏  | 631/871 [00:05<00:02, 115.35it/s]
+backtest loop:  74%|███████▍  | 643/871 [00:05<00:01, 115.34it/s]
+backtest loop:  75%|███████▌  | 655/871 [00:05<00:01, 113.98it/s]
+backtest loop:  77%|███████▋  | 667/871 [00:05<00:01, 115.13it/s]
+backtest loop:  78%|███████▊  | 679/871 [00:05<00:01, 112.06it/s]
+backtest loop:  79%|███████▉  | 691/871 [00:06<00:01, 113.88it/s]
+backtest loop:  81%|████████  | 703/871 [00:06<00:01, 111.24it/s]
+backtest loop:  82%|████████▏ | 715/871 [00:06<00:01, 104.99it/s]
+backtest loop:  83%|████████▎ | 726/871 [00:06<00:01, 104.40it/s]
+backtest loop:  85%|████████▍ | 737/871 [00:06<00:01, 102.55it/s]
+backtest loop:  86%|████████▌ | 748/871 [00:06<00:01, 104.02it/s]
+backtest loop:  87%|████████▋ | 760/871 [00:06<00:01, 107.96it/s]
+backtest loop:  89%|████████▊ | 772/871 [00:06<00:00, 109.13it/s]
+backtest loop:  90%|█████████ | 784/871 [00:06<00:00, 111.44it/s]
+backtest loop:  91%|█████████▏| 796/871 [00:07<00:00, 111.32it/s]
+backtest loop:  93%|█████████▎| 808/871 [00:07<00:00, 113.20it/s]
+backtest loop:  94%|█████████▍| 820/871 [00:07<00:00, 88.22it/s] 
+backtest loop:  96%|█████████▌| 832/871 [00:07<00:00, 95.22it/s]
+backtest loop:  97%|█████████▋| 843/871 [00:07<00:00, 98.86it/s]
+backtest loop:  98%|█████████▊| 855/871 [00:07<00:00, 103.92it/s]
+backtest loop:  99%|█████████▉| 866/871 [00:07<00:00, 105.52it/s]
+backtest loop: 100%|██████████| 871/871 [00:07<00:00, 112.01it/s]
+[62283:MainThread](2026-07-08 10:59:28,318) INFO - qlib.workflow - [record_temp.py:520] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 218101357826886900
+[62283:MainThread](2026-07-08 10:59:28,321) INFO - qlib.workflow - [record_temp.py:545] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 218101357826886900
+[62283:MainThread](2026-07-08 10:59:28,609) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | waiting `async_log` Done

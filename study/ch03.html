@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>数据层 Data Layer · Qlib 学习教程</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>Qlib 教程</h1>
+    <div class="sub">从入门到实战</div>
+    <nav>
+      <a href="index.html"><span class="num">home</span>首页</a>
+      <a href="ch01.html"><span class="num">01</span>简介与架构</a>
+      <a href="ch02.html"><span class="num">02</span>环境与数据</a>
+      <a href="ch03.html" class="active"><span class="num">03</span>数据层</a>
+      <a href="ch04.html"><span class="num">04</span>数据集与处理器</a>
+      <a href="ch05.html"><span class="num">05</span>模型</a>
+      <a href="ch06.html"><span class="num">06</span>策略与回测</a>
+      <a href="ch07.html"><span class="num">07</span>工作流</a>
+      <a href="ch08.html"><span class="num">08</span>综合实战</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <span class="tag">CHAPTER 03</span>
+    <h1>数据层 Data Layer</h1>
+    <p class="lead">Qlib 最独特、也最容易被低估的部分就是它的数据层：一个能把 <code>$close</code>、<code>Ref($close,1)</code>、<code>Mean($close,20)</code> 这样的「公式」直接当成数据来读取的表达式引擎。本章带你看清 D 接口、算子系统、内存缓存 H、磁盘 .bin 存储和点数据 PIT 这五块拼图。</p>
+
+    <h2>1. 为什么需要一个「数据层」</h2>
+    <p>先想象一个场景。你是量化研究员，手头有 5000 只股票、10 年的日线数据。你想算一个因子：<b>过去 20 天收盘价均线相对当前价格的偏离</b>。用传统方式，你要：读 CSV → 转成 DataFrame → groupby 股票 → rolling(20).mean() → 对齐日期 → 处理停牌缺失……每换一个因子，这套流程都要重写一遍，而且极易在「对齐日期」这一步偷偷引入 bug。</p>
+    <p>Qlib 的思路完全不同：把「因子」表达成一个字符串公式，交给数据层去算。你只写 <code>"$close/Mean($close,20)-1"</code>，数据层负责读原始数据、滚动计算、缓存、对齐，最后返回一个规整的 <code>DataFrame</code>。研究员只关心「因子长什么样」，不关心「数据怎么搬」。</p>
+
+    <div class="callout"><span class="t">提示</span>
+    数据层的对外统一入口是全局对象 <code>D</code>（definition 见 <code>qlib/data/data.py:1289</code>，它是一个 <code>Wrapper</code>，在 <code>qlib.init()</code> 时被绑定到具体的 <code>LocalProvider</code>）。你几乎所有取数操作都从 <code>from qlib.data import D</code> 开始。
+    </div>
+
+    <div class="diagram"><pre>
+   你的因子公式 "$close/Mean($close,20)-1"
+            │
+            ▼
+   ┌──────────────────────────┐
+   │   D  (BaseProvider 接口)  │  calendar / instruments / features
+   └──────────────────────────┘
+            │  按职责拆分给各 Provider
+   ┌──────────┬───────────┬──────────────┐
+   ▼          ▼           ▼              ▼
+ Cal        Inst      ExpressionD     DatasetD   (data.py 中的 Wrapper)
+(日历)     (股票池)   (算子求值)      (拼装成表)
+            │
+            ▼
+   内存缓存 H  ──miss──▶  磁盘 .bin 存储 (storage/)
+    </pre></div>
+
+    <h2>2. D 接口：calendar / instruments / features</h2>
+    <p><code>D</code> 的方法都定义在 <code>BaseProvider</code>（<code>qlib/data/data.py:1140</code>）里，最常用的三个是：</p>
+    <ul>
+      <li><code>D.calendar(start_time, end_time, freq)</code> — 取交易日历（一串 <code>Timestamp</code>）。</li>
+      <li><code>D.instruments(market)</code> / <code>D.list_instruments(...)</code> — 取股票池（market 如 <span class="str">"csi300"</span>、<span class="str">"all"</span>）。</li>
+      <li><code>D.features(instruments, fields, start_time, end_time, freq)</code> — <b>核心</b>，把一批字段公式算成一张宽表。</li>
+    </ul>
+
+    <p>先做基本初始化，然后取日历和股票池：</p>
+<pre><code><span class="kw">import</span> qlib
+<span class="kw">from</span> qlib.data <span class="kw">import</span> D
+qlib.init(provider_uri=<span class="str">"~/.qlib/qlib_data/cn_data"</span>, region=<span class="str">"cn"</span>)
+
+<span class="cmt"># 交易日历：返回一个 Timestamp 列表</span>
+cal = D.calendar(start_time=<span class="str">"2020-01-01"</span>, end_time=<span class="str">"2020-01-10"</span>, freq=<span class="str">"day"</span>)
+<span class="fn">print</span>(cal[:3])
+<span class="cmt"># [Timestamp('2020-01-02'), Timestamp('2020-01-03'), Timestamp('2020-01-06')]</span>
+
+<span class="cmt"># 股票池：返回一个 config dict（market + filter_pipe）</span>
+inst = D.instruments(market=<span class="str">"csi300"</span>)
+<span class="cmt"># 列出某时间段内实际在池的成分股</span>
+codes = D.list_instruments(inst, start_time=<span class="str">"2020-01-01"</span>,
+                           end_time=<span class="str">"2020-01-31"</span>, as_list=<span class="kw">True</span>)
+</code></pre>
+
+    <p>重头戏是 <code>D.features</code>。<code>fields</code> 是一批表达式字符串，返回一个以 <code>(instrument, datetime)</code> 为双层索引的 <code>DataFrame</code>，列名就是你传入的公式：</p>
+<pre><code><span class="cmt"># 取平安银行的收盘价、昨收、20 日均线</span>
+df = D.features(
+    [<span class="str">"SH600000"</span>],
+    [<span class="str">"$close"</span>, <span class="str">"Ref($close, 1)"</span>, <span class="str">"Mean($close, 20)"</span>],
+    start_time=<span class="str">"2020-01-01"</span>,
+    end_time=<span class="str">"2020-01-31"</span>,
+    freq=<span class="str">"day"</span>,
+)
+<span class="fn">print</span>(df.head())
+<span class="cmt">#                        $close  Ref($close, 1)  Mean($close, 20)
+# instrument datetime
+# SH600000   2020-01-02   12.30           12.10             11.95
+#            2020-01-03   12.42           12.30             11.99
+# ...</span>
+</code></pre>
+
+    <div class="callout tip"><span class="t">要点</span>
+    <code>D.features</code> 内部会调用 <code>DatasetD.dataset(...)</code>（见 <code>data.py:1186</code>），并根据 <code>disk_cache</code> 参数决定<b>跳过(0)/使用(1)/替换(2)</b>磁盘缓存。字段前的 <code>$</code> 表示这是一个原始行情字段（<code>Feature</code>），如 <code>$close</code>、<code>$open</code>、<code>$volume</code>、<code>$factor</code>（复权因子）。
+    </div>
+
+    <div class="callout warn"><span class="t">陷阱</span>
+    返回的 <code>DataFrame</code> 是<b>双层 MultiIndex</b>（instrument 在外、datetime 在内）。很多新手直接 <code>df["$close"].plot()</code> 会因为把多只股票混在一条曲线里而画出锯齿。要么先 <code>df.loc["SH600000"]</code> 切出单只，要么 <code>unstack(level=0)</code>。
+    </div>
+
+    <h2>3. 表达式算子系统：因子就是一棵表达式树</h2>
+    <p>为什么 <code>"Mean($close,20)"</code> 这样一个字符串能被计算？因为 Qlib 把它<b>解析成一棵表达式树</b>：<code>$close</code> 是叶子节点（<code>Feature</code>），<code>Mean</code> 是一个作用在它上面的算子节点，<code>20</code> 是窗口参数。求值时从叶子往上递归计算。</p>
+    <p>所有算子都定义在 <code>qlib/data/ops.py</code>，按输入个数与形态分成几大家族（基类见 <code>qlib/data/base.py</code> 的 <code>Expression / ExpressionOps</code>）：</p>
+    <ul>
+      <li><b>ElemOperator</b>（元素级，单输入）：<code>Abs</code>、<code>Log</code>、<code>Sign</code>、<code>Not</code> —— 逐元素变换（<code>ops.py:37</code>）。</li>
+      <li><b>PairOperator</b>（双输入）：<code>Add</code>、<code>Sub</code>、<code>Mul</code>、<code>Div</code>、<code>Greater</code>、<code>Gt/Lt/Eq</code> 等 —— 两个表达式做二元运算（<code>ops.py:231</code>）。</li>
+      <li><b>Rolling</b>（滚动窗口，单输入 + 窗口 N）：<code>Ref</code>、<code>Mean</code>、<code>Sum</code>、<code>Std</code> 等 —— 最常用的一类（<code>ops.py:713</code>）。</li>
+      <li><b>PairRolling</b>（双输入滚动）：<code>Corr</code>、<code>Cov</code>（<code>ops.py:1387</code>）。</li>
+    </ul>
+
+    <p>下面是 <code>ops.py</code> 中<b>真实存在</b>的常用算子速查表：</p>
+    <table>
+      <thead><tr><th>算子</th><th>类别</th><th>含义</th><th>示例</th></tr></thead>
+      <tbody>
+        <tr><td><code>Ref(x, N)</code></td><td>Rolling</td><td>N 期前的值（N=0 取首值，N&lt;0 是未来）</td><td><code>Ref($close, 1)</code> 昨收</td></tr>
+        <tr><td><code>Mean(x, N)</code></td><td>Rolling</td><td>N 日滚动均值（MA）</td><td><code>Mean($close, 20)</code></td></tr>
+        <tr><td><code>Sum(x, N)</code></td><td>Rolling</td><td>N 日滚动求和</td><td><code>Sum($volume, 5)</code></td></tr>
+        <tr><td><code>Std(x, N)</code></td><td>Rolling</td><td>N 日滚动标准差</td><td><code>Std($close, 20)</code></td></tr>
+        <tr><td><code>Max/Min(x, N)</code></td><td>Rolling</td><td>N 日最大/最小值</td><td><code>Max($high, 60)</code></td></tr>
+        <tr><td><code>Delta(x, N)</code></td><td>Rolling</td><td>当前值减 N 期前的值</td><td><code>Delta($close, 5)</code></td></tr>
+        <tr><td><code>Rank(x, N)</code></td><td>Rolling</td><td>当前值在窗口内的百分位排名</td><td><code>Rank($close, 20)</code></td></tr>
+        <tr><td><code>Slope(x, N)</code></td><td>Rolling</td><td>对时间做线性回归的斜率</td><td><code>Slope($close, 10)</code></td></tr>
+        <tr><td><code>Corr(x, y, N)</code></td><td>PairRolling</td><td>两序列 N 日滚动相关系数</td><td><code>Corr($close, $volume, 10)</code></td></tr>
+        <tr><td><code>Add/Sub/Mul/Div</code></td><td>Pair</td><td>四则运算</td><td><code>$high - $low</code></td></tr>
+        <tr><td><code>Abs/Log/Sign</code></td><td>Elem</td><td>绝对值/对数/符号</td><td><code>Log($volume)</code></td></tr>
+      </tbody>
+    </table>
+
+    <p>这些算子可以任意嵌套组合成复杂因子。比如「20 日动量剔除均值」：</p>
+<pre><code>fields = [
+    <span class="str">"$close / Ref($close, 20) - 1"</span>,          <span class="cmt"># 20 日收益率</span>
+    <span class="str">"($close - Mean($close, 20)) / Std($close, 20)"</span>,  <span class="cmt"># z-score</span>
+    <span class="str">"Corr($close, Log($volume+1), 10)"</span>,       <span class="cmt"># 量价相关</span>
+]
+df = D.features([<span class="str">"SH600000"</span>], fields, <span class="str">"2020-01-01"</span>, <span class="str">"2020-12-31"</span>)
+</code></pre>
+
+    <div class="callout tip"><span class="t">性能</span>
+    滚动类算子（如 <code>Slope/Rsquare/Resi</code>）的核心循环由 Cython 实现，见 <code>ops.py:18-19</code> 从 <code>._libs.rolling</code> / <code>._libs.expanding</code> 导入的 <code>rolling_slope</code> 等函数。如果你在<b>仓库根目录</b>直接 <code>import qlib</code> 会报 ImportError，因为 Cython 扩展还没编译——这就是 <code>ops.py:20-24</code> 那段友好报错的用意。安装用 <code>pip install .</code> 或 <code>python setup.py build_ext --inplace</code> 编译。
+    </div>
+
+    <h2>4. 内存缓存 H：同一个因子别算两遍</h2>
+    <p>研究过程中你会反复取同一批数据（改改模型、调调参数，但特征不变）。每次都从磁盘读、重算 rolling，太浪费。Qlib 用一个全局单例 <code>H</code>（<code>H = MemCache()</code>，见 <code>qlib/data/cache.py:1199</code>）在<b>进程内存</b>里缓存结果。</p>
+    <p><code>MemCache</code>（<code>cache.py:137</code>）内部分成三格，用短键取用：</p>
+    <ul>
+      <li><code>H["c"]</code> — 日历缓存（calendar）</li>
+      <li><code>H["i"]</code> — 股票池缓存（instrument）</li>
+      <li><code>H["f"]</code> — 特征/表达式缓存（feature）</li>
+    </ul>
+    <p>每格是一个带容量上限的 <code>MemCacheUnit</code>，超限时按 LRU 淘汰（<code>limit_type</code> 可选 <span class="str">"length"</span> 按条数或 <span class="str">"sizeof"</span> 按字节，见 <code>cache.py:121-135</code>）。</p>
+
+    <div class="callout warn"><span class="t">易踩坑</span>
+    <code>qlib.init()</code> 里会调用 <code>H.clear()</code>（见 <code>qlib/__init__.py:56</code>）清空所有内存缓存。所以：<b>如果你在同一个进程里重新 init（比如换了 provider_uri），之前缓存的数据会全部失效并重新读取</b>。这解释了为什么有人反映「第二次 init 后第一条 features 又变慢了」——不是 bug，是缓存被主动清了。想手动清也可以直接 <code>H.clear()</code>。
+    </div>
+
+<pre><code><span class="kw">from</span> qlib.data.cache <span class="kw">import</span> H
+<span class="fn">print</span>(<span class="fn">len</span>(H[<span class="str">"f"</span>]))   <span class="cmt"># 当前特征缓存里有多少条</span>
+H.clear()          <span class="cmt"># 手动清空三格缓存</span>
+</code></pre>
+
+    <h2>5. 磁盘存储：.bin 格式与 storage 模块</h2>
+    <p>内存缓存 miss 时，数据从磁盘读。Qlib 不用 CSV/Parquet，而是自定义的紧凑二进制 <code>.bin</code> 格式，配合 <code>qlib/data/storage/</code> 下的存储后端。抽象接口在 <code>storage.py</code>，本地文件实现在 <code>file_storage.py</code>，分三类：</p>
+    <ul>
+      <li><b>CalendarStorage</b> — 交易日历，一个市场一份，存所有交易日。</li>
+      <li><b>InstrumentStorage</b> — 股票池，记录每只股票的 <code>(code, start, end)</code> 在池区间。</li>
+      <li><b>FeatureStorage</b>（<code>FileFeatureStorage</code>，<code>file_storage.py:285</code>）— 行情特征，<b>每只股票每个字段各一个 .bin 文件</b>。</li>
+    </ul>
+    <p>路径规则一目了然（<code>file_storage.py:289</code>）：</p>
+<pre><code><span class="cmt"># 文件名 = {股票代码小写}/{字段小写}.{频率}.bin</span>
+self.file_name = <span class="str">f"{instrument.lower()}/{field.lower()}.{freq.lower()}.bin"</span>
+</code></pre>
+    <div class="diagram"><pre>
+~/.qlib/qlib_data/cn_data/
+├── calendars/
+│   └── day.txt              # 所有交易日
+├── instruments/
+│   ├── all.txt              # 全市场股票池
+│   └── csi300.txt           # 沪深300 成分（含在池区间）
+└── features/
+    ├── sh600000/
+    │   ├── close.day.bin    # 平安银行日频收盘价
+    │   ├── open.day.bin
+    │   └── volume.day.bin
+    └── sh600519/
+        └── close.day.bin
+    </pre></div>
+    <p>每个 <code>.bin</code> 文件头部存一个起始索引（对应日历下标），后面紧跟一段 <code>float32</code> 数组。<code>FileFeatureStorage.data</code>（<code>file_storage.py:296</code>）返回一个以日历下标为 index 的 <code>pd.Series</code>；<code>__getitem__</code>（<code>file_storage.py:346</code>）支持按下标或切片读取。这种「一字段一文件 + 定长数组」的设计让按列读取和滚动计算都非常快。</p>
+
+    <div class="callout"><span class="t">提示</span>
+    正因为特征是<b>按列（字段）分文件</b>存的，Qlib 取 <code>$close</code> 时完全不用碰 <code>$volume</code> 文件——这是典型的列式存储优势。想加一个新字段（比如自定义因子），只需在对应股票目录下补一个 <code>.bin</code> 即可，无需重写整表。
+    </div>
+
+    <h2>6. 点数据 PIT：拒绝「未来函数」</h2>
+    <p>前面讲的都是行情数据（价格、成交量），这类数据当天就产生、当天就知道。但<b>财务数据</b>（营收、净利润、ROE）不一样——它有「发生的季度」和「公布的日期」两个时间，而且往往滞后一两个月。</p>
+    <p>举个通俗例子。某公司 2020 年一季度（Q1，对应 3 月 31 日）的净利润，实际上是在 2020 年 4 月底才发布公告。如果你在回测里于 2020 年 4 月 1 日就用上了 Q1 的净利润，你就"提前"知道了还没公布的数据——这就是<b>未来函数（look-ahead bias）</b>。</p>
+
+    <div class="callout danger"><span class="t">危险</span>
+    未来函数是量化里最隐蔽、也最致命的错误。用了它，回测收益曲线会漂亮到令人窒息，因为策略"偷看"了未来。可一旦实盘，未来信息拿不到，策略立刻失效。它不会报错、不会崩溃，只会让你误以为找到了圣杯——直到亏钱为止。
+    </div>
+
+    <p>Qlib 用 <b>PIT（Point-In-Time，时点数据）</b>解决这个问题：财务数据不仅记录「属于哪个报告期」，还记录「在哪天可被市场知道」。取数时，对每个交易日只返回<b>截至当天已经公布</b>的那期财报，从根本上杜绝偷看未来。</p>
+    <p>PIT 的算子实现在 <code>qlib/data/pit.py</code>，核心是两个类：</p>
+    <ul>
+      <li><code>P</code>（<code>pit.py:24</code>，继承自 <code>ElemOperator</code>）— 加载某个 PIT 字段，按 <code>cur_time</code>（当前交易日）取"当时可见"的最新一期数据。</li>
+      <li><code>PRef(feature, period)</code>（<code>pit.py:63</code>）— 引用某个<b>指定报告期</b>的 PIT 值（<code>period</code> 如 <code>201903</code> 表示 2019 年 Q1）。</li>
+    </ul>
+    <p>在字段公式里，PIT 字段用 <code>$$</code>（双美元）前缀区分于普通行情字段的 <code>$</code>：</p>
+<pre><code><span class="cmt"># $$roewa_q：滚动可见的单季 ROE（加权）；对每个交易日返回当时已公布的最新值</span>
+df = D.features(
+    [<span class="str">"SH600519"</span>],
+    [<span class="str">"$$roewa_q"</span>, <span class="str">"$$yoyni_q"</span>],   <span class="cmt"># ROE、净利润同比</span>
+    start_time=<span class="str">"2019-01-01"</span>,
+    end_time=<span class="str">"2020-12-31"</span>,
+    freq=<span class="str">"day"</span>,
+)
+</code></pre>
+    <p>底层实现依赖 <code>utils</code> 里的 <code>get_period_list</code> / <code>read_period_data</code>（在 <code>data.py:26-38</code> 已导入），把「报告期 → 公布日 → 交易日可见性」这层映射管理起来。你只管写 <code>$$字段名</code>，look-ahead 的防护由数据层自动完成。</p>
+
+    <div class="callout tip"><span class="t">小结</span>
+    行情用 <code>$field</code>、PIT 财务用 <code>$$field</code>；前者当天可见，后者按公告日可见。回测涉及基本面因子时，务必走 PIT 通道，别自己 <code>merge</code> 财报表——那几乎必然埋下未来函数。
+    </div>
+
+    <div class="exercises">
+      <h2>📝 课后练习题</h2>
+
+      <div class="q"><b>1.（概念题）<code>D.features</code> 返回的 DataFrame 的索引结构是什么？为什么直接对多只股票的某一列画图会出错？</b>
+        <details><summary>参考答案</summary><div class="a">返回的是双层 MultiIndex，外层 <code>instrument</code>、内层 <code>datetime</code>。直接对多只股票的一列画图，会把不同股票的时间序列首尾相连成一条锯齿曲线。应先 <code>df.loc["SH600000"]</code> 切出单只，或用 <code>df["$close"].unstack(level=0)</code> 把股票摊成列再画。</div></details>
+      </div>
+
+      <div class="q"><b>2.（代码填空）写一个字段公式，计算「当日收盘价相对过去 20 日均线的偏离百分比」。</b>
+        <details><summary>参考答案</summary><div class="a"><code>"$close / Mean($close, 20) - 1"</code>。其中 <code>$close</code> 是原始收盘价字段（Feature），<code>Mean(x, N)</code> 是 Rolling 算子（<code>ops.py:827</code>），二者用 <code>Div</code>/<code>Sub</code>（PairOperator）组合成表达式树。</div></details>
+      </div>
+
+      <div class="q"><b>3.（改错题）有人在同一进程里跑完实验后再次调用 <code>qlib.init(provider_uri=另一个路径)</code>，然后抱怨第一条 <code>D.features</code> 又变慢了，怀疑是 bug。对吗？</b>
+        <details><summary>参考答案</summary><div class="a">不是 bug。<code>qlib.init()</code> 内部会执行 <code>H.clear()</code>（<code>qlib/__init__.py:56</code>），清空内存缓存 <code>H</code> 的三个格子（c/i/f）。所以 re-init 后第一次取数必然要重新从磁盘读并重算，自然变慢，属于预期行为。</div></details>
+      </div>
+
+      <div class="q"><b>4.（概念题）特征在磁盘上是怎么存的？为什么这种布局利于按字段取数？</b>
+        <details><summary>参考答案</summary><div class="a">每只股票、每个字段、每个频率各一个 <code>.bin</code> 文件，路径为 <code>{code}/{field}.{freq}.bin</code>（<code>file_storage.py:289</code>），文件头存起始日历下标，后接定长 <code>float32</code> 数组。这是列式存储：取 <code>$close</code> 时完全不必读取 <code>$volume</code> 文件，IO 最小；新增自定义因子只需补一个 <code>.bin</code>，无需重写整表。</div></details>
+      </div>
+
+      <div class="q"><b>5.（思考题）什么是「未来函数」？用财务数据举例说明它为什么危险，Qlib 靠什么机制避免？</b>
+        <details><summary>参考答案</summary><div class="a">未来函数指回测中用到了当时实际拿不到的未来信息。例如公司 Q1（3 月 31 日报告期）净利润实际 4 月底才公告，若在 4 月 1 日就使用，就偷看了未来。危险在于它让回测虚高、却在实盘失效，且不报错难以察觉。Qlib 用 PIT（点数据，<code>qlib/data/pit.py</code> 的 <code>P</code>/<code>PRef</code>）为每期财报记录「公告可见日」，取数时对每个交易日只返回当时已公布的最新一期；字段用 <code>$$</code> 前缀。</div></details>
+      </div>
+
+      <div class="q"><b>6.（进阶）滚动算子里 <code>Slope</code>、<code>Rsquare</code> 这类的核心计算是纯 Python 实现的吗？如果你在仓库根目录 <code>import qlib</code> 报 ImportError，最可能的原因是什么？</b>
+        <details><summary>参考答案</summary><div class="a">不是纯 Python。它们的核心循环由 Cython 实现，从 <code>qlib/data/_libs/rolling</code> 和 <code>expanding</code> 导入（<code>ops.py:18-19</code>）。在仓库根目录直接 import 会因为 Cython 扩展尚未编译而 ImportError（<code>ops.py:20-24</code> 的报错提示正是为此）。解决办法：用 <code>pip install .</code> 安装，或 <code>python setup.py build_ext --inplace</code> 就地编译扩展，且不要在仓库根目录下 import。</div></details>
+      </div>
+    </div>
+
+    <div class="pager">
+      <a class="prev" href="ch02.html"><span class="lbl">← 上一章</span><span class="ttl">环境搭建与数据准备</span></a>
+      <a class="next" href="ch04.html"><span class="lbl">下一章 →</span><span class="ttl">数据集与处理器</span></a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

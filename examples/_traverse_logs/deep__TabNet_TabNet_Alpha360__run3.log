@@ -1,0 +1,528 @@
+'The following are prediction results of the TabnetModel model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000    0.031013
+           SH600008    0.015986
+           SH600009    0.022409
+           SH600010    0.024395
+           SH600015   -0.032965
+{'IC': np.float64(0.025312016354621467),
+ 'ICIR': np.float64(0.18788635713519278),
+ 'Rank IC': np.float64(0.036592620057727926),
+ 'Rank ICIR': np.float64(0.2931479687227272)}
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean               0.000290
+std                0.005513
+annualized_return  0.068982
+information_ratio  0.811118
+max_drawdown      -0.120705
+'The following are analysis results of the excess return with cost(1day).'
+                       risk
+mean               0.000118
+std                0.005512
+annualized_return  0.027977
+information_ratio  0.329012
+max_drawdown      -0.152899
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0
+
+[24937:MainThread](2026-07-19 15:29:00,083) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[24937:MainThread](2026-07-19 15:29:00,089) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[24937:MainThread](2026-07-19 15:29:00,091) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[24937:MainThread](2026-07-19 15:29:00,091) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[24937:MainThread](2026-07-19 15:29:00,104) INFO - qlib.workflow - [exp.py:258] - Experiment 933808610724524432 starts running ...
+[24937:MainThread](2026-07-19 15:29:00,840) INFO - qlib.workflow - [recorder.py:345] - Recorder 84cddc8ce6e44660b29a20e09601e4e2 starts running under Experiment 933808610724524432 ...
+[24937:MainThread](2026-07-19 15:29:03,882) INFO - qlib.TabNet - [pytorch_tabnet.py:78] - TabNet:
+batch_size : 4096
+virtual bs : 2048
+device : cpu
+pretrain: True
+[24937:MainThread](2026-07-19 15:29:03,901) INFO - qlib.TabNet - [pytorch_tabnet.py:91] - model:
+TabNet(
+  (shared): ModuleList(
+    (0): Linear(in_features=360, out_features=256, bias=True)
+    (1): Linear(in_features=128, out_features=256, bias=True)
+  )
+  (first_step): FeatureTransformer(
+    (shared): ModuleList(
+      (0): GLU(
+        (fc): Linear(in_features=360, out_features=256, bias=True)
+        (bn): GBN(
+          (bn): BatchNorm1d(256, eps=1e-05, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        )
+      )
+      (1): GLU(
+        (fc): Linear(in_features=128, out_features=256, bias=True)
+        (bn): GBN(
+          (bn): BatchNorm1d(256, eps=1e-05, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        )
+      )
+    )
+    (independ): ModuleList(
+      (0-1): 2 x GLU(
+        (fc): Linear(in_features=128, out_features=256, bias=True)
+        (bn): GBN(
+          (bn): BatchNorm1d(256, eps=1e-05, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        )
+      )
+    )
+  )
+  (steps): ModuleList(
+    (0-3): 4 x DecisionStep(
+      (atten_tran): AttentionTransformer(
+        (fc): Linear(in_features=64, out_features=360, bias=True)
+        (bn): GBN(
+          (bn): BatchNorm1d(360, eps=1e-05, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+        )
+      )
+      (fea_tran): FeatureTransformer(
+        (shared): ModuleList(
+          (0): GLU(
+            (fc): Linear(in_features=360, out_features=256, bias=True)
+            (bn): GBN(
+              (bn): BatchNorm1d(256, eps=1e-05, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+          (1): GLU(
+            (fc): Linear(in_features=128, out_features=256, bias=True)
+            (bn): GBN(
+              (bn): BatchNorm1d(256, eps=1e-05, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (independ): ModuleList(
+          (0-1): 2 x GLU(
+            (fc): Linear(in_features=128, out_features=256, bias=True)
+            (bn): GBN(
+              (bn): BatchNorm1d(256, eps=1e-05, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+      )
+    )
+  )
+  (fc): Linear(in_features=64, out_features=64, bias=True)
+  (bn): BatchNorm1d(360, eps=1e-05, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+)
+TabNet_Decoder(
+  (shared): ModuleList(
+    (0): Linear(in_features=64, out_features=720, bias=True)
+    (1): Linear(in_features=360, out_features=720, bias=True)
+  )
+  (steps): ModuleList(
+    (0-4): 5 x DecoderStep(
+      (fea_tran): FeatureTransformer(
+        (shared): ModuleList(
+          (0): GLU(
+            (fc): Linear(in_features=64, out_features=720, bias=True)
+            (bn): GBN(
+              (bn): BatchNorm1d(720, eps=1e-05, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+          (1): GLU(
+            (fc): Linear(in_features=360, out_features=720, bias=True)
+            (bn): GBN(
+              (bn): BatchNorm1d(720, eps=1e-05, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+        (independ): ModuleList(
+          (0-1): 2 x GLU(
+            (fc): Linear(in_features=360, out_features=720, bias=True)
+            (bn): GBN(
+              (bn): BatchNorm1d(720, eps=1e-05, momentum=0.01, affine=True, bias=True, track_running_stats=True)
+            )
+          )
+        )
+      )
+      (fc): Linear(in_features=360, out_features=360, bias=True)
+    )
+  )
+)
+[24937:MainThread](2026-07-19 15:29:03,902) INFO - qlib.TabNet - [pytorch_tabnet.py:92] - model size: 3.9595 MB
+[24937:MainThread](2026-07-19 15:29:51,039) INFO - qlib.timer - [log.py:127] - Time cost: 45.574s | Loading data Done
+/Users/xuxin/.local/lib/python3.12/site-packages/numpy/lib/_nanfunctions_impl.py:1215: RuntimeWarning: All-NaN slice encountered
+  return fnb._ureduce(a, func=_nanmedian, keepdims=keepdims,
+[24937:MainThread](2026-07-19 15:29:57,898) INFO - qlib.timer - [log.py:127] - Time cost: 5.587s | RobustZScoreNorm Done
+[24937:MainThread](2026-07-19 15:29:58,573) INFO - qlib.timer - [log.py:127] - Time cost: 0.674s | Fillna Done
+[24937:MainThread](2026-07-19 15:29:59,369) INFO - qlib.timer - [log.py:127] - Time cost: 0.312s | DropnaLabel Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:358: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[cols] = t
+[24937:MainThread](2026-07-19 15:29:59,528) INFO - qlib.timer - [log.py:127] - Time cost: 0.158s | CSRankNorm Done
+[24937:MainThread](2026-07-19 15:29:59,540) INFO - qlib.timer - [log.py:127] - Time cost: 8.500s | fit & process data Done
+[24937:MainThread](2026-07-19 15:29:59,540) INFO - qlib.timer - [log.py:127] - Time cost: 54.075s | Init data Done
+[24937:MainThread](2026-07-19 15:29:59,541) WARNING - qlib.utils - [__init__.py:849] - The parameter `reweighter` with value `None` is ignored.
+[24937:MainThread](2026-07-19 15:29:59,541) INFO - qlib.TabNet - [pytorch_tabnet.py:159] - Pretrain...
+[24937:MainThread](2026-07-19 15:30:22,341) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 0
+[24937:MainThread](2026-07-19 15:30:22,341) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:31:11,567) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:31:36,517) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 8176.528689, valid 10733.582386
+[24937:MainThread](2026-07-19 15:31:36,517) INFO - qlib.TabNet - [pytorch_tabnet.py:142] - Save Model...
+[24937:MainThread](2026-07-19 15:31:36,528) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 1
+[24937:MainThread](2026-07-19 15:31:36,529) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:32:25,034) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:32:50,182) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 533.930696, valid 801.832417
+[24937:MainThread](2026-07-19 15:32:50,182) INFO - qlib.TabNet - [pytorch_tabnet.py:142] - Save Model...
+[24937:MainThread](2026-07-19 15:32:50,190) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 2
+[24937:MainThread](2026-07-19 15:32:50,190) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:33:39,444) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:34:04,191) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 78.172835, valid 104.635581
+[24937:MainThread](2026-07-19 15:34:04,191) INFO - qlib.TabNet - [pytorch_tabnet.py:142] - Save Model...
+[24937:MainThread](2026-07-19 15:34:04,198) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 3
+[24937:MainThread](2026-07-19 15:34:04,198) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:34:51,995) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:35:16,087) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 64.575433, valid 76.598658
+[24937:MainThread](2026-07-19 15:35:16,087) INFO - qlib.TabNet - [pytorch_tabnet.py:142] - Save Model...
+[24937:MainThread](2026-07-19 15:35:16,092) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 4
+[24937:MainThread](2026-07-19 15:35:16,092) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:36:03,139) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:36:28,258) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 70.484280, valid 90.333535
+[24937:MainThread](2026-07-19 15:36:28,258) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 5
+[24937:MainThread](2026-07-19 15:36:28,258) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:37:15,697) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:37:40,821) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 59.753653, valid 69.505006
+[24937:MainThread](2026-07-19 15:37:40,821) INFO - qlib.TabNet - [pytorch_tabnet.py:142] - Save Model...
+[24937:MainThread](2026-07-19 15:37:40,826) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 6
+[24937:MainThread](2026-07-19 15:37:40,826) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:38:28,401) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:38:53,132) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 56.336727, valid 67.054535
+[24937:MainThread](2026-07-19 15:38:53,132) INFO - qlib.TabNet - [pytorch_tabnet.py:142] - Save Model...
+[24937:MainThread](2026-07-19 15:38:53,137) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 7
+[24937:MainThread](2026-07-19 15:38:53,137) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:39:40,225) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:40:05,276) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 53.826883, valid 66.232601
+[24937:MainThread](2026-07-19 15:40:05,276) INFO - qlib.TabNet - [pytorch_tabnet.py:142] - Save Model...
+[24937:MainThread](2026-07-19 15:40:05,281) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 8
+[24937:MainThread](2026-07-19 15:40:05,281) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:40:52,931) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:41:18,140) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 50.321870, valid 61.381175
+[24937:MainThread](2026-07-19 15:41:18,140) INFO - qlib.TabNet - [pytorch_tabnet.py:142] - Save Model...
+[24937:MainThread](2026-07-19 15:41:18,147) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 9
+[24937:MainThread](2026-07-19 15:41:18,147) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:42:05,852) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:42:30,712) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 43.401853, valid 49.977908
+[24937:MainThread](2026-07-19 15:42:30,712) INFO - qlib.TabNet - [pytorch_tabnet.py:142] - Save Model...
+[24937:MainThread](2026-07-19 15:42:30,718) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 10
+[24937:MainThread](2026-07-19 15:42:30,718) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:43:17,966) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:43:41,841) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 60.995613, valid 73.784129
+[24937:MainThread](2026-07-19 15:43:41,842) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 11
+[24937:MainThread](2026-07-19 15:43:41,842) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:44:29,249) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:44:53,324) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 47.576831, valid 54.741603
+[24937:MainThread](2026-07-19 15:44:53,324) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 12
+[24937:MainThread](2026-07-19 15:44:53,324) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:45:40,271) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:46:04,414) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 43.172227, valid 48.598231
+[24937:MainThread](2026-07-19 15:46:04,414) INFO - qlib.TabNet - [pytorch_tabnet.py:142] - Save Model...
+[24937:MainThread](2026-07-19 15:46:04,421) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 13
+[24937:MainThread](2026-07-19 15:46:04,421) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:46:52,039) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:47:16,265) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 49.838507, valid 55.866224
+[24937:MainThread](2026-07-19 15:47:16,265) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 14
+[24937:MainThread](2026-07-19 15:47:16,266) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:48:03,718) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:48:28,509) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 45.608585, valid 53.649843
+[24937:MainThread](2026-07-19 15:48:28,509) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 15
+[24937:MainThread](2026-07-19 15:48:28,509) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:49:16,011) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:49:41,019) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 40.211538, valid 46.319722
+[24937:MainThread](2026-07-19 15:49:41,019) INFO - qlib.TabNet - [pytorch_tabnet.py:142] - Save Model...
+[24937:MainThread](2026-07-19 15:49:41,026) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 16
+[24937:MainThread](2026-07-19 15:49:41,026) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:50:29,337) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:50:54,754) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 42.747384, valid 48.031180
+[24937:MainThread](2026-07-19 15:50:54,755) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 17
+[24937:MainThread](2026-07-19 15:50:54,755) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:51:42,202) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:52:07,224) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 40.510228, valid 46.795031
+[24937:MainThread](2026-07-19 15:52:07,225) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 18
+[24937:MainThread](2026-07-19 15:52:07,225) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:52:54,643) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:53:18,642) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 46.359260, valid 54.536505
+[24937:MainThread](2026-07-19 15:53:18,642) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 19
+[24937:MainThread](2026-07-19 15:53:18,642) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:54:06,064) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:54:30,862) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 47.340234, valid 54.395917
+[24937:MainThread](2026-07-19 15:54:30,863) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 20
+[24937:MainThread](2026-07-19 15:54:30,863) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:55:18,122) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:55:43,065) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 58.094454, valid 65.762466
+[24937:MainThread](2026-07-19 15:55:43,066) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 21
+[24937:MainThread](2026-07-19 15:55:43,066) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:56:30,393) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:56:55,487) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 53.031155, valid 58.078028
+[24937:MainThread](2026-07-19 15:56:55,487) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 22
+[24937:MainThread](2026-07-19 15:56:55,488) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:57:42,962) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:58:07,882) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 63.493212, valid 71.592469
+[24937:MainThread](2026-07-19 15:58:07,882) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 23
+[24937:MainThread](2026-07-19 15:58:07,883) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 15:58:55,196) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 15:59:19,945) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 47.065296, valid 53.862041
+[24937:MainThread](2026-07-19 15:59:19,945) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 24
+[24937:MainThread](2026-07-19 15:59:19,946) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 16:00:07,021) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 16:00:31,816) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 61.801054, valid 68.877674
+[24937:MainThread](2026-07-19 16:00:31,816) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 25
+[24937:MainThread](2026-07-19 16:00:31,816) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 16:01:19,554) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 16:01:44,654) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 51.456279, valid 56.257049
+[24937:MainThread](2026-07-19 16:01:44,654) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 26
+[24937:MainThread](2026-07-19 16:01:44,654) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 16:02:34,123) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 16:03:00,278) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 47.857971, valid 53.329088
+[24937:MainThread](2026-07-19 16:03:00,278) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 27
+[24937:MainThread](2026-07-19 16:03:00,279) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 16:03:49,708) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 16:04:14,115) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 46.411180, valid 50.877570
+[24937:MainThread](2026-07-19 16:04:14,115) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 28
+[24937:MainThread](2026-07-19 16:04:14,115) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 16:05:01,627) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 16:05:25,666) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 59.174646, valid 70.426767
+[24937:MainThread](2026-07-19 16:05:25,666) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 29
+[24937:MainThread](2026-07-19 16:05:25,667) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 16:06:12,833) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 16:06:36,590) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 46.155700, valid 53.830887
+[24937:MainThread](2026-07-19 16:06:36,590) INFO - qlib.TabNet - [pytorch_tabnet.py:133] - epoch: 30
+[24937:MainThread](2026-07-19 16:06:36,590) INFO - qlib.TabNet - [pytorch_tabnet.py:134] - pre-training...
+[24937:MainThread](2026-07-19 16:07:24,001) INFO - qlib.TabNet - [pytorch_tabnet.py:136] - evaluating...
+[24937:MainThread](2026-07-19 16:07:47,911) INFO - qlib.TabNet - [pytorch_tabnet.py:139] - train 63.920522, valid 71.958884
+[24937:MainThread](2026-07-19 16:07:47,911) INFO - qlib.TabNet - [pytorch_tabnet.py:148] - early stop
+[24937:MainThread](2026-07-19 16:07:47,968) INFO - qlib.TabNet - [pytorch_tabnet.py:161] - Load Pretrain model
+[24937:MainThread](2026-07-19 16:08:05,390) INFO - qlib.TabNet - [pytorch_tabnet.py:185] - training...
+[24937:MainThread](2026-07-19 16:08:05,390) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 0
+[24937:MainThread](2026-07-19 16:08:05,390) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:08:22,298) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:08:34,234) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.999907, valid -1.001420
+[24937:MainThread](2026-07-19 16:08:34,238) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 1
+[24937:MainThread](2026-07-19 16:08:34,238) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:08:51,424) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:09:03,423) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.994361, valid -0.996645
+[24937:MainThread](2026-07-19 16:09:03,426) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 2
+[24937:MainThread](2026-07-19 16:09:03,427) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:09:20,288) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:09:32,154) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.995874, valid -0.998663
+[24937:MainThread](2026-07-19 16:09:32,154) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 3
+[24937:MainThread](2026-07-19 16:09:32,154) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:09:48,986) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:10:00,839) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.996387, valid -0.998512
+[24937:MainThread](2026-07-19 16:10:00,839) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 4
+[24937:MainThread](2026-07-19 16:10:00,839) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:10:17,688) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:10:29,514) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -1.006972, valid -1.010400
+[24937:MainThread](2026-07-19 16:10:29,514) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 5
+[24937:MainThread](2026-07-19 16:10:29,514) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:10:46,657) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:10:58,505) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -1.004424, valid -1.009098
+[24937:MainThread](2026-07-19 16:10:58,505) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 6
+[24937:MainThread](2026-07-19 16:10:58,505) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:11:15,566) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:11:27,533) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.994156, valid -0.996904
+[24937:MainThread](2026-07-19 16:11:27,533) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 7
+[24937:MainThread](2026-07-19 16:11:27,534) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:11:44,549) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:11:56,491) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.995347, valid -0.999296
+[24937:MainThread](2026-07-19 16:11:56,491) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 8
+[24937:MainThread](2026-07-19 16:11:56,492) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:12:13,347) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:12:25,207) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.995908, valid -0.999254
+[24937:MainThread](2026-07-19 16:12:25,207) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 9
+[24937:MainThread](2026-07-19 16:12:25,208) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:12:41,953) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:12:54,040) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.994757, valid -1.001321
+[24937:MainThread](2026-07-19 16:12:54,040) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 10
+[24937:MainThread](2026-07-19 16:12:54,040) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:13:11,078) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:13:23,282) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.996373, valid -0.999456
+[24937:MainThread](2026-07-19 16:13:23,283) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 11
+[24937:MainThread](2026-07-19 16:13:23,283) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:13:40,384) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:13:52,627) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.995049, valid -0.999470
+[24937:MainThread](2026-07-19 16:13:52,628) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 12
+[24937:MainThread](2026-07-19 16:13:52,628) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:14:09,596) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:14:21,875) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.992249, valid -0.998115
+[24937:MainThread](2026-07-19 16:14:21,875) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 13
+[24937:MainThread](2026-07-19 16:14:21,875) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:14:38,742) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:14:50,966) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.999011, valid -1.006867
+[24937:MainThread](2026-07-19 16:14:50,966) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 14
+[24937:MainThread](2026-07-19 16:14:50,966) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:15:07,797) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:15:20,118) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -1.000030, valid -1.005045
+[24937:MainThread](2026-07-19 16:15:20,119) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 15
+[24937:MainThread](2026-07-19 16:15:20,119) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:15:37,044) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:15:49,162) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -1.000294, valid -1.004327
+[24937:MainThread](2026-07-19 16:15:49,162) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 16
+[24937:MainThread](2026-07-19 16:15:49,163) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:16:06,091) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:16:18,236) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.996290, valid -1.000940
+[24937:MainThread](2026-07-19 16:16:18,236) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 17
+[24937:MainThread](2026-07-19 16:16:18,236) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:16:35,029) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:16:47,166) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -1.002175, valid -1.007732
+[24937:MainThread](2026-07-19 16:16:47,166) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 18
+[24937:MainThread](2026-07-19 16:16:47,166) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:17:04,028) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:17:16,256) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.990022, valid -0.995529
+[24937:MainThread](2026-07-19 16:17:16,259) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 19
+[24937:MainThread](2026-07-19 16:17:16,260) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:17:33,090) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:17:44,840) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.991129, valid -0.997946
+[24937:MainThread](2026-07-19 16:17:44,841) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 20
+[24937:MainThread](2026-07-19 16:17:44,841) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:18:01,745) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:18:13,638) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -1.000808, valid -1.007256
+[24937:MainThread](2026-07-19 16:18:13,639) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 21
+[24937:MainThread](2026-07-19 16:18:13,639) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:18:30,962) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:18:42,875) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.990909, valid -0.999350
+[24937:MainThread](2026-07-19 16:18:42,876) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 22
+[24937:MainThread](2026-07-19 16:18:42,876) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:18:59,893) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:19:11,850) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.989910, valid -0.998849
+[24937:MainThread](2026-07-19 16:19:11,851) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 23
+[24937:MainThread](2026-07-19 16:19:11,851) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:19:28,983) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:19:40,856) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.989103, valid -0.999397
+[24937:MainThread](2026-07-19 16:19:40,856) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 24
+[24937:MainThread](2026-07-19 16:19:40,857) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:19:57,856) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:20:09,778) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.991734, valid -1.001094
+[24937:MainThread](2026-07-19 16:20:09,778) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 25
+[24937:MainThread](2026-07-19 16:20:09,778) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:20:27,307) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:20:39,228) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.997320, valid -1.007125
+[24937:MainThread](2026-07-19 16:20:39,228) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 26
+[24937:MainThread](2026-07-19 16:20:39,229) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:20:56,510) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:21:08,499) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.997074, valid -1.002253
+[24937:MainThread](2026-07-19 16:21:08,499) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 27
+[24937:MainThread](2026-07-19 16:21:08,499) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:21:25,663) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:21:37,811) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.992811, valid -0.998657
+[24937:MainThread](2026-07-19 16:21:37,811) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 28
+[24937:MainThread](2026-07-19 16:21:37,811) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:21:54,855) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:22:06,831) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.990052, valid -0.996649
+[24937:MainThread](2026-07-19 16:22:06,832) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 29
+[24937:MainThread](2026-07-19 16:22:06,832) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:22:23,822) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:22:35,722) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -1.025914, valid -1.053149
+[24937:MainThread](2026-07-19 16:22:35,722) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 30
+[24937:MainThread](2026-07-19 16:22:35,723) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:22:52,827) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:23:04,741) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.995602, valid -1.005196
+[24937:MainThread](2026-07-19 16:23:04,741) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 31
+[24937:MainThread](2026-07-19 16:23:04,741) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:23:21,808) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:23:33,787) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.990178, valid -0.998266
+[24937:MainThread](2026-07-19 16:23:33,788) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 32
+[24937:MainThread](2026-07-19 16:23:33,788) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:23:50,954) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:24:02,883) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.993537, valid -0.998499
+[24937:MainThread](2026-07-19 16:24:02,883) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 33
+[24937:MainThread](2026-07-19 16:24:02,884) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:24:19,928) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:24:31,789) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.989589, valid -0.998822
+[24937:MainThread](2026-07-19 16:24:31,789) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 34
+[24937:MainThread](2026-07-19 16:24:31,789) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:24:48,718) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:25:00,571) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.990801, valid -0.997343
+[24937:MainThread](2026-07-19 16:25:00,571) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 35
+[24937:MainThread](2026-07-19 16:25:00,572) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:25:17,592) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:25:29,496) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.989804, valid -0.998005
+[24937:MainThread](2026-07-19 16:25:29,496) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 36
+[24937:MainThread](2026-07-19 16:25:29,496) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:25:46,446) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:25:58,340) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.988885, valid -0.999902
+[24937:MainThread](2026-07-19 16:25:58,340) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 37
+[24937:MainThread](2026-07-19 16:25:58,340) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:26:15,382) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:26:27,252) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.986597, valid -0.998323
+[24937:MainThread](2026-07-19 16:26:27,252) INFO - qlib.TabNet - [pytorch_tabnet.py:189] - epoch: 38
+[24937:MainThread](2026-07-19 16:26:27,253) INFO - qlib.TabNet - [pytorch_tabnet.py:190] - training...
+[24937:MainThread](2026-07-19 16:26:44,211) INFO - qlib.TabNet - [pytorch_tabnet.py:192] - evaluating...
+[24937:MainThread](2026-07-19 16:26:56,113) INFO - qlib.TabNet - [pytorch_tabnet.py:195] - train -0.987355, valid -1.000852
+[24937:MainThread](2026-07-19 16:26:56,113) INFO - qlib.TabNet - [pytorch_tabnet.py:207] - early stop
+[24937:MainThread](2026-07-19 16:26:56,113) INFO - qlib.TabNet - [pytorch_tabnet.py:210] - best score: -0.995529 @ 18
+[24937:MainThread](2026-07-19 16:26:56,314) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[24937:MainThread](2026-07-19 16:27:02,543) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 933808610724524432
+/Users/xuxin/.local/lib/python3.12/site-packages/pandas/core/nanops.py:1632: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+[24937:MainThread](2026-07-19 16:27:02,845) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+[24937:MainThread](2026-07-19 16:27:10,895) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[24937:MainThread](2026-07-19 16:27:10,896) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[24937:MainThread](2026-07-19 16:27:10,897) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[24937:MainThread](2026-07-19 16:27:10,898) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[24937:MainThread](2026-07-19 16:27:18,738) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[24937:MainThread](2026-07-19 16:27:18,738) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[24937:MainThread](2026-07-19 16:27:18,743) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x14322d040>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   3%|▎         | 22/871 [00:00<00:03, 217.90it/s]
+backtest loop:   5%|▌         | 47/871 [00:00<00:03, 235.27it/s]
+backtest loop:   8%|▊         | 72/871 [00:00<00:03, 235.47it/s]
+backtest loop:  11%|█▏        | 98/871 [00:00<00:03, 242.92it/s]
+backtest loop:  14%|█▍        | 124/871 [00:00<00:03, 245.20it/s]
+backtest loop:  17%|█▋        | 151/871 [00:00<00:02, 251.23it/s]
+backtest loop:  20%|██        | 178/871 [00:00<00:02, 255.31it/s]
+backtest loop:  23%|██▎       | 204/871 [00:00<00:02, 252.23it/s]
+backtest loop:  27%|██▋       | 231/871 [00:00<00:02, 256.07it/s]
+backtest loop:  30%|██▉       | 257/871 [00:01<00:02, 257.13it/s]
+backtest loop:  32%|███▏      | 283/871 [00:01<00:02, 248.97it/s]
+backtest loop:  36%|███▌      | 310/871 [00:01<00:02, 253.57it/s]
+backtest loop:  39%|███▊      | 336/871 [00:01<00:02, 252.75it/s]
+backtest loop:  42%|████▏     | 362/871 [00:01<00:02, 254.26it/s]
+backtest loop:  45%|████▍     | 388/871 [00:01<00:01, 251.16it/s]
+backtest loop:  48%|████▊     | 415/871 [00:01<00:01, 255.51it/s]
+backtest loop:  51%|█████     | 441/871 [00:01<00:01, 255.81it/s]
+backtest loop:  54%|█████▎    | 467/871 [00:01<00:01, 249.93it/s]
+backtest loop:  57%|█████▋    | 493/871 [00:01<00:01, 250.09it/s]
+backtest loop:  60%|█████▉    | 519/871 [00:02<00:01, 248.67it/s]
+backtest loop:  62%|██████▏   | 544/871 [00:02<00:01, 247.25it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  65%|██████▌   | 569/871 [00:02<00:01, 247.67it/s]
+backtest loop:  68%|██████▊   | 594/871 [00:02<00:01, 245.71it/s]
+backtest loop:  71%|███████   | 619/871 [00:02<00:01, 244.44it/s]
+backtest loop:  74%|███████▍  | 644/871 [00:02<00:00, 243.27it/s]
+backtest loop:  77%|███████▋  | 669/871 [00:02<00:00, 238.32it/s]
+backtest loop:  80%|███████▉  | 693/871 [00:02<00:00, 238.17it/s]
+backtest loop:  82%|████████▏ | 718/871 [00:02<00:00, 239.80it/s]
+backtest loop:  85%|████████▌ | 742/871 [00:03<00:00, 235.39it/s]
+backtest loop:  88%|████████▊ | 766/871 [00:03<00:00, 236.58it/s]
+backtest loop:  91%|█████████ | 790/871 [00:03<00:00, 236.82it/s]
+backtest loop:  93%|█████████▎| 814/871 [00:03<00:00, 233.42it/s]
+backtest loop:  96%|█████████▌| 838/871 [00:03<00:00, 234.43it/s]
+backtest loop:  99%|█████████▉| 862/871 [00:03<00:00, 235.59it/s]
+backtest loop: 100%|██████████| 871/871 [00:03<00:00, 238.30it/s]
+[24937:MainThread](2026-07-19 16:27:22,421) INFO - qlib.workflow - [record_temp.py:520] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 933808610724524432
+[24937:MainThread](2026-07-19 16:27:22,424) INFO - qlib.workflow - [record_temp.py:545] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 933808610724524432
+[24937:MainThread](2026-07-19 16:27:22,717) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | waiting `async_log` Done

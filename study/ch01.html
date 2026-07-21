@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qlib 简介与架构概览 · Qlib 学习教程</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>Qlib 教程</h1>
+    <div class="sub">从入门到实战</div>
+    <nav>
+      <a href="index.html"><span class="num">home</span>首页</a>
+      <a href="ch01.html" class="active"><span class="num">01</span>简介与架构</a>
+      <a href="ch02.html"><span class="num">02</span>环境与数据</a>
+      <a href="ch03.html"><span class="num">03</span>数据层</a>
+      <a href="ch04.html"><span class="num">04</span>数据集与处理器</a>
+      <a href="ch05.html"><span class="num">05</span>模型</a>
+      <a href="ch06.html"><span class="num">06</span>策略与回测</a>
+      <a href="ch07.html"><span class="num">07</span>工作流</a>
+      <a href="ch08.html"><span class="num">08</span>综合实战</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <span class="tag">CHAPTER 01</span>
+    <h1>Qlib 简介与架构概览</h1>
+    <p class="lead">在写第一行代码之前，先看清全局：量化研究到底在做什么，Qlib 站在什么位置，以及它那条从「数据」流到「分析」的流水线长什么样。</p>
+
+    <h2>一、量化投资是在做什么？</h2>
+    <p>先讲个生活里的场景。你去菜市场买菜，凭经验知道「早上的菜新鲜」「雨天青菜会涨价」——这是<strong>主观判断</strong>。而如果你把过去三年每天的菜价、天气、进货量全部记成表格，写一个程序自动算出「明天哪种菜最值得囤」，这就是<strong>量化</strong>。</p>
+    <p>把「菜」换成「股票」，把「囤货赚差价」换成「低买高卖赚收益」，量化投资的骨架就出来了：<strong>用数据和数学模型，代替拍脑袋，去做买卖决策</strong>。它通常包含四个动作：</p>
+    <ul>
+      <li><strong>找信号（预测）</strong>：从海量历史行情里挖出「哪些股票未来可能涨」的规律，输出一个打分（signal / score）。</li>
+      <li><strong>做决策（策略）</strong>：根据打分决定「买哪些、买多少、什么时候卖」。</li>
+      <li><strong>模拟验证（回测）</strong>：拿历史数据当「时光机」，假装从过去某天开始按策略操作，看最后赚没赚钱。</li>
+      <li><strong>复盘分析</strong>：算出收益率、回撤、夏普比率等指标，判断策略到底好不好。</li>
+    </ul>
+    <div class="callout"><span class="t">提示</span>量化研究的核心痛点不是「写模型」，而是<strong>把数据、特征、模型、回测这一整条链路串起来还不出错</strong>。Qlib 存在的最大意义，就是把这条又长又容易踩坑的链路做成了标准化、可复用的积木。</div>
+
+    <div class="callout warn"><span class="t">陷阱</span>回测里最致命的错误叫「未来函数 / 前视偏差（look-ahead bias）」——不小心用到了「当时还不知道」的信息，导致回测收益虚高、实盘一败涂地。Qlib 专门用 <code>qlib/data/pit.py</code>（Point-In-Time 数据）来防这类问题，后面章节会展开。</div>
+
+    <h2>二、Qlib 是什么？它的定位</h2>
+    <p>Qlib 是微软（Microsoft）开源的一套<strong>面向 AI 的量化投资研究平台</strong>。虽然 GitHub 仓库叫 <code>qlib</code>，但你 <code>pip install</code> 时装的包名是 <code>pyqlib</code>，代码里则一律 <code>import qlib</code>。</p>
+    <p>它的定位不是「一个模型」或「一个回测器」，而是覆盖了量化研究<strong>完整流水线</strong>的一整套工具箱。用官方 <code>CLAUDE.md</code> 里的原话（<code>CLAUDE.md:7</code>）：它涵盖 data ingestion（数据接入）、feature/factor computation（因子计算）、model training（模型训练）、portfolio strategy（组合策略）、backtest execution（回测执行）到 analysis（分析）。</p>
+    <p>更关键的一句设计理念也在同一处：<em>"Components are intentionally loose-coupled — each can be used stand-alone."</em> 组件之间<strong>刻意做成松耦合</strong>，每一块都能单独拿出来用。这意味着：</p>
+    <ul>
+      <li>你可以只用它的<strong>数据层</strong>（高性能读取 A 股/美股行情），模型和策略全用自己的。</li>
+      <li>也可以只用它的<strong>回测引擎</strong>，信号来自你自己的模型。</li>
+      <li>当然也可以从头到尾全用 Qlib——这正是新手最省心的方式。</li>
+    </ul>
+    <table>
+      <thead><tr><th>维度</th><th>Qlib 的做法</th></tr></thead>
+      <tbody>
+        <tr><td>开源方</td><td>Microsoft，MIT 许可证</td></tr>
+        <tr><td>安装包名</td><td><code>pyqlib</code>（导入时是 <code>qlib</code>）</td></tr>
+        <tr><td>覆盖范围</td><td>数据 → 数据集 → 模型 → 策略 → 回测 → 记录 → 分析（全流程）</td></tr>
+        <tr><td>耦合方式</td><td>组件松耦合，可单独使用</td></tr>
+        <tr><td>面向对象</td><td>量化研究员、想把 AI/ML 用到投资里的开发者</td></tr>
+      </tbody>
+    </table>
+    <div class="callout tip"><span class="t">小贴士</span>Qlib 自带两个 C 语言写的 Cython 扩展（<code>qlib/data/_libs/rolling.pyx</code>、<code>expanding.pyx</code>），用来加速滚动窗口计算。所以光 <code>pip install -e .</code> 是不够的，必须先编译它们（<code>make install</code> 或 <code>make prerequisite</code>）。这点第 2 章会详细讲。</div>
+
+    <h2>三、核心设计哲学：一切皆可「配置字典」</h2>
+    <p>如果说 Qlib 有一个「一以贯之」的设计精髓，那就是这句话：<strong>几乎所有东西，都能用一个嵌套字典来描述并实例化</strong>。这个字典长这样：</p>
+    <pre><code>{
+    <span class="str">"class"</span>: <span class="str">"LGBModel"</span>,                                <span class="cmt"># 要实例化的类名</span>
+    <span class="str">"module_path"</span>: <span class="str">"qlib.contrib.model.gbdt"</span>,          <span class="cmt"># 这个类在哪个模块里</span>
+    <span class="str">"kwargs"</span>: {<span class="str">"loss"</span>: <span class="str">"mse"</span>, <span class="str">"learning_rate"</span>: <span class="kw">0.05</span>}  <span class="cmt"># 传给构造函数的参数</span>
+}</code></pre>
+    <p>这个字典交给 <code>qlib.utils.init_instance_by_config</code> 就能变成一个真正的 Python 对象。我们直接看它的签名（<code>qlib/utils/mod.py:122</code>）：</p>
+    <pre><code><span class="kw">def</span> <span class="fn">init_instance_by_config</span>(
+    config: InstConf,
+    default_module=<span class="kw">None</span>,
+    accept_types: Union[type, Tuple[type]] = (),
+    try_kwargs: Dict = {},
+    **kwargs,
+) -&gt; Any:
+    <span class="cmt"># 如果 config 已经是目标类型的实例，直接返回（accept_types）</span>
+    <span class="cmt"># 如果 config 是 'file://xxx.pkl' 字符串，就反序列化加载</span>
+    <span class="cmt"># 否则：根据 class + module_path 找到类，用 kwargs 实例化</span>
+    klass, cls_kwargs = get_callable_kwargs(config, default_module=default_module)
+    <span class="kw">return</span> klass(**cls_kwargs, **try_kwargs, **kwargs)</code></pre>
+    <p>为什么这个小小的机制如此重要？因为它是<strong>把所有组件粘在一起的「胶水」</strong>。<code>CLAUDE.md:62</code> 里点明了这一点：只要你的新模型/策略/处理器「可以通过 module_path + class 被导入」，YAML 配置和 Python 代码就能用同一套机制加载它——<strong>不需要改动任何框架代码，组件就能随意替换</strong>。这就是「松耦合」在工程上的落地方式。</p>
+
+    <h3>两种等价的使用接口</h3>
+    <p>正因为有了「配置字典」这层抽象，Qlib 提供了两种<strong>做同一件事</strong>的接口，你可以按喜好选择：</p>
+    <table>
+      <thead><tr><th></th><th>配置驱动（YAML）</th><th>代码驱动（Python）</th></tr></thead>
+      <tbody>
+        <tr><td>入口</td><td><code>qrun config.yaml</code></td><td>手写脚本，见 <code>examples/workflow_by_code.py</code></td></tr>
+        <tr><td>本质</td><td>把 YAML 解析成配置字典</td><td>直接在代码里写配置字典</td></tr>
+        <tr><td>适合</td><td>跑基准、批量实验、少改代码</td><td>调试、理解流程、深度定制</td></tr>
+        <tr><td>底层</td><td colspan="2" style="text-align:center">最终都走 <code>init_instance_by_config</code>，殊途同归</td></tr>
+      </tbody>
+    </table>
+    <p>下面是 <code>examples/workflow_by_code.py</code> 里最能体现「配置即对象」的两行代码（第 25~26 行）——一个字典进去，一个模型/数据集出来：</p>
+    <pre><code><span class="kw">from</span> qlib.utils <span class="kw">import</span> init_instance_by_config
+<span class="kw">from</span> qlib.tests.config <span class="kw">import</span> CSI300_GBDT_TASK
+
+model   = init_instance_by_config(CSI300_GBDT_TASK[<span class="str">"model"</span>])    <span class="cmt"># 配置字典 → 模型对象</span>
+dataset = init_instance_by_config(CSI300_GBDT_TASK[<span class="str">"dataset"</span>])  <span class="cmt"># 配置字典 → 数据集对象</span></code></pre>
+    <div class="callout"><span class="t">记住这句话</span>当你以后在 YAML 里看到成堆的 <code>class / module_path / kwargs</code>，不要慌——它们只是 <code>init_instance_by_config</code> 的「原料」。理解了这一点，整个 Qlib 的配置体系就通了一大半。</div>
+
+    <h2>四、整体架构与数据流</h2>
+    <p><code>CLAUDE.md:60</code> 用一句话概括了 Qlib 的工作流方向：<strong>data → dataset/handler → model → signal → strategy → executor (backtest) → recorder → analysis</strong>。这条链路可以画成下面这张图——数据从左边流入，决策与分析从右边流出：</p>
+    <div class="diagram"><pre>
+   ┌──────────┐   原始行情/因子      ┌─────────────────────┐
+   │  数据层   │  ───────────────▶ │  Handler / Dataset  │
+   │  (D 提供者)│   .bin 高性能读取   │  加载特征 + 处理器    │
+   │ qlib/data │                   │  切分 train/valid/test│
+   └──────────┘                   └──────────┬──────────┘
+                                             │ 特征矩阵 X, 标签 y
+                                             ▼
+                                     ┌───────────────┐
+                                     │     模型      │  fit(dataset)
+                                     │  qlib/model  │  predict(dataset)
+                                     └──────┬───────┘
+                                            │ signal（每只股票的打分）
+                                            ▼
+   ┌──────────┐    交易决策         ┌───────────────┐
+   │  执行器   │ ◀──────────────── │     策略      │  例：TopkDropout
+   │ 回测/撮合 │   下单/成交/持仓     │ qlib/strategy │  打分 → 买卖清单
+   │qlib/backtest│                 └───────────────┘
+   └────┬─────┘
+        │ 组合净值/交易明细
+        ▼
+   ┌──────────────┐   收益率/回撤/夏普   ┌──────────────┐
+   │   Recorder    │ ────────────────▶ │    分析报告   │
+   │ 记录实验(MLflow)│  SignalRecord/    │  信号/组合分析 │
+   │ qlib/workflow │  SigAnaRecord等    └──────────────┘
+   └──────────────┘
+    </pre></div>
+    <p>把它对应到人话就是：<strong>先把数据整理成「特征表」→ 喂给模型学出「打分」→ 策略根据打分决定买卖 → 执行器在模拟市场里成交 → 记录器把整个实验存下来 → 最后算指标做分析</strong>。本教程后面 7 章，几乎就是沿着这条箭头逐段深入。</p>
+    <div class="callout tip"><span class="t">对照代码看</span><code>examples/workflow_by_code.py</code> 的第 68~85 行就是这条链路的完整代码版：<code>model.fit(dataset)</code> 训练 → <code>SignalRecord</code> 生成预测 → <code>SigAnaRecord</code> 做信号分析 → <code>PortAnaRecord</code> 做组合回测分析。全都包在 <code>with R.start(...)</code> 这个「实验记录上下文」里。</div>
+
+    <h2>五、顶层包的模块地图</h2>
+    <p>初学者面对一个大项目最容易迷路。这里给你一张「地图」，把 <code>qlib/</code> 目录下每个顶层包的职责一次讲清（对应 <code>CLAUDE.md</code> 的 Architecture 一节）。后面每一章基本就是深入其中一两个包：</p>
+    <table>
+      <thead><tr><th>包 / 模块</th><th>职责（一句话）</th><th>本教程章节</th></tr></thead>
+      <tbody>
+        <tr><td><code>qlib/data/</code></td><td>数据提供层。<code>data.py</code>（D 提供者 API）、<code>ops.py</code>（因子表达式算子，底层是 Cython）、<code>cache.py</code>（H 内存缓存，<code>qlib.init</code> 会清空它）、<code>storage/</code>（<code>.bin</code> 磁盘格式）、<code>pit.py</code>（防前视的时点数据）。</td><td>第 3 章</td></tr>
+        <tr><td><code>qlib/data/dataset/</code></td><td>数据集与处理器。<code>handler.py</code>（<code>DataHandler</code>/<code>DataHandlerLP</code> 加载特征+跑处理器）、<code>loader.py</code>、<code>processor.py</code>（归一化/填充），以及把 handler 与「训练/验证/测试时间段」配对的 <code>DatasetH</code>。</td><td>第 4 章</td></tr>
+        <tr><td><code>qlib/model/</code></td><td>模型层。<code>base.py</code> 定义 <code>Model</code> 抽象基类（<code>fit(dataset)</code> / <code>predict(dataset, segment)</code>）；具体模型在 <code>qlib/contrib/model/</code>；还有 <code>trainer.py</code>、<code>riskmodel/</code>、<code>meta/</code>、<code>ens/</code>。</td><td>第 5 章</td></tr>
+        <tr><td><code>qlib/strategy/</code></td><td>策略基类 <code>base.py</code>；把模型信号翻译成买卖决策（如 <code>TopkDropoutStrategy</code>，在 <code>qlib/contrib/strategy/</code>）。</td><td>第 6 章</td></tr>
+        <tr><td><code>qlib/backtest/</code></td><td>回测执行引擎。<code>exchange.py</code>（交易成本/涨跌停建模）、<code>executor.py</code>（<code>SimulatorExecutor</code>、多层 <code>NestedExecutor</code>）、<code>account.py</code>/<code>position.py</code>（组合状态）、<code>decision.py</code>（订单）。</td><td>第 6 章</td></tr>
+        <tr><td><code>qlib/workflow/</code></td><td>实验管理。单例 <code>R</code>（<code>qlib/workflow/__init__.py</code>）封装 MLflow：<code>R.start()</code>、<code>R.log_params</code>、<code>R.save_objects</code>；<code>record_temp.py</code> 里的 <code>SignalRecord</code>/<code>SigAnaRecord</code>/<code>PortAnaRecord</code> 是可复用的分析步骤。</td><td>第 7 章</td></tr>
+        <tr><td><code>qlib/contrib/</code></td><td>「电池仓」——开箱即用的模型、策略、数据处理器、评估、报告、滚动与调参工具。<strong>新的用户级实现通常放这里，而不是核心包。</strong></td><td>全程</td></tr>
+        <tr><td><code>qlib/rl/</code></td><td>强化学习框架（订单执行等）：<code>simulator.py</code>、<code>interpreter.py</code>、<code>reward.py</code>、<code>order_execution/</code>。需要额外安装 <code>rl</code> extra。</td><td>进阶</td></tr>
+        <tr><td><code>qlib/config.py</code></td><td>全局配置对象 <code>C</code>。<code>default_conf</code> 为 <code>client</code> 或 <code>server</code>；由 <code>qlib.init</code> / <code>qlib.auto_init</code> 完成设置。</td><td>第 2 章</td></tr>
+      </tbody>
+    </table>
+    <div class="callout"><span class="t">一个约定</span>凡是你自己写的新模型/策略/处理器，都应该放到 <code>qlib/contrib/</code> 下，并遵守 <code>init_instance_by_config</code> 契约（可导入的类 + kwargs）。核心包（<code>qlib/data</code>、<code>qlib/model</code> 等）尽量别动——这就是「框架」与「插件」的分界线。</div>
+
+    <h2>六、最短的「Hello, Qlib」</h2>
+    <p>不用背，先感受一下从初始化到跑通全流程的最小骨架（简化自 <code>examples/workflow_by_code.py</code>）：</p>
+    <pre><code><span class="kw">import</span> qlib
+<span class="kw">from</span> qlib.constant <span class="kw">import</span> REG_CN
+<span class="kw">from</span> qlib.utils <span class="kw">import</span> init_instance_by_config, flatten_dict
+<span class="kw">from</span> qlib.workflow <span class="kw">import</span> R
+<span class="kw">from</span> qlib.workflow.record_temp <span class="kw">import</span> SignalRecord, SigAnaRecord, PortAnaRecord
+<span class="kw">from</span> qlib.tests.config <span class="kw">import</span> CSI300_GBDT_TASK
+
+<span class="cmt"># 1. 初始化：告诉 Qlib 数据在哪、用哪个市场（REG_CN=中国A股）</span>
+qlib.init(provider_uri=<span class="str">"~/.qlib/qlib_data/cn_data"</span>, region=REG_CN)
+
+<span class="cmt"># 2. 配置字典 → 对象</span>
+model   = init_instance_by_config(CSI300_GBDT_TASK[<span class="str">"model"</span>])
+dataset = init_instance_by_config(CSI300_GBDT_TASK[<span class="str">"dataset"</span>])
+
+<span class="cmt"># 3. 在一个实验记录上下文里：训练 → 预测 → 分析</span>
+<span class="kw">with</span> R.start(experiment_name=<span class="str">"workflow"</span>):
+    model.fit(dataset)                    <span class="cmt"># 训练</span>
+    recorder = R.get_recorder()
+    SignalRecord(model, dataset, recorder).generate()  <span class="cmt"># 生成预测信号</span>
+    SigAnaRecord(recorder).generate()                  <span class="cmt"># 信号分析（如 IC）</span></code></pre>
+    <p>看不懂每一行没关系——你只需要认出这条熟悉的链路：<strong>init → 造 model/dataset → fit → 记录 → 分析</strong>。这正是第四节那张架构图的代码化身。全书接下来要做的，就是把这几行里的每个环节掰开揉碎。</p>
+    <div class="callout warn"><span class="t">前置条件</span>上面第 1 步的 <code>qlib.init(...)</code> <strong>必须在任何数据/模型 API 之前调用</strong>，它负责设置全局配置 <code>C</code>、清空内存缓存 <code>H</code>。而数据（<code>~/.qlib/qlib_data/cn_data</code>）不在仓库里，需要用 <code>scripts/get_data.py</code> 单独下载。这两件事都是第 2 章的主题。</div>
+
+    <div class="exercises">
+      <h2>📝 课后练习题</h2>
+
+      <div class="q"><b>1.（概念）用你自己的话说清楚 Qlib 工作流的七个环节，并按数据流方向排序。</b>
+        <details><summary>参考答案</summary><div class="a">顺序为：<strong>data（数据）→ dataset/handler（数据集与处理器）→ model（模型）→ signal（信号/打分）→ strategy（策略）→ executor（回测执行）→ recorder（记录）→ analysis（分析）</strong>。直观理解：整理数据成特征表 → 模型学出打分 → 策略把打分变成买卖 → 执行器在模拟市场成交 → 记录器保存实验 → 最后算指标做分析。见 <code>CLAUDE.md:60</code>。</div></details>
+      </div>
+
+      <div class="q"><b>2.（概念）Qlib 说组件是「松耦合、可单独使用」，请举一个「只用其中一部分」的实际场景。</b>
+        <details><summary>参考答案</summary><div class="a">例如：只用 <code>qlib/data</code> 数据层来高性能读取 A 股行情、计算因子，而模型和回测全用自己写的；或者反过来，信号由你自己的模型产生，只借用 <code>qlib/backtest</code> 的回测引擎来做撮合与成本建模。松耦合意味着每个包都能拆出来独立用。</div></details>
+      </div>
+
+      <div class="q"><b>3.（代码填空）补全下面把配置字典变成模型对象的代码。</b>
+        <pre><code><span class="kw">from</span> qlib.utils <span class="kw">import</span> ________
+cfg = {<span class="str">"class"</span>: <span class="str">"LGBModel"</span>,
+       <span class="str">"module_path"</span>: <span class="str">"qlib.contrib.model.gbdt"</span>,
+       <span class="str">"kwargs"</span>: {<span class="str">"loss"</span>: <span class="str">"mse"</span>}}
+model = ________(cfg)</code></pre>
+        <details><summary>参考答案</summary><div class="a">两处都填 <code>init_instance_by_config</code>：<br><code>from qlib.utils import init_instance_by_config</code><br><code>model = init_instance_by_config(cfg)</code><br>它会读取 <code>module_path</code>+<code>class</code> 找到类，再用 <code>kwargs</code> 实例化。定义见 <code>qlib/utils/mod.py:122</code>。</div></details>
+      </div>
+
+      <div class="q"><b>4.（改错）新同事写道：「我在 <code>examples/</code> 里调 <code>D.features(...)</code> 读数据前，不需要调用 <code>qlib.init()</code>。」这句话对吗？</b>
+        <details><summary>参考答案</summary><div class="a">不对。<code>qlib.init(...)</code> <strong>必须在使用任何数据/模型 API 之前调用</strong>。它设置全局配置对象 <code>C</code>、注册 provider、并清空内存缓存 <code>H</code>（见 <code>qlib/__init__.py</code> 的 <code>init</code> 函数）。不 init 就用数据接口会报错或行为异常。</div></details>
+      </div>
+
+      <div class="q"><b>5.（辨析）<code>qrun config.yaml</code> 和写 <code>workflow_by_code.py</code> 脚本，两者是什么关系？</b>
+        <details><summary>参考答案</summary><div class="a">二者是<strong>等价</strong>的两种接口，做同一件事。<code>qrun</code> 是配置驱动：把 YAML 解析成配置字典；脚本是代码驱动：直接在 Python 里写配置字典。但两条路最终都通过 <code>init_instance_by_config</code> 实例化组件、跑同一条流水线。配置驱动适合批量跑基准，代码驱动适合调试与定制。见 <code>CLAUDE.md:53-56</code>。</div></details>
+      </div>
+
+      <div class="q"><b>6.（思考）我写了一个全新的选股策略类，应该放到 <code>qlib/</code> 下的哪个位置？为什么？需要满足什么条件才能被配置系统调用？</b>
+        <details><summary>参考答案</summary><div class="a">应放到 <code>qlib/contrib/strategy/</code>（用户级实现放 <code>contrib</code>，核心包不动）。要被配置系统调用，必须遵守 <code>init_instance_by_config</code> 契约：<strong>类可以通过 <code>module_path</code> + <code>class</code> 被导入，且构造参数能用 <code>kwargs</code> 传入</strong>。满足这一点后，YAML 和代码都能无侵入地加载它——这正是松耦合可扩展的关键。</div></details>
+      </div>
+    </div>
+
+    <div class="pager">
+      <a class="prev disabled" href="index.html"><span class="lbl">← 上一章</span><span class="ttl">首页</span></a>
+      <a class="next" href="ch02.html"><span class="lbl">下一章 →</span><span class="ttl">环境搭建与数据准备</span></a>
+    </div>
+  </main>
+</div>
+</body>
+</html>
+

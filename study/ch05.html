@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>模型 Model · Qlib 学习教程</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <h1>Qlib 教程</h1>
+    <div class="sub">从入门到实战</div>
+    <nav>
+      <a href="index.html"><span class="num">home</span>首页</a>
+      <a href="ch01.html"><span class="num">01</span>简介与架构</a>
+      <a href="ch02.html"><span class="num">02</span>环境与数据</a>
+      <a href="ch03.html"><span class="num">03</span>数据层</a>
+      <a href="ch04.html"><span class="num">04</span>数据集与处理器</a>
+      <a href="ch05.html" class="active"><span class="num">05</span>模型</a>
+      <a href="ch06.html"><span class="num">06</span>策略与回测</a>
+      <a href="ch07.html"><span class="num">07</span>工作流</a>
+      <a href="ch08.html"><span class="num">08</span>综合实战</a>
+    </nav>
+  </aside>
+  <main class="content">
+    <span class="tag">CHAPTER 05</span>
+    <h1>模型 Model</h1>
+    <p class="lead">数据准备好了，接下来该让机器「学习」了。本章讲清 Qlib 的模型抽象、训练/预测契约，并手把手教你接入一个自定义模型。</p>
+
+    <h2>1. 从一台「榨汁机」说起</h2>
+    <p>想象模型是一台榨汁机：你把水果（<b>特征 X</b>）倒进去，它就吐出果汁（<b>预测值 y</b>）。而在使用之前，你得先「调校」这台机器——告诉它哪些水果配哪种果汁，这就是<b>训练（fit）</b>。调校完成后，扔进任何新水果，它都能给你榨出对应的果汁，这就是<b>预测（predict）</b>。</p>
+    <p>在 Qlib 里，所有模型都被抽象成这样两个动作，无论底层是 LightGBM、线性回归还是深度神经网络，对外的「接口」都长得一模一样。这种统一契约让你能在配置文件里随意替换模型，而工作流的其余部分完全不用改。</p>
+
+    <div class="callout"><span class="t">提示</span>Qlib 模型抽象定义在 <code>qlib/model/base.py</code>。全部三个类（BaseModel / Model / ModelFT）都在这一个文件里，代码非常短，建议先通读一遍。</div>
+
+    <h2>2. 三层模型抽象：BaseModel / Model / ModelFT</h2>
+    <p>Qlib 用三个层层递进的抽象类描述模型能力，见 <code>qlib/model/base.py:10</code> 起：</p>
+    <div class="diagram"><pre>
+  BaseModel  (能预测，能像函数一样被调用)
+      │  __call__ → predict
+      ▼
+    Model    (可学习：新增 fit)
+      │  fit + predict
+      ▼
+   ModelFT   (可微调：新增 finetune)
+      │  fit + predict + finetune
+    </pre></div>
+    <p><b>BaseModel</b> 只规定了一个抽象方法 <code>predict</code>，并通过 <code>__call__</code> 让模型实例可以像函数一样被调用：</p>
+<pre><code><span class="kw">class</span> <span class="fn">BaseModel</span>(Serializable, metaclass=abc.ABCMeta):
+    <span class="str">"""Modeling things"""</span>
+    @abc.abstractmethod
+    <span class="kw">def</span> <span class="fn">predict</span>(self, *args, **kwargs) -&gt; object:
+        <span class="str">"""Make predictions after modeling things"""</span>
+
+    <span class="kw">def</span> <span class="fn">__call__</span>(self, *args, **kwargs) -&gt; object:
+        <span class="cmt"># 语法糖：pred = model(dataset) 等价于 model.predict(dataset)</span>
+        <span class="kw">return</span> self.predict(*args, **kwargs)</code></pre>
+    <p>因为它继承自 <code>Serializable</code>，模型可以被 pickle 到磁盘、之后再加载复用——这正是 Qlib 训练完能把模型存进 recorder 的基础。</p>
+
+    <p><b>Model</b> 在 BaseModel 之上增加了 <code>fit(dataset, reweighter)</code>，这是「可学习模型」的核心契约（<code>qlib/model/base.py:22</code>）：</p>
+<pre><code><span class="kw">class</span> <span class="fn">Model</span>(BaseModel):
+    <span class="str">"""Learnable Models"""</span>
+    <span class="kw">def</span> <span class="fn">fit</span>(self, dataset: Dataset, reweighter: Reweighter):
+        <span class="cmt"># 从 dataset 里取出训练数据并学习</span>
+        <span class="kw">raise</span> NotImplementedError()
+
+    @abc.abstractmethod
+    <span class="kw">def</span> <span class="fn">predict</span>(self, dataset: Dataset, segment=<span class="str">"test"</span>) -&gt; object:
+        <span class="cmt"># 对 dataset 的某个 segment 做预测，默认 test 段</span>
+        <span class="kw">raise</span> NotImplementedError()</code></pre>
+    <p>注意两个方法的入参都是 <b>dataset</b> 对象，而不是裸的 numpy 数组。模型自己负责从 dataset 里「取料」（怎么取见第 3 节）。<code>predict</code> 的 <code>segment</code> 参数决定预测哪一段数据，可以是字符串 <code>"train"/"valid"/"test"</code>，也可以是切片。</p>
+
+    <div class="callout warn"><span class="t">陷阱</span><b>学到的属性不能以下划线 <code>_</code> 开头！</b> <code>base.py:29</code> 的文档明确指出：fit 之后保存到 self 上的、需要被序列化的属性（如模型权重）不能命名为 <code>self._model</code>，否则 dump 到磁盘时会丢失。LightGBM 实现里就是用 <code>self.model</code> 而非 <code>self._model</code>。</div>
+
+    <p><b>ModelFT</b>（Fine-tunable，<code>base.py:81</code>）再加一个 <code>finetune(dataset)</code>，用于在已训练好的模型上继续增量训练。典型场景是在线学习：先训一个初始模型存进 recorder，之后加载它、只用少量新数据 finetune 几轮：</p>
+<pre><code><span class="cmt"># 训练初始模型并保存</span>
+<span class="kw">with</span> R.start(experiment_name=<span class="str">"init models"</span>):
+    model.fit(dataset)
+    R.save_objects(init_model=model)
+    rid = R.get_recorder().id
+
+<span class="cmt"># 加载后微调</span>
+<span class="kw">with</span> R.start(experiment_name=<span class="str">"finetune model"</span>):
+    recorder = R.get_recorder(recorder_id=rid, experiment_name=<span class="str">"init models"</span>)
+    model = recorder.load_object(<span class="str">"init_model"</span>)
+    model.finetune(dataset, num_boost_round=<span class="str">10</span>)</code></pre>
+
+    <h2>3. 真实案例：LGBModel 怎么工作</h2>
+    <p>光看抽象类太空洞，我们看一个真正跑起来的模型——LightGBM，代码在 <code>qlib/contrib/model/gbdt.py</code>。它同时继承了 <code>ModelFT</code>（可微调）和 <code>LightGBMFInt</code>（可解释性接口）：</p>
+<pre><code><span class="kw">class</span> <span class="fn">LGBModel</span>(ModelFT, LightGBMFInt):
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, loss=<span class="str">"mse"</span>, early_stopping_rounds=<span class="str">50</span>,
+                 num_boost_round=<span class="str">1000</span>, **kwargs):
+        self.params = {<span class="str">"objective"</span>: loss, <span class="str">"verbosity"</span>: -<span class="str">1</span>}
+        self.params.update(kwargs)   <span class="cmt"># 其余 LGB 超参透传</span>
+        self.early_stopping_rounds = early_stopping_rounds
+        self.num_boost_round = num_boost_round
+        self.model = None            <span class="cmt"># 不带下划线，可序列化</span></code></pre>
+    <p>关键在于「从 dataset 取料」这一步。看 <code>gbdt.py:37</code> 的 <code>_prepare_data</code>：</p>
+<pre><code><span class="cmt"># 用 dataset.prepare 取出 feature 和 label</span>
+df = dataset.prepare(key, col_set=[<span class="str">"feature"</span>, <span class="str">"label"</span>],
+                     data_key=DataHandlerLP.DK_L)  <span class="cmt"># DK_L：学习用数据</span>
+x, y = df[<span class="str">"feature"</span>], df[<span class="str">"label"</span>]
+<span class="cmt"># LightGBM 需要 1 维标签，多标签会报错</span>
+y = np.squeeze(y.values)
+ds = lgb.Dataset(x.values, label=y, weight=w, free_raw_data=<span class="kw">False</span>)</code></pre>
+    <p>这里 <code>dataset.prepare(...)</code> 正是上一章数据集/处理器提供的接口。<code>col_set</code> 选列（feature/label），<code>data_key</code> 选用哪一份数据视图：<code>DK_L</code>（learn，训练用，可能带标签归一化）还是 <code>DK_I</code>（infer，推理用）。</p>
+    <p><code>fit</code>（<code>gbdt.py:57</code>）拿到 train/valid 两个 lgb.Dataset 后调用 <code>lgb.train</code>，并把每轮评估指标通过 <code>R.log_metrics</code> 记录到实验里。<code>predict</code>（<code>gbdt.py:92</code>）则是取推理数据、返回一个带索引的 Series：</p>
+<pre><code><span class="kw">def</span> <span class="fn">predict</span>(self, dataset: DatasetH, segment=<span class="str">"test"</span>):
+    <span class="kw">if</span> self.model <span class="kw">is</span> None:
+        <span class="kw">raise</span> ValueError(<span class="str">"model is not fitted yet!"</span>)
+    x_test = dataset.prepare(segment, col_set=<span class="str">"feature"</span>,
+                             data_key=DataHandlerLP.DK_I)  <span class="cmt"># 推理视图</span>
+    <span class="kw">return</span> pd.Series(self.model.predict(x_test.values), index=x_test.index)</code></pre>
+    <div class="callout tip"><span class="t">小结</span>一个 Qlib 模型的套路：<b>__init__</b> 存超参 → <b>fit</b> 用 <code>dataset.prepare(DK_L)</code> 取训练数据学习 → <b>predict</b> 用 <code>dataset.prepare(DK_I)</code> 取推理数据、返回带索引的 Series。返回的索引（datetime, instrument）非常重要，后续策略/回测靠它对齐。</div>
+
+    <h2>4. task_train：qrun 背后真正干活的训练单元</h2>
+    <p>当你在命令行敲 <code>qrun config.yaml</code> 时，Qlib 到底做了什么？答案藏在 <code>qlib/model/trainer.py</code> 的 <code>task_train</code>（<code>trainer.py:108</code>）。它把 <b>模型 + 数据集 + 记录器</b> 串成一条完整流水线：</p>
+<pre><code><span class="kw">def</span> <span class="fn">task_train</span>(task_config: dict, experiment_name, recorder_name=None):
+    <span class="kw">with</span> R.start(experiment_name=experiment_name, recorder_name=recorder_name):
+        _log_task_info(task_config)   <span class="cmt"># 记录配置到实验</span>
+        _exe_task(task_config)        <span class="cmt"># 真正执行训练</span>
+        <span class="kw">return</span> R.get_recorder()</code></pre>
+    <p>核心逻辑在 <code>_exe_task</code>（<code>trainer.py:42</code>），把整个流程一览无余：</p>
+<pre><code><span class="cmt"># 1. 用配置初始化 model 和 dataset（约束类型）</span>
+model = init_instance_by_config(task_config[<span class="str">"model"</span>], accept_types=Model)
+dataset = init_instance_by_config(task_config[<span class="str">"dataset"</span>], accept_types=Dataset)
+reweighter = task_config.get(<span class="str">"reweighter"</span>, None)
+<span class="cmt"># 2. 训练（auto_filter_kwargs 自动过滤 fit 不认识的参数）</span>
+auto_filter_kwargs(model.fit)(dataset, reweighter=reweighter)
+R.save_objects(**{<span class="str">"params.pkl"</span>: model})   <span class="cmt"># 保存模型</span>
+<span class="cmt"># 3. 保存 dataset（dump_all=False：只存配置不存数据，供在线推理）</span>
+dataset.config(dump_all=<span class="kw">False</span>, recursive=<span class="kw">True</span>)
+R.save_objects(**{<span class="str">"dataset"</span>: dataset})
+<span class="cmt"># 4. 填充 &lt;MODEL&gt;/&lt;DATASET&gt; 占位符，跑 record（预测/回测/分析）</span>
+task_config = fill_placeholder(task_config, {<span class="str">"&lt;MODEL&gt;"</span>: model, <span class="str">"&lt;DATASET&gt;"</span>: dataset})
+<span class="kw">for</span> record <span class="kw">in</span> task_config.get(<span class="str">"record"</span>, []):
+    r = init_instance_by_config(record, recorder=rec, ...)
+    r.generate()</code></pre>
+    <div class="diagram"><pre>
+  config.yaml
+      │  init_instance_by_config
+      ▼
+  ┌─────────┐   fit(dataset)   ┌──────────┐
+  │  Model  │ ◀──────────────  │ Dataset  │
+  └─────────┘                  └──────────┘
+      │ save_objects(params.pkl / dataset)
+      ▼
+  ┌──────────────────────────────────────┐
+  │ record: SignalRecord → 预测           │
+  │         PortAnaRecord → 回测/分析      │
+  └──────────────────────────────────────┘
+      │  存入 Recorder / 实验
+      ▼
+   可复现的实验结果
+    </pre></div>
+    <div class="callout"><span class="t">提示</span><code>&lt;MODEL&gt;</code> 和 <code>&lt;DATASET&gt;</code> 是配置里的占位符：record 部分想引用刚训练好的 model/dataset 时写这两个字符串，<code>fill_placeholder</code> 会在运行时替换成真实对象。这就是 YAML 里能「引用」内存对象的魔法。</div>
+
+    <h2>5. 接入你自己的模型</h2>
+    <p>Qlib 用 <code>init_instance_by_config</code> 从配置构造对象，契约很简单：<b>一个可 import 的类 + 一组 kwargs</b>。配置长这样：</p>
+<pre><code>model:
+  class: MyModel                          <span class="cmt"># 类名</span>
+  module_path: qlib.contrib.model.my_model <span class="cmt"># 可 import 的模块路径</span>
+  kwargs:                                  <span class="cmt"># 传给 __init__ 的参数</span>
+    lr: 0.01
+    epochs: 100</code></pre>
+    <p>所以接入自定义模型只需两步：<b>(1)</b> 写一个继承 <code>Model</code>（或 <code>ModelFT</code>）的类，放到能被 import 的地方（推荐 <code>qlib/contrib/model/</code>）；<b>(2)</b> 在配置里用 class/module_path/kwargs 指向它。下面是最小骨架：</p>
+<pre><code><span class="kw">import</span> pandas <span class="kw">as</span> pd
+<span class="kw">from</span> qlib.model.base <span class="kw">import</span> Model
+<span class="kw">from</span> qlib.data.dataset <span class="kw">import</span> DatasetH
+<span class="kw">from</span> qlib.data.dataset.handler <span class="kw">import</span> DataHandlerLP
+
+<span class="kw">class</span> <span class="fn">MyMeanModel</span>(Model):
+    <span class="str">"""一个啥也没学的示例：永远预测特征均值"""</span>
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, scale=<span class="str">1.0</span>, **kwargs):
+        self.scale = scale       <span class="cmt"># 超参存 self，不带下划线</span>
+        self.bias = None         <span class="cmt"># 学到的参数也不带下划线</span>
+
+    <span class="kw">def</span> <span class="fn">fit</span>(self, dataset: DatasetH, reweighter=None):
+        df = dataset.prepare(<span class="str">"train"</span>, col_set=[<span class="str">"feature"</span>, <span class="str">"label"</span>],
+                             data_key=DataHandlerLP.DK_L)
+        <span class="cmt"># 这里放你真正的训练逻辑</span>
+        self.bias = df[<span class="str">"label"</span>].mean().item()
+
+    <span class="kw">def</span> <span class="fn">predict</span>(self, dataset: DatasetH, segment=<span class="str">"test"</span>):
+        x = dataset.prepare(segment, col_set=<span class="str">"feature"</span>,
+                            data_key=DataHandlerLP.DK_I)
+        pred = x.mean(axis=<span class="str">1</span>) * self.scale + self.bias
+        <span class="kw">return</span> pd.Series(pred, index=x.index)  <span class="cmt"># 必须带 index！</span></code></pre>
+    <div class="callout danger"><span class="t">务必遵守</span>三条铁律：① 学到的属性<b>不能以 <code>_</code> 开头</b>（否则序列化丢失）；② <code>predict</code> 返回的 Series <b>必须带 (datetime, instrument) 索引</b>；③ <code>__init__</code> 的参数要和配置 kwargs 对应（多余的用 <code>**kwargs</code> 兜住，因为 <code>auto_filter_kwargs</code> 也会帮忙过滤）。</div>
+
+    <h2>6. Qlib 内置模型概览</h2>
+    <p>你不必事事从零造轮子。<code>qlib/contrib/model/</code> 已内置一大批模型，<code>examples/benchmarks/</code> 下有配套的可跑配置与基准成绩。大致分三类：</p>
+    <ul>
+      <li><b>树模型 / GBDT</b>：<code>gbdt.py</code>（LightGBM）、<code>xgboost.py</code>、<code>catboost_model.py</code>、<code>double_ensemble.py</code>。工业界跑量化的主力，速度快、无需 GPU。</li>
+      <li><b>线性模型</b>：<code>linear.py</code>（LinearModel，支持 OLS / Ridge / Lasso）。简单、可解释，适合做 baseline。</li>
+      <li><b>深度模型（PyTorch）</b>：<code>pytorch_lstm.py</code>、<code>pytorch_gru.py</code>、<code>pytorch_alstm.py</code>、<code>pytorch_transformer.py</code>、<code>pytorch_gats.py</code>、<code>pytorch_tra.py</code>、<code>pytorch_tabnet.py</code> 等几十个。带 <code>_ts</code> 后缀的是时序版本（用 TSDatasetH 喂序列数据）。</li>
+    </ul>
+    <div class="callout warn"><span class="t">依赖注意</span>树模型和线性模型开箱即用；<b>torch 系列模型需要额外安装 PyTorch 依赖</b>（<code>pip install qlib[rl]</code> 或手动装 torch）。跑深度模型前请先确认 <code>import torch</code> 成功，且大数据集建议有 GPU。</div>
+
+    <div class="exercises">
+      <h2>📝 课后练习题</h2>
+
+      <div class="q"><b>1. （概念题）BaseModel、Model、ModelFT 三者是什么关系？各自新增了哪个方法？</b>
+        <details><summary>参考答案</summary><div class="a">它们是继承链：BaseModel → Model → ModelFT。BaseModel 定义了抽象方法 <code>predict</code> 并用 <code>__call__</code> 让实例可当函数调用；Model 在其上新增 <code>fit</code>（可学习）；ModelFT 再新增 <code>finetune</code>（可微调、增量训练）。见 qlib/model/base.py。</div></details>
+      </div>
+
+      <div class="q"><b>2. （改错题）下面自定义模型有一个会导致「保存后加载丢失权重」的错误，请指出并修正。<br>
+      <code>self._weights = train(x, y)</code></b>
+        <details><summary>参考答案</summary><div class="a">错误在于属性名以下划线开头。base.py:29 的文档规定：学到的、需要序列化的属性不能以 <code>_</code> 开头，否则 dump 到磁盘时会被丢弃。改为 <code>self.weights = train(x, y)</code> 即可（对照 LGBModel 用的是 <code>self.model</code>）。</div></details>
+      </div>
+
+      <div class="q"><b>3. （代码理解）LGBModel 的 fit 用 <code>DK_L</code> 取数据，predict 用 <code>DK_I</code> 取数据，为什么两者不同？</b>
+        <details><summary>参考答案</summary><div class="a"><code>DK_L</code>（learn）是训练用视图，可能对 label 做了归一化等处理；<code>DK_I</code>（infer）是推理用视图。fit 需要 feature 和 label 一起学习，故用 DK_L 并取 <code>col_set=["feature","label"]</code>；predict 只需 feature，故用 DK_I 且 <code>col_set="feature"</code>。区分两个视图是为了训练/推理阶段的数据处理逻辑可以不同。</div></details>
+      </div>
+
+      <div class="q"><b>4. （填空题）在 task_train / _exe_task 中，Qlib 用 <code>________(task_config["model"], accept_types=Model)</code> 从配置构造模型对象。空格处填什么？它要求配置里提供哪三样东西？</b>
+        <details><summary>参考答案</summary><div class="a">填 <code>init_instance_by_config</code>。它要求配置提供：<b>class</b>（类名）、<b>module_path</b>（可 import 的模块路径）、<b>kwargs</b>（传给 __init__ 的参数）。<code>accept_types=Model</code> 还会校验构造出的对象确实是 Model 子类。</div></details>
+      </div>
+
+      <div class="q"><b>5. （思考题）配置文件的 record 部分为什么可以写 <code>&lt;MODEL&gt;</code> / <code>&lt;DATASET&gt;</code> 这样的字符串？它们是怎么变成真实对象的？</b>
+        <details><summary>参考答案</summary><div class="a">它们是占位符。_exe_task 训练完 model、dataset 后，调用 <code>fill_placeholder(task_config, {"&lt;MODEL&gt;": model, "&lt;DATASET&gt;": dataset})</code>，在运行时把 YAML 里的占位字符串替换成内存中的真实对象，从而让 record（如 SignalRecord）能引用刚训练好的模型与数据集。</div></details>
+      </div>
+
+      <div class="q"><b>6. （实践题）请写出把上文 MyMeanModel 接入 qrun 的 model 配置片段。</b>
+        <details><summary>参考答案</summary><div class="a"><pre><code>model:
+  class: MyMeanModel
+  module_path: qlib.contrib.model.my_model
+  kwargs:
+    scale: 1.0</code></pre>前提是把 MyMeanModel 放在 <code>qlib/contrib/model/my_model.py</code>（或任何能被 import 的路径）。kwargs 里的键需与 __init__ 参数对应。</div></details>
+      </div>
+    </div>
+
+    <div class="pager">
+      <a class="prev" href="ch04.html"><span class="lbl">← 上一章</span><span class="ttl">数据集与处理器</span></a>
+      <a class="next" href="ch06.html"><span class="lbl">下一章 →</span><span class="ttl">策略与回测</span></a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

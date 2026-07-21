@@ -1,0 +1,15 @@
+待跑 6 个，并发度 3：['GRU_Alpha360', 'LSTM_Alpha158', 'LSTM_Alpha360', 'GATs_Alpha158', 'GATs_Alpha360', 'KRNN_Alpha360']
+  ▶ 开始 GRU_Alpha360
+  ▶ 开始 LSTM_Alpha158
+  ▶ 开始 LSTM_Alpha360
+  ✓ LSTM_Alpha158 IC=0.0346 (1045s)
+  ▶ 开始 GATs_Alpha158
+  ✓ GATs_Alpha158 IC=0.0443 (1402s)
+  ▶ 开始 GATs_Alpha360
+  ✓ LSTM_Alpha360 IC=0.0441 (4644s)
+  ▶ 开始 KRNN_Alpha360
+  ✓ GRU_Alpha360 IC=0.0495 (4959s)
+  ✓ KRNN_Alpha360 IC=0.0144 (2252s)
+  ✓ GATs_Alpha360 IC=0.0471 (8651s)
+
+全部完成。

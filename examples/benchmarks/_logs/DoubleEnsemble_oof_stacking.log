@@ -1,0 +1,139 @@
+[67777:MainThread](2026-07-09 15:46:01,631) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[67777:MainThread](2026-07-09 15:46:01,638) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[67777:MainThread](2026-07-09 15:46:01,640) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[67777:MainThread](2026-07-09 15:46:01,640) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[67777:MainThread](2026-07-09 15:46:01,646) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name deep_DE_oof.
+[67777:MainThread](2026-07-09 15:46:01,649) INFO - qlib.workflow - [exp.py:258] - Experiment 572214973804768708 starts running ...
+[67777:MainThread](2026-07-09 15:46:02,151) INFO - qlib.workflow - [recorder.py:345] - Recorder 8e40552fa0874a999e868beb90ef0bac starts running under Experiment 572214973804768708 ...
+[67777:MainThread](2026-07-09 15:46:04,830) INFO - qlib.DEnsembleModel - [double_ensemble.py:57] - Double Ensemble Model...
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/loader.py:335: UserWarning: If the value of `instruments` cannot be processed, it will set instruments to None to get all the data.
+  warnings.warn(
+[67777:MainThread](2026-07-09 15:46:36,123) INFO - qlib.timer - [log.py:127] - Time cost: 31.291s | Loading data Done
+[67777:MainThread](2026-07-09 15:46:36,209) INFO - qlib.timer - [log.py:127] - Time cost: 0.085s | DropnaLabel Done
+[67777:MainThread](2026-07-09 15:46:36,209) INFO - qlib.timer - [log.py:127] - Time cost: 0.086s | fit & process data Done
+[67777:MainThread](2026-07-09 15:46:36,209) INFO - qlib.timer - [log.py:127] - Time cost: 31.377s | Init data Done
+[67777:MainThread](2026-07-09 15:46:36,209) WARNING - qlib.utils - [__init__.py:849] - The parameter `reweighter` with value `None` is ignored.
+[67777:MainThread](2026-07-09 15:46:36,379) INFO - qlib.DEnsembleModel - [double_ensemble.py:81] - Training sub-model: (1/3)
+[67777:MainThread](2026-07-09 15:46:37,651) INFO - qlib.DEnsembleModel - [double_ensemble.py:88] - Retrieving loss curve and loss values...
+[67777:MainThread](2026-07-09 15:46:39,023) INFO - qlib.DEnsembleModel - [double_ensemble.py:98] - Sample re-weighting...
+[67777:MainThread](2026-07-09 15:46:40,448) INFO - qlib.DEnsembleModel - [double_ensemble.py:102] - Feature selection...
+/Users/xuxin/Documents/dev/qlib/qlib/contrib/model/double_ensemble.py:207: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  g["g_value"].replace(np.nan, 0, inplace=True)
+[67777:MainThread](2026-07-09 15:47:05,201) INFO - qlib.DEnsembleModel - [double_ensemble.py:81] - Training sub-model: (2/3)
+[67777:MainThread](2026-07-09 15:47:05,959) INFO - qlib.DEnsembleModel - [double_ensemble.py:88] - Retrieving loss curve and loss values...
+[67777:MainThread](2026-07-09 15:47:06,824) INFO - qlib.DEnsembleModel - [double_ensemble.py:98] - Sample re-weighting...
+[67777:MainThread](2026-07-09 15:47:08,575) INFO - qlib.DEnsembleModel - [double_ensemble.py:102] - Feature selection...
+/Users/xuxin/Documents/dev/qlib/qlib/contrib/model/double_ensemble.py:207: FutureWarning: A value is trying to be set on a copy of a DataFrame or Series through chained assignment using an inplace method.
+The behavior will change in pandas 3.0. This inplace method will never work because the intermediate object on which we are setting values always behaves as a copy.
+
+For example, when doing 'df[col].method(value, inplace=True)', try using 'df.method({col: value}, inplace=True)' or df[col] = df[col].method(value) instead, to perform the operation inplace on the original object.
+
+
+  g["g_value"].replace(np.nan, 0, inplace=True)
+[67777:MainThread](2026-07-09 15:47:48,201) INFO - qlib.DEnsembleModel - [double_ensemble.py:81] - Training sub-model: (3/3)
+[67777:MainThread](2026-07-09 15:47:49,063) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[67777:MainThread](2026-07-09 15:47:49,526) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 572214973804768708
+[67777:MainThread](2026-07-09 15:47:49,809) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+[67777:MainThread](2026-07-09 15:47:57,416) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[67777:MainThread](2026-07-09 15:47:57,417) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[67777:MainThread](2026-07-09 15:47:57,420) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[67777:MainThread](2026-07-09 15:47:57,420) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[67777:MainThread](2026-07-09 15:48:05,403) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[67777:MainThread](2026-07-09 15:48:05,403) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[67777:MainThread](2026-07-09 15:48:05,409) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x12cb34680>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   3%|▎         | 23/871 [00:00<00:03, 226.64it/s]
+backtest loop:   6%|▌         | 48/871 [00:00<00:03, 238.32it/s]
+backtest loop:   8%|▊         | 72/871 [00:00<00:03, 236.48it/s]
+backtest loop:  11%|█         | 97/871 [00:00<00:03, 240.91it/s]
+backtest loop:  14%|█▍        | 122/871 [00:00<00:03, 242.20it/s]
+backtest loop:  17%|█▋        | 147/871 [00:00<00:02, 242.70it/s]
+backtest loop:  20%|█▉        | 172/871 [00:00<00:02, 241.93it/s]
+backtest loop:  23%|██▎       | 197/871 [00:00<00:02, 242.46it/s]
+backtest loop:  25%|██▌       | 222/871 [00:00<00:02, 243.64it/s]
+backtest loop:  28%|██▊       | 247/871 [00:01<00:02, 245.21it/s]
+backtest loop:  31%|███       | 272/871 [00:01<00:02, 244.04it/s]
+backtest loop:  34%|███▍      | 297/871 [00:01<00:02, 240.88it/s]
+backtest loop:  37%|███▋      | 322/871 [00:01<00:02, 238.26it/s]
+backtest loop:  40%|███▉      | 347/871 [00:01<00:02, 240.37it/s]
+backtest loop:  43%|████▎     | 373/871 [00:01<00:02, 241.54it/s]
+backtest loop:  46%|████▌     | 399/871 [00:01<00:01, 245.59it/s]
+backtest loop:  49%|████▉     | 425/871 [00:01<00:01, 248.96it/s]
+backtest loop:  52%|█████▏    | 452/871 [00:01<00:01, 249.11it/s]
+backtest loop:  55%|█████▍    | 477/871 [00:01<00:01, 247.68it/s]
+backtest loop:  58%|█████▊    | 502/871 [00:02<00:01, 246.37it/s]
+backtest loop:  61%|██████    | 527/871 [00:02<00:01, 246.25it/s]
+backtest loop:  63%|██████▎   | 552/871 [00:02<00:01, 246.03it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  66%|██████▋   | 578/871 [00:02<00:01, 248.14it/s]
+backtest loop:  69%|██████▉   | 603/871 [00:02<00:01, 246.49it/s]
+backtest loop:  72%|███████▏  | 628/871 [00:02<00:00, 245.40it/s]
+backtest loop:  75%|███████▍  | 653/871 [00:02<00:00, 241.88it/s]
+backtest loop:  78%|███████▊  | 678/871 [00:02<00:00, 233.09it/s]
+backtest loop:  81%|████████  | 702/871 [00:02<00:00, 233.59it/s]
+backtest loop:  83%|████████▎ | 727/871 [00:03<00:00, 236.46it/s]
+backtest loop:  86%|████████▌ | 751/871 [00:03<00:00, 234.07it/s]
+backtest loop:  89%|████████▉ | 776/871 [00:03<00:00, 237.68it/s]
+backtest loop:  92%|█████████▏| 801/871 [00:03<00:00, 236.19it/s]
+backtest loop:  95%|█████████▍| 825/871 [00:03<00:00, 236.87it/s]
+backtest loop:  98%|█████████▊| 850/871 [00:03<00:00, 238.77it/s]
+backtest loop: 100%|██████████| 871/871 [00:03<00:00, 241.27it/s]
+[67777:MainThread](2026-07-09 15:48:09,045) INFO - qlib.workflow - [record_temp.py:520] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 572214973804768708
+[67777:MainThread](2026-07-09 15:48:09,048) INFO - qlib.workflow - [record_temp.py:545] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 572214973804768708
+[67777:MainThread](2026-07-09 15:48:09,350) INFO - qlib.timer - [log.py:127] - Time cost: 0.005s | waiting `async_log` Done
+[20]	train's l2: 0.000809644	valid's l2: 0.0011265
+[20]	train's l2: 0.00105577	valid's l2: 0.00112664
+[20]	train's l2: 0.00102911	valid's l2: 0.00112194
+'The following are prediction results of the DEnsembleModel model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000   -0.000943
+           SH600008   -0.000493
+           SH600009   -0.000181
+           SH600010   -0.000509
+           SH600015   -0.000602
+{'IC': np.float64(0.02275402573259321),
+ 'ICIR': np.float64(0.1710710482985976),
+ 'Rank IC': np.float64(0.0256318362006752),
+ 'Rank ICIR': np.float64(0.1908613577649596)}
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean               0.000224
+std                0.006380
+annualized_return  0.053279
+information_ratio  0.541288
+max_drawdown      -0.157980
+'The following are analysis results of the excess return with cost(1day).'
+                       risk
+mean               0.000037
+std                0.006377
+annualized_return  0.008812
+information_ratio  0.089574
+max_drawdown      -0.188903
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0

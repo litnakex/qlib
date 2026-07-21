@@ -295,6 +295,77 @@ class TopkDropoutStrategy(BaseSignalStrategy):
         return TradeDecisionWO(sell_order_list + buy_order_list, self)
 
 
+class LimitUpTopkDropoutStrategy(TopkDropoutStrategy):
+    """TopkDropoutStrategy that only buys stocks which hit the 涨停 (limit-up) on the
+    previous trading day.
+
+    It reuses all of TopkDropoutStrategy's selection logic and adds one extra filter on
+    the final buy list: a candidate is kept only if its daily ``$change`` on the most
+    recent trading day before the trade hit the limit-up threshold.
+    """
+
+    def __init__(self, *, limit_up_threshold=0.095, **kwargs):
+        """
+        Parameters
+        -----------
+        limit_up_threshold : float
+            minimum daily ``$change`` on the previous trading day for a stock to be
+            eligible for buying. Defaults to 0.095 (~+10% A-share limit, with rounding
+            tolerance).
+        """
+        super().__init__(**kwargs)
+        self.limit_up_threshold = limit_up_threshold
+        # Lazily-built {datetime -> set(limit-up stock_id)} cache for the whole backtest
+        # window. Loaded once on first use to avoid a per-day disk query.
+        self._limit_up_by_day = None
+
+    def _ensure_change_cache(self):
+        if self._limit_up_by_day is not None:
+            return
+        cal = self.trade_calendar.get_all_time()
+        start, end = cal[0], cal[-1]
+        # Query all instruments over the whole backtest span in a single call, then
+        # keep only the (day, stock) pairs that hit the limit-up threshold.
+        change = D.features(
+            D.instruments("all"), ["$change"], start_time=start, end_time=end, freq="day"
+        )
+        mapping = {}
+        if change is not None and not change.empty:
+            s = change["$change"]
+            hit = s[s >= self.limit_up_threshold]
+            for (inst, dt) in hit.index:
+                mapping.setdefault(dt, set()).add(inst)
+        self._limit_up_by_day = mapping
+
+    def _prev_day_limit_up(self, stocks, pred_end_time):
+        """Return the subset of ``stocks`` whose previous trading day was a 涨停.
+
+        ``pred_end_time`` is the close of the prediction bar (the most recent trading
+        day before the trade), i.e. the "previous day" whose limit-up state we check.
+        """
+        stocks = list(stocks)
+        if len(stocks) == 0:
+            return stocks
+        self._ensure_change_cache()
+        day = pd.Timestamp(pred_end_time).normalize()
+        lu = self._limit_up_by_day.get(day, set())
+        return [code for code in stocks if code in lu]
+
+    def generate_trade_decision(self, execute_result=None):
+        trade_step = self.trade_calendar.get_trade_step()
+        pred_start_time, pred_end_time = self.trade_calendar.get_step_time(trade_step, shift=1)
+
+        decision = super().generate_trade_decision(execute_result=execute_result)
+        order_list = decision.get_decision()
+
+        # Keep every sell order; for buy orders keep only prev-day limit-up stocks.
+        buy_codes = [o.stock_id for o in order_list if o.direction == Order.BUY]
+        allowed = set(self._prev_day_limit_up(buy_codes, pred_end_time))
+
+        filtered = [o for o in order_list if o.direction != Order.BUY or o.stock_id in allowed]
+        return TradeDecisionWO(filtered, self)
+
+
 class WeightStrategyBase(BaseSignalStrategy):
     # TODO:
     # 1. Supporting leverage the get_range_limit result from the decision

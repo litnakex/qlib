@@ -1,0 +1,140 @@
+Training until validation scores don't improve for 50 rounds
+[20]	train's l2: 0.981377	valid's l2: 0.993566
+[40]	train's l2: 0.973719	valid's l2: 0.993846
+[60]	train's l2: 0.96698	valid's l2: 0.99466
+Early stopping, best iteration is:
+[18]	train's l2: 0.982182	valid's l2: 0.993497
+'The following are prediction results of the LGBModel model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000   -0.027139
+           SH600008    0.007010
+           SH600009    0.009770
+           SH600010    0.012275
+           SH600015   -0.112909
+{'IC': np.float64(0.04680478548401019),
+ 'ICIR': np.float64(0.3815580412040698),
+ 'Rank IC': np.float64(0.04904972522499881),
+ 'Rank ICIR': np.float64(0.4067533437693986)}
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean               0.000530
+std                0.005718
+annualized_return  0.126029
+information_ratio  1.428574
+max_drawdown      -0.072310
+'The following are analysis results of the excess return with cost(1day).'
+                       risk
+mean               0.000339
+std                0.005717
+annualized_return  0.080654
+information_ratio  0.914486
+max_drawdown      -0.086083
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0
+{'class': 'Alpha158',
+ 'kwargs': {'end_time': datetime.date(2020, 8, 1),
+            'fit_end_time': datetime.date(2014, 12, 31),
+            'fit_start_time': datetime.date(2008, 1, 1),
+            'instruments': 'csi300',
+            'start_time': datetime.date(2008, 1, 1)},
+ 'module_path': 'qlib.contrib.data.handler'}
+The location of the new task /Users/xuxin/Documents/dev/qlib/examples/data_demo/new_task.yaml
+AttributeError: 'YAML' object has no attribute 'safe_dump'
+
+[5182:MainThread](2026-07-17 09:37:15,639) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[5182:MainThread](2026-07-17 09:37:17,241) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[5182:MainThread](2026-07-17 09:37:17,241) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[5221:MainThread](2026-07-17 09:37:20,864) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[5221:MainThread](2026-07-17 09:37:20,870) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[5221:MainThread](2026-07-17 09:37:20,871) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[5221:MainThread](2026-07-17 09:37:20,871) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[5221:MainThread](2026-07-17 09:37:20,876) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name workflow.
+[5221:MainThread](2026-07-17 09:37:20,879) INFO - qlib.workflow - [exp.py:258] - Experiment 847507406087210509 starts running ...
+[5221:MainThread](2026-07-17 09:37:21,747) INFO - qlib.workflow - [recorder.py:345] - Recorder 96f9110ff8ae4d469d3300356211996a starts running under Experiment 847507406087210509 ...
+[5221:MainThread](2026-07-17 09:37:49,546) INFO - qlib.timer - [log.py:127] - Time cost: 24.809s | Loading data Done
+[5221:MainThread](2026-07-17 09:37:49,848) INFO - qlib.timer - [log.py:127] - Time cost: 0.109s | DropnaLabel Done
+[5221:MainThread](2026-07-17 09:37:50,652) INFO - qlib.timer - [log.py:127] - Time cost: 0.804s | CSZScoreNorm Done
+[5221:MainThread](2026-07-17 09:37:50,658) INFO - qlib.timer - [log.py:127] - Time cost: 1.112s | fit & process data Done
+[5221:MainThread](2026-07-17 09:37:50,658) INFO - qlib.timer - [log.py:127] - Time cost: 25.922s | Init data Done
+[5221:MainThread](2026-07-17 09:37:57,643) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[5221:MainThread](2026-07-17 09:37:58,411) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 847507406087210509
+[5221:MainThread](2026-07-17 09:37:58,777) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+[5221:MainThread](2026-07-17 09:38:09,428) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[5221:MainThread](2026-07-17 09:38:09,429) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[5221:MainThread](2026-07-17 09:38:09,442) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[5221:MainThread](2026-07-17 09:38:09,443) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[5221:MainThread](2026-07-17 09:38:18,642) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[5221:MainThread](2026-07-17 09:38:18,642) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[5221:MainThread](2026-07-17 09:38:18,648) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x11d22ff20>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   3%|▎         | 24/871 [00:00<00:03, 225.62it/s]
+backtest loop:   6%|▌         | 51/871 [00:00<00:03, 249.44it/s]
+backtest loop:   9%|▉         | 77/871 [00:00<00:03, 250.59it/s]
+backtest loop:  12%|█▏        | 103/871 [00:00<00:03, 251.12it/s]
+backtest loop:  15%|█▍        | 129/871 [00:00<00:02, 250.01it/s]
+backtest loop:  18%|█▊        | 155/871 [00:00<00:02, 252.49it/s]
+backtest loop:  21%|██        | 181/871 [00:00<00:02, 252.74it/s]
+backtest loop:  24%|██▍       | 207/871 [00:00<00:02, 254.09it/s]
+backtest loop:  27%|██▋       | 233/871 [00:00<00:02, 254.58it/s]
+backtest loop:  30%|██▉       | 259/871 [00:01<00:02, 250.33it/s]
+backtest loop:  33%|███▎      | 285/871 [00:01<00:02, 247.89it/s]
+backtest loop:  36%|███▌      | 310/871 [00:01<00:02, 245.95it/s]
+backtest loop:  38%|███▊      | 335/871 [00:01<00:02, 242.14it/s]
+backtest loop:  41%|████▏     | 360/871 [00:01<00:02, 237.68it/s]
+backtest loop:  44%|████▍     | 384/871 [00:01<00:02, 237.71it/s]
+backtest loop:  47%|████▋     | 411/871 [00:01<00:01, 244.92it/s]
+backtest loop:  50%|█████     | 437/871 [00:01<00:01, 246.27it/s]
+backtest loop:  53%|█████▎    | 463/871 [00:01<00:01, 249.59it/s]
+backtest loop:  56%|█████▌    | 488/871 [00:01<00:01, 247.23it/s]
+backtest loop:  59%|█████▉    | 513/871 [00:02<00:01, 245.36it/s]
+backtest loop:  62%|██████▏   | 538/871 [00:02<00:01, 242.62it/s]
+backtest loop:  65%|██████▍   | 563/871 [00:02<00:01, 239.71it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  67%|██████▋   | 587/871 [00:02<00:01, 234.18it/s]
+backtest loop:  70%|███████   | 611/871 [00:02<00:01, 223.65it/s]
+backtest loop:  73%|███████▎  | 634/871 [00:02<00:01, 223.83it/s]
+backtest loop:  75%|███████▌  | 657/871 [00:02<00:00, 222.30it/s]
+backtest loop:  78%|███████▊  | 680/871 [00:02<00:00, 195.71it/s]
+backtest loop:  80%|████████  | 701/871 [00:02<00:00, 197.87it/s]
+backtest loop:  83%|████████▎ | 722/871 [00:03<00:00, 199.59it/s]
+backtest loop:  85%|████████▌ | 743/871 [00:03<00:00, 192.36it/s]
+backtest loop:  88%|████████▊ | 766/871 [00:03<00:00, 201.28it/s]
+backtest loop:  90%|█████████ | 788/871 [00:03<00:00, 204.74it/s]
+backtest loop:  93%|█████████▎| 810/871 [00:03<00:00, 208.54it/s]
+backtest loop:  96%|█████████▌| 833/871 [00:03<00:00, 211.86it/s]
+backtest loop:  98%|█████████▊| 856/871 [00:03<00:00, 212.44it/s]
+backtest loop: 100%|██████████| 871/871 [00:03<00:00, 230.13it/s]
+[5221:MainThread](2026-07-17 09:38:22,458) INFO - qlib.workflow - [record_temp.py:520] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 847507406087210509
+[5221:MainThread](2026-07-17 09:38:22,461) INFO - qlib.workflow - [record_temp.py:545] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 847507406087210509
+[5221:MainThread](2026-07-17 09:38:22,826) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | waiting `async_log` Done
+[5182:MainThread](2026-07-17 09:38:23,454) INFO - qlib.timer - [log.py:127] - Time cost: 66.211s | The original time without handler cache: Done
+[5182:MainThread](2026-07-17 09:38:52,017) INFO - qlib.timer - [log.py:127] - Time cost: 28.547s | Loading data Done
+[5182:MainThread](2026-07-17 09:38:52,387) INFO - qlib.timer - [log.py:127] - Time cost: 0.179s | DropnaLabel Done
+[5182:MainThread](2026-07-17 09:38:53,376) INFO - qlib.timer - [log.py:127] - Time cost: 0.988s | CSZScoreNorm Done
+[5182:MainThread](2026-07-17 09:38:53,391) INFO - qlib.timer - [log.py:127] - Time cost: 1.374s | fit & process data Done
+[5182:MainThread](2026-07-17 09:38:53,391) INFO - qlib.timer - [log.py:127] - Time cost: 29.922s | Init data Done
+[5182:MainThread](2026-07-17 09:38:54,158) ERROR - qlib.workflow - [utils.py:41] - An exception has been raised[AttributeError: 'YAML' object has no attribute 'safe_dump'].
+  File "/Users/xuxin/Documents/dev/qlib/examples/data_demo/data_cache_demo.py", line 50, in <module>
+    yaml.safe_dump(new_task_config, f, indent=4, sort_keys=False)
+    ^^^^^^^^^^^^^^

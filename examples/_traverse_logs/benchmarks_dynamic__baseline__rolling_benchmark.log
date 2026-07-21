@@ -1,0 +1,160 @@
+UnpicklingError: Forbidden class: qlib.contrib.data.handler.Alpha158. Only whitelisted classes are allowed for security reasons. This is to prevent arbitrary code execution through pickle deserialization.
+
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+2026-07-17 09:42:49.344 | WARNING  | qlib.tests.data:qlib_data:195 - Data already exists: ~/.qlib/qlib_data/cn_data, the data download will be skipped
+	If downloading is required: `exists_skip=False` or `change target_dir`
+[8487:MainThread](2026-07-17 09:42:49,345) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[8487:MainThread](2026-07-17 09:42:49,346) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[8487:MainThread](2026-07-17 09:42:49,346) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[8487:MainThread](2026-07-17 09:42:49,353) INFO - qlib.Rolling - [base.py:166] - The prediction horizon is overrided
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[8487:MainThread](2026-07-17 09:43:14,382) INFO - qlib.timer - [log.py:127] - Time cost: 25.026s | Loading data Done
+/Users/xuxin/.local/lib/python3.12/site-packages/numpy/lib/_nanfunctions_impl.py:1215: RuntimeWarning: All-NaN slice encountered
+  return fnb._ureduce(a, func=_nanmedian, keepdims=keepdims,
+[8487:MainThread](2026-07-17 09:43:17,589) INFO - qlib.timer - [log.py:127] - Time cost: 3.051s | RobustZScoreNorm Done
+[8487:MainThread](2026-07-17 09:43:17,998) INFO - qlib.timer - [log.py:127] - Time cost: 0.409s | Fillna Done
+[8487:MainThread](2026-07-17 09:43:18,275) INFO - qlib.timer - [log.py:127] - Time cost: 0.127s | DropnaLabel Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:358: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[cols] = t
+[8487:MainThread](2026-07-17 09:43:18,486) INFO - qlib.timer - [log.py:127] - Time cost: 0.211s | CSRankNorm Done
+[8487:MainThread](2026-07-17 09:43:18,495) INFO - qlib.timer - [log.py:127] - Time cost: 4.113s | fit & process data Done
+[8487:MainThread](2026-07-17 09:43:18,496) INFO - qlib.timer - [log.py:127] - Time cost: 29.141s | Init data Done
+[8487:MainThread](2026-07-17 09:43:20,220) INFO - qlib.Rolling - [base.py:181] - {'model': {'class': 'LinearModel', 'module_path': 'qlib.contrib.model.linear', 'kwargs': {'estimator': 'ridge', 'alpha': 0.05}}, 'dataset': {'class': 'DatasetH', 'module_path': 'qlib.data.dataset', 'kwargs': {'handler': 'file:///Users/xuxin/Documents/dev/qlib/examples/benchmarks_dynamic/baseline/Alpha158.abd1ffdef8.pkl', 'segments': {'train': [datetime.date(2008, 1, 1), datetime.date(2014, 12, 31)], 'valid': [datetime.date(2015, 1, 1), datetime.date(2016, 12, 31)], 'test': [datetime.date(2017, 1, 1), datetime.date(2020, 8, 1)]}}}, 'record': [{'class': 'SignalRecord', 'module_path': 'qlib.workflow.record_temp', 'kwargs': {'model': '<MODEL>', 'dataset': '<DATASET>'}}, {'class': 'SigAnaRecord', 'module_path': 'qlib.workflow.record_temp', 'kwargs': {'ana_long_short': True, 'ann_scaler': 252}}, {'class': 'PortAnaRecord', 'module_path': 'qlib.workflow.record_temp', 'kwargs': {'config': {'strategy': {'class': 'TopkDropoutStrategy', 'module_path': 'qlib.contrib.strategy', 'kwargs': {'signal': '<PRED>', 'topk': 50, 'n_drop': 5}}, 'backtest': {'start_time': datetime.date(2017, 1, 1), 'end_time': datetime.date(2020, 8, 1), 'account': 100000000, 'benchmark': 'SH000300', 'exchange_kwargs': {'limit_threshold': 0.095, 'deal_price': 'close', 'open_cost': 0.0005, 'close_cost': 0.0015, 'min_cost': 5}}}}}]}
+[8487:MainThread](2026-07-17 09:43:20,222) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[8487:MainThread](2026-07-17 09:43:20,222) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[8487:MainThread](2026-07-17 09:43:20,230) INFO - qlib.Rolling - [base.py:208] - Deleting previous Rolling results
+[8487:MainThread](2026-07-17 09:43:20,238) INFO - qlib.Rolling - [base.py:214] - No previous rolling results
+
+train tasks:   0%|          | 0/44 [00:00<?, ?it/s][8487:MainThread](2026-07-17 09:43:20,241) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name rolling_models_20260717094249.
+[8487:MainThread](2026-07-17 09:43:20,245) INFO - qlib.workflow - [exp.py:258] - Experiment 182179089925880582 starts running ...
+[8487:MainThread](2026-07-17 09:43:21,077) INFO - qlib.workflow - [recorder.py:345] - Recorder 243e09954e3c43dd82656f87b02bbcef starts running under Experiment 182179089925880582 ...
+[8487:MainThread](2026-07-17 09:43:23,811) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | waiting `async_log` Done
+
+train tasks:   0%|          | 0/44 [00:03<?, ?it/s]
+[8487:MainThread](2026-07-17 09:43:23,813) ERROR - qlib.workflow - [utils.py:41] - An exception has been raised[UnpicklingError: Forbidden class: qlib.contrib.data.handler.Alpha158. Only whitelisted classes are allowed for security reasons. This is to prevent arbitrary code execution through pickle deserialization.].
+  File "/Users/xuxin/Documents/dev/qlib/examples/benchmarks_dynamic/baseline/rolling_benchmark.py", line 41, in <module>
+    fire.Fire(RollingBenchmark)
+  File "/Users/xuxin/miniforge3/envs/qlib/lib/python3.12/site-packages/fire/core.py", line 135, in Fire
+    component_trace = _Fire(component, args, parsed_flag_args, context, name)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/miniforge3/envs/qlib/lib/python3.12/site-packages/fire/core.py", line 468, in _Fire
+    component, remaining_args = _CallAndUpdateTrace(
+                                ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/miniforge3/envs/qlib/lib/python3.12/site-packages/fire/core.py", line 684, in _CallAndUpdateTrace
+    component = fn(*varargs, **kwargs)
+                ^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/contrib/rolling/base.py", line 256, in run
+    self._train_rolling_tasks()
+  File "/Users/xuxin/Documents/dev/qlib/qlib/contrib/rolling/base.py", line 216, in _train_rolling_tasks
+    trainer(task_l)
+  File "/Users/xuxin/Documents/dev/qlib/qlib/model/trainer.py", line 182, in __call__
+    return self.end_train(self.train(*args, **kwargs))
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/model/trainer.py", line 271, in train
+    rec = train_func(task, experiment_name, recorder_name=self.default_rec_name, **kwargs)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/model/trainer.py", line 127, in task_train
+    _exe_task(task_config)
+  File "/Users/xuxin/Documents/dev/qlib/qlib/model/trainer.py", line 46, in _exe_task
+    dataset: Dataset = init_instance_by_config(task_config["dataset"], accept_types=Dataset)
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/utils/mod.py", line 179, in init_instance_by_config
+    return klass(**cls_kwargs, **try_kwargs, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/__init__.py", line 119, in __init__
+    self.handler: DataHandler = init_instance_by_config(handler, accept_types=DataHandler)
+                                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/utils/mod.py", line 171, in init_instance_by_config
+    return restricted_pickle_load(f)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/utils/pickle_utils.py", line 118, in restricted_pickle_load
+    return RestrictedUnpickler(file).load()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/xuxin/Documents/dev/qlib/qlib/utils/pickle_utils.py", line 92, in find_class
+    raise pickle.UnpicklingError(

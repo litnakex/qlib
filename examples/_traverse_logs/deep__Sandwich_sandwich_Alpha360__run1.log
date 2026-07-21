@@ -1,0 +1,292 @@
+'The following are prediction results of the Sandwich model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000   -0.027963
+           SH600008   -0.017976
+           SH600009    0.024471
+           SH600010   -0.013404
+           SH600015   -0.062348
+{'IC': np.float64(0.029444656800553127),
+ 'ICIR': np.float64(0.2228932936954207),
+ 'Rank IC': np.float64(0.03486193198560765),
+ 'Rank ICIR': np.float64(0.2709317534189387)}
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean               0.000179
+std                0.005311
+annualized_return  0.042669
+information_ratio  0.520800
+max_drawdown      -0.125028
+'The following are analysis results of the excess return with cost(1day).'
+                           risk
+mean              -6.952962e-07
+std                5.308025e-03
+annualized_return -1.654805e-04
+information_ratio -2.020809e-03
+max_drawdown      -1.655337e-01
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0
+
+[78545:MainThread](2026-07-18 03:45:22,074) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[78545:MainThread](2026-07-18 03:45:22,080) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[78545:MainThread](2026-07-18 03:45:22,082) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[78545:MainThread](2026-07-18 03:45:22,082) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[78545:MainThread](2026-07-18 03:45:22,087) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name trav_deep_Sandwich_sandwich_Alpha360_1.
+[78545:MainThread](2026-07-18 03:45:22,091) INFO - qlib.workflow - [exp.py:258] - Experiment 717015470181098394 starts running ...
+[78545:MainThread](2026-07-18 03:45:22,921) INFO - qlib.workflow - [recorder.py:345] - Recorder c0833c22da0348f18545fdabc12af866 starts running under Experiment 717015470181098394 ...
+[78545:MainThread](2026-07-18 03:45:25,941) INFO - qlib.Sandwich - [pytorch_sandwich.py:136] - Sandwich pytorch version...
+[78545:MainThread](2026-07-18 03:45:25,942) INFO - qlib.Sandwich - [pytorch_sandwich.py:158] - Sandwich parameters setting:
+fea_dim : 6
+cnn_dim_1 : 16
+cnn_dim_2 : 16
+cnn_kernel_size : 3
+rnn_dim_1 : 8
+rnn_dim_2 : 8
+rnn_dups : 2
+rnn_layers : 2
+dropout : 0
+n_epochs : 200
+lr : 0.001
+metric : loss
+batch_size: 2000
+early_stop : 20
+optimizer : adam
+loss_type : mse
+visible_GPU : 0
+use_GPU : False
+seed : None
+[78545:MainThread](2026-07-18 03:46:11,717) INFO - qlib.timer - [log.py:127] - Time cost: 44.749s | Loading data Done
+/Users/xuxin/.local/lib/python3.12/site-packages/numpy/lib/_nanfunctions_impl.py:1215: RuntimeWarning: All-NaN slice encountered
+  return fnb._ureduce(a, func=_nanmedian, keepdims=keepdims,
+[78545:MainThread](2026-07-18 03:46:17,424) INFO - qlib.timer - [log.py:127] - Time cost: 5.407s | RobustZScoreNorm Done
+[78545:MainThread](2026-07-18 03:46:18,156) INFO - qlib.timer - [log.py:127] - Time cost: 0.732s | Fillna Done
+[78545:MainThread](2026-07-18 03:46:18,728) INFO - qlib.timer - [log.py:127] - Time cost: 0.242s | DropnaLabel Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:358: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[cols] = t
+[78545:MainThread](2026-07-18 03:46:18,892) INFO - qlib.timer - [log.py:127] - Time cost: 0.163s | CSRankNorm Done
+[78545:MainThread](2026-07-18 03:46:18,908) INFO - qlib.timer - [log.py:127] - Time cost: 7.191s | fit & process data Done
+[78545:MainThread](2026-07-18 03:46:18,909) INFO - qlib.timer - [log.py:127] - Time cost: 51.941s | Init data Done
+[78545:MainThread](2026-07-18 03:46:18,909) WARNING - qlib.utils - [__init__.py:849] - The parameter `reweighter` with value `None` is ignored.
+[78545:MainThread](2026-07-18 03:46:20,180) INFO - qlib.Sandwich - [pytorch_sandwich.py:328] - training...
+[78545:MainThread](2026-07-18 03:46:20,181) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch0:
+[78545:MainThread](2026-07-18 03:46:20,182) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 03:47:27,402) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 03:48:02,180) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.996918, valid -0.996642
+[78545:MainThread](2026-07-18 03:48:02,181) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch1:
+[78545:MainThread](2026-07-18 03:48:02,181) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 03:49:08,560) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 03:49:43,542) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.996825, valid -0.996509
+[78545:MainThread](2026-07-18 03:49:43,543) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch2:
+[78545:MainThread](2026-07-18 03:49:43,544) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 03:50:50,698) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 03:51:25,450) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.996197, valid -0.995327
+[78545:MainThread](2026-07-18 03:51:25,451) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch3:
+[78545:MainThread](2026-07-18 03:51:25,451) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 03:52:31,761) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 03:53:06,460) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.995654, valid -0.995352
+[78545:MainThread](2026-07-18 03:53:06,460) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch4:
+[78545:MainThread](2026-07-18 03:53:06,460) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 03:54:12,607) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 03:54:47,645) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.995306, valid -0.995458
+[78545:MainThread](2026-07-18 03:54:47,646) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch5:
+[78545:MainThread](2026-07-18 03:54:47,646) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 03:55:53,858) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 03:56:29,252) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.994398, valid -0.994261
+[78545:MainThread](2026-07-18 03:56:29,253) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch6:
+[78545:MainThread](2026-07-18 03:56:29,253) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 03:57:35,646) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 03:58:10,582) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.994090, valid -0.994873
+[78545:MainThread](2026-07-18 03:58:10,582) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch7:
+[78545:MainThread](2026-07-18 03:58:10,583) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 03:59:16,665) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 03:59:51,330) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.993145, valid -0.994898
+[78545:MainThread](2026-07-18 03:59:51,330) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch8:
+[78545:MainThread](2026-07-18 03:59:51,330) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:00:57,656) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:01:32,790) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.992430, valid -0.994149
+[78545:MainThread](2026-07-18 04:01:32,791) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch9:
+[78545:MainThread](2026-07-18 04:01:32,791) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:02:40,047) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:03:15,617) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.992054, valid -0.994425
+[78545:MainThread](2026-07-18 04:03:15,617) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch10:
+[78545:MainThread](2026-07-18 04:03:15,617) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:04:23,312) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:04:58,745) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.991725, valid -0.994530
+[78545:MainThread](2026-07-18 04:04:58,745) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch11:
+[78545:MainThread](2026-07-18 04:04:58,746) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:06:05,153) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:06:40,121) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.990992, valid -0.994033
+[78545:MainThread](2026-07-18 04:06:40,122) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch12:
+[78545:MainThread](2026-07-18 04:06:40,122) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:07:46,437) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:08:21,452) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.990848, valid -0.993941
+[78545:MainThread](2026-07-18 04:08:21,453) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch13:
+[78545:MainThread](2026-07-18 04:08:21,453) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:09:28,025) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:10:03,106) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.991015, valid -0.994906
+[78545:MainThread](2026-07-18 04:10:03,107) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch14:
+[78545:MainThread](2026-07-18 04:10:03,107) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:11:10,331) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:11:45,758) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.990675, valid -0.994868
+[78545:MainThread](2026-07-18 04:11:45,759) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch15:
+[78545:MainThread](2026-07-18 04:11:45,759) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:12:52,724) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:13:28,438) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.989757, valid -0.993868
+[78545:MainThread](2026-07-18 04:13:28,439) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch16:
+[78545:MainThread](2026-07-18 04:13:28,440) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:14:35,996) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:15:11,472) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.989553, valid -0.994670
+[78545:MainThread](2026-07-18 04:15:11,472) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch17:
+[78545:MainThread](2026-07-18 04:15:11,472) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:16:17,997) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:16:53,233) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.989304, valid -0.994877
+[78545:MainThread](2026-07-18 04:16:53,234) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch18:
+[78545:MainThread](2026-07-18 04:16:53,234) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:18:00,729) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:18:36,400) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.989074, valid -0.994864
+[78545:MainThread](2026-07-18 04:18:36,400) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch19:
+[78545:MainThread](2026-07-18 04:18:36,400) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:19:43,680) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:20:18,960) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.989708, valid -0.995670
+[78545:MainThread](2026-07-18 04:20:18,960) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch20:
+[78545:MainThread](2026-07-18 04:20:18,961) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:21:26,055) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:22:01,091) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.990266, valid -0.997340
+[78545:MainThread](2026-07-18 04:22:01,092) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch21:
+[78545:MainThread](2026-07-18 04:22:01,092) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:23:07,254) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:23:42,538) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.988486, valid -0.994896
+[78545:MainThread](2026-07-18 04:23:42,539) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch22:
+[78545:MainThread](2026-07-18 04:23:42,539) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:24:49,289) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:25:24,570) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.988510, valid -0.995000
+[78545:MainThread](2026-07-18 04:25:24,571) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch23:
+[78545:MainThread](2026-07-18 04:25:24,571) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:26:31,260) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:27:06,410) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.988542, valid -0.996147
+[78545:MainThread](2026-07-18 04:27:06,410) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch24:
+[78545:MainThread](2026-07-18 04:27:06,410) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:28:13,209) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:28:48,379) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.988211, valid -0.995121
+[78545:MainThread](2026-07-18 04:28:48,380) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch25:
+[78545:MainThread](2026-07-18 04:28:48,380) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:29:55,911) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:30:31,949) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.988540, valid -0.997106
+[78545:MainThread](2026-07-18 04:30:31,950) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch26:
+[78545:MainThread](2026-07-18 04:30:31,950) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:31:39,868) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:32:15,542) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.988286, valid -0.997581
+[78545:MainThread](2026-07-18 04:32:15,542) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch27:
+[78545:MainThread](2026-07-18 04:32:15,542) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:33:23,312) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:33:59,210) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.987898, valid -0.995745
+[78545:MainThread](2026-07-18 04:33:59,210) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch28:
+[78545:MainThread](2026-07-18 04:33:59,210) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:35:06,628) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:35:41,930) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.987483, valid -0.995512
+[78545:MainThread](2026-07-18 04:35:41,930) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch29:
+[78545:MainThread](2026-07-18 04:35:41,931) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:36:48,439) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:37:23,513) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.987421, valid -0.995284
+[78545:MainThread](2026-07-18 04:37:23,513) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch30:
+[78545:MainThread](2026-07-18 04:37:23,513) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:38:30,530) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:39:05,961) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.987457, valid -0.997013
+[78545:MainThread](2026-07-18 04:39:05,961) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch31:
+[78545:MainThread](2026-07-18 04:39:05,962) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:40:12,543) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:40:47,976) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.987486, valid -0.995592
+[78545:MainThread](2026-07-18 04:40:47,976) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch32:
+[78545:MainThread](2026-07-18 04:40:47,976) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:41:54,905) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:42:30,152) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.987133, valid -0.995982
+[78545:MainThread](2026-07-18 04:42:30,152) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch33:
+[78545:MainThread](2026-07-18 04:42:30,152) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:43:36,839) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:44:12,177) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.987979, valid -0.998917
+[78545:MainThread](2026-07-18 04:44:12,177) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch34:
+[78545:MainThread](2026-07-18 04:44:12,178) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:45:19,168) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:45:54,427) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.986837, valid -0.996518
+[78545:MainThread](2026-07-18 04:45:54,428) INFO - qlib.Sandwich - [pytorch_sandwich.py:332] - Epoch35:
+[78545:MainThread](2026-07-18 04:45:54,428) INFO - qlib.Sandwich - [pytorch_sandwich.py:333] - training...
+[78545:MainThread](2026-07-18 04:47:01,347) INFO - qlib.Sandwich - [pytorch_sandwich.py:335] - evaluating...
+[78545:MainThread](2026-07-18 04:47:36,434) INFO - qlib.Sandwich - [pytorch_sandwich.py:338] - train -0.987669, valid -0.997377
+[78545:MainThread](2026-07-18 04:47:36,435) INFO - qlib.Sandwich - [pytorch_sandwich.py:350] - early stop
+[78545:MainThread](2026-07-18 04:47:36,435) INFO - qlib.Sandwich - [pytorch_sandwich.py:353] - best score: -0.993868 @ 15
+[78545:MainThread](2026-07-18 04:47:36,506) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[78545:MainThread](2026-07-18 04:47:50,560) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 717015470181098394
+/Users/xuxin/.local/lib/python3.12/site-packages/pandas/core/nanops.py:1632: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+[78545:MainThread](2026-07-18 04:47:50,851) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+[78545:MainThread](2026-07-18 04:47:58,647) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[78545:MainThread](2026-07-18 04:47:58,648) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[78545:MainThread](2026-07-18 04:47:58,650) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[78545:MainThread](2026-07-18 04:47:58,650) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[78545:MainThread](2026-07-18 04:48:06,447) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[78545:MainThread](2026-07-18 04:48:06,447) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[78545:MainThread](2026-07-18 04:48:06,451) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x126074680>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   3%|▎         | 24/871 [00:00<00:03, 225.46it/s]
+backtest loop:   6%|▌         | 51/871 [00:00<00:03, 246.98it/s]
+backtest loop:   9%|▊         | 76/871 [00:00<00:03, 247.24it/s]
+backtest loop:  12%|█▏        | 101/871 [00:00<00:03, 243.51it/s]
+backtest loop:  15%|█▍        | 127/871 [00:00<00:02, 249.21it/s]
+backtest loop:  18%|█▊        | 153/871 [00:00<00:02, 251.95it/s]
+backtest loop:  21%|██        | 179/871 [00:00<00:02, 251.28it/s]
+backtest loop:  24%|██▎       | 206/871 [00:00<00:02, 255.27it/s]
+backtest loop:  27%|██▋       | 232/871 [00:00<00:02, 255.75it/s]
+backtest loop:  30%|██▉       | 258/871 [00:01<00:02, 250.93it/s]
+backtest loop:  33%|███▎      | 284/871 [00:01<00:02, 247.29it/s]
+backtest loop:  35%|███▌      | 309/871 [00:01<00:02, 247.62it/s]
+backtest loop:  38%|███▊      | 334/871 [00:01<00:02, 244.80it/s]
+backtest loop:  41%|████▏     | 361/871 [00:01<00:02, 250.11it/s]
+backtest loop:  44%|████▍     | 387/871 [00:01<00:01, 251.05it/s]
+backtest loop:  47%|████▋     | 413/871 [00:01<00:01, 248.61it/s]
+backtest loop:  50%|█████     | 439/871 [00:01<00:01, 250.42it/s]
+backtest loop:  53%|█████▎    | 465/871 [00:01<00:01, 250.28it/s]
+backtest loop:  56%|█████▋    | 491/871 [00:01<00:01, 246.69it/s]
+backtest loop:  59%|█████▉    | 516/871 [00:02<00:01, 245.28it/s]
+backtest loop:  62%|██████▏   | 541/871 [00:02<00:01, 245.28it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  65%|██████▍   | 566/871 [00:02<00:01, 246.13it/s]
+backtest loop:  68%|██████▊   | 591/871 [00:02<00:01, 245.04it/s]
+backtest loop:  71%|███████   | 616/871 [00:02<00:01, 244.41it/s]
+backtest loop:  74%|███████▎  | 641/871 [00:02<00:00, 243.09it/s]
+backtest loop:  76%|███████▋  | 666/871 [00:02<00:00, 242.64it/s]
+backtest loop:  79%|███████▉  | 691/871 [00:02<00:00, 238.04it/s]
+backtest loop:  82%|████████▏ | 715/871 [00:02<00:00, 238.09it/s]
+backtest loop:  85%|████████▍ | 739/871 [00:03<00:00, 234.86it/s]
+backtest loop:  88%|████████▊ | 764/871 [00:03<00:00, 237.19it/s]
+backtest loop:  90%|█████████ | 788/871 [00:03<00:00, 185.86it/s]
+backtest loop:  93%|█████████▎| 811/871 [00:03<00:00, 195.38it/s]
+backtest loop:  96%|█████████▌| 835/871 [00:03<00:00, 206.17it/s]
+backtest loop:  99%|█████████▊| 859/871 [00:03<00:00, 215.03it/s]
+backtest loop: 100%|██████████| 871/871 [00:03<00:00, 237.60it/s]
+[78545:MainThread](2026-07-18 04:48:10,141) INFO - qlib.workflow - [record_temp.py:520] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 717015470181098394
+[78545:MainThread](2026-07-18 04:48:10,144) INFO - qlib.workflow - [record_temp.py:545] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 717015470181098394
+[78545:MainThread](2026-07-18 04:48:10,439) INFO - qlib.timer - [log.py:127] - Time cost: 0.001s | waiting `async_log` Done

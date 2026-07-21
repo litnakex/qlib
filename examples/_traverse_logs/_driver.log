@@ -1,0 +1,14 @@
+⏭  跳过已达终态 root/workflow_by_code
+⏭  跳过已达终态 data_demo/data_cache_demo
+⏭  跳过已达终态 data_demo/data_mem_resuse_demo
+⏭  跳过已达终态 model_interpreter/feature
+⏭  跳过已达终态 rolling_process_data/workflow
+⏭  跳过已达终态 benchmarks_dynamic/baseline/rolling_benchmark
+▶ 运行 portfolio/enhanced_indexing: qrun config_enhanced_indexing.yaml (cwd=portfolio)
+  ✗ portfolio/enhanced_indexing 失败 exit -15 (2690s)
+▶ 运行 nested_decision_execution/backtest: python workflow.py backtest (cwd=nested_decision_execution)
+  ✗ nested_decision_execution/backtest 失败 exit 1 (493s)
+▶ 运行 highfreq/tree_alpha158: qrun workflow_config_High_Freq_Tree_Alpha158.yaml (cwd=highfreq)
+  ✓ highfreq/tree_alpha158 IC=0.0357 (442s)
+
+批2/批3 处理完毕。状态见 _traverse_state.json

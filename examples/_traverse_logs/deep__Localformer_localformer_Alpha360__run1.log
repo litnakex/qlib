@@ -1,0 +1,185 @@
+'The following are prediction results of the LocalformerModel model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000    0.049111
+           SH600008    0.057063
+           SH600009    0.097841
+           SH600010    0.047665
+           SH600015   -0.020555
+{'IC': np.float64(0.03766765402289494),
+ 'ICIR': np.float64(0.2679273327631433),
+ 'Rank IC': np.float64(0.05300277494906461),
+ 'Rank ICIR': np.float64(0.4008506593796946)}
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean               0.000105
+std                0.004958
+annualized_return  0.025004
+information_ratio  0.326887
+max_drawdown      -0.132902
+'The following are analysis results of the excess return with cost(1day).'
+                       risk
+mean              -0.000055
+std                0.004954
+annualized_return -0.013130
+information_ratio -0.171812
+max_drawdown      -0.162687
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0
+
+[69474:MainThread](2026-07-19 01:26:01,931) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[69474:MainThread](2026-07-19 01:26:01,937) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[69474:MainThread](2026-07-19 01:26:01,938) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[69474:MainThread](2026-07-19 01:26:01,938) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[69474:MainThread](2026-07-19 01:26:01,946) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name trav_deep_Localformer_localformer_Alpha360_1.
+[69474:MainThread](2026-07-19 01:26:01,949) INFO - qlib.workflow - [exp.py:258] - Experiment 136514433512402241 starts running ...
+[69474:MainThread](2026-07-19 01:26:02,578) INFO - qlib.workflow - [recorder.py:345] - Recorder 744349b22c8749d392ab43f2405c1bd2 starts running under Experiment 136514433512402241 ...
+[69474:MainThread](2026-07-19 01:26:05,564) INFO - qlib.TransformerModel - [pytorch_localformer.py:64] - Naive Transformer:
+batch_size : 2048
+device : cpu
+[69474:MainThread](2026-07-19 01:26:51,378) INFO - qlib.timer - [log.py:127] - Time cost: 44.343s | Loading data Done
+/Users/xuxin/.local/lib/python3.12/site-packages/numpy/lib/_nanfunctions_impl.py:1215: RuntimeWarning: All-NaN slice encountered
+  return fnb._ureduce(a, func=_nanmedian, keepdims=keepdims,
+[69474:MainThread](2026-07-19 01:26:57,527) INFO - qlib.timer - [log.py:127] - Time cost: 5.781s | RobustZScoreNorm Done
+[69474:MainThread](2026-07-19 01:26:58,241) INFO - qlib.timer - [log.py:127] - Time cost: 0.713s | Fillna Done
+[69474:MainThread](2026-07-19 01:26:59,036) INFO - qlib.timer - [log.py:127] - Time cost: 0.261s | DropnaLabel Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:358: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[cols] = t
+[69474:MainThread](2026-07-19 01:26:59,195) INFO - qlib.timer - [log.py:127] - Time cost: 0.158s | CSRankNorm Done
+[69474:MainThread](2026-07-19 01:26:59,209) INFO - qlib.timer - [log.py:127] - Time cost: 7.831s | fit & process data Done
+[69474:MainThread](2026-07-19 01:26:59,209) INFO - qlib.timer - [log.py:127] - Time cost: 52.175s | Init data Done
+[69474:MainThread](2026-07-19 01:26:59,210) WARNING - qlib.utils - [__init__.py:849] - The parameter `reweighter` with value `None` is ignored.
+[69474:MainThread](2026-07-19 01:27:00,269) INFO - qlib.TransformerModel - [pytorch_localformer.py:184] - training...
+[69474:MainThread](2026-07-19 01:27:00,269) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch0:
+[69474:MainThread](2026-07-19 01:27:00,271) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 01:37:12,923) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 01:41:46,024) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.995443, valid -0.996526
+[69474:MainThread](2026-07-19 01:41:46,029) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch1:
+[69474:MainThread](2026-07-19 01:41:46,029) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 01:51:47,337) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 01:56:19,955) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.991209, valid -0.993162
+[69474:MainThread](2026-07-19 01:56:19,958) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch2:
+[69474:MainThread](2026-07-19 01:56:19,958) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 02:06:28,838) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 02:10:59,870) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.990484, valid -0.992786
+[69474:MainThread](2026-07-19 02:10:59,875) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch3:
+[69474:MainThread](2026-07-19 02:10:59,875) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 02:20:28,472) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 02:25:02,008) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.990324, valid -0.992592
+[69474:MainThread](2026-07-19 02:25:02,011) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch4:
+[69474:MainThread](2026-07-19 02:25:02,011) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 02:35:19,791) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 02:39:50,286) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.989703, valid -0.991534
+[69474:MainThread](2026-07-19 02:39:50,291) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch5:
+[69474:MainThread](2026-07-19 02:39:50,291) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 02:49:20,338) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 02:53:51,142) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.991465, valid -0.993910
+[69474:MainThread](2026-07-19 02:53:51,143) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch6:
+[69474:MainThread](2026-07-19 02:53:51,143) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 03:04:23,121) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 03:08:54,802) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.989323, valid -0.991675
+[69474:MainThread](2026-07-19 03:08:54,802) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch7:
+[69474:MainThread](2026-07-19 03:08:54,802) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 03:18:41,966) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 03:23:11,355) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.989467, valid -0.991788
+[69474:MainThread](2026-07-19 03:23:11,355) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch8:
+[69474:MainThread](2026-07-19 03:23:11,356) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 03:33:53,736) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 03:38:24,240) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.988603, valid -0.990820
+[69474:MainThread](2026-07-19 03:38:24,246) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch9:
+[69474:MainThread](2026-07-19 03:38:24,246) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 03:47:10,049) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 03:51:39,317) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.988872, valid -0.992031
+[69474:MainThread](2026-07-19 03:51:39,318) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch10:
+[69474:MainThread](2026-07-19 03:51:39,318) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 04:00:48,585) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 04:05:24,391) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.988920, valid -0.991027
+[69474:MainThread](2026-07-19 04:05:24,392) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch11:
+[69474:MainThread](2026-07-19 04:05:24,392) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 04:15:49,433) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 04:20:21,238) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.988785, valid -0.991474
+[69474:MainThread](2026-07-19 04:20:21,238) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch12:
+[69474:MainThread](2026-07-19 04:20:21,238) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 04:31:02,585) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 04:35:35,609) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.989090, valid -0.991890
+[69474:MainThread](2026-07-19 04:35:35,610) INFO - qlib.TransformerModel - [pytorch_localformer.py:188] - Epoch13:
+[69474:MainThread](2026-07-19 04:35:35,610) INFO - qlib.TransformerModel - [pytorch_localformer.py:189] - training...
+[69474:MainThread](2026-07-19 04:45:04,954) INFO - qlib.TransformerModel - [pytorch_localformer.py:191] - evaluating...
+[69474:MainThread](2026-07-19 04:49:34,145) INFO - qlib.TransformerModel - [pytorch_localformer.py:194] - train -0.988279, valid -0.990846
+[69474:MainThread](2026-07-19 04:49:34,145) INFO - qlib.TransformerModel - [pytorch_localformer.py:206] - early stop
+[69474:MainThread](2026-07-19 04:49:34,146) INFO - qlib.TransformerModel - [pytorch_localformer.py:209] - best score: -0.990820 @ 8
+[69474:MainThread](2026-07-19 04:49:34,315) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[69474:MainThread](2026-07-19 04:51:32,755) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 136514433512402241
+/Users/xuxin/.local/lib/python3.12/site-packages/pandas/core/nanops.py:1632: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+[69474:MainThread](2026-07-19 04:51:33,102) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+[69474:MainThread](2026-07-19 04:51:41,285) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[69474:MainThread](2026-07-19 04:51:41,286) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[69474:MainThread](2026-07-19 04:51:41,288) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[69474:MainThread](2026-07-19 04:51:41,288) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[69474:MainThread](2026-07-19 04:51:49,128) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[69474:MainThread](2026-07-19 04:51:49,128) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[69474:MainThread](2026-07-19 04:51:49,132) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x128e7c680>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   3%|▎         | 23/871 [00:00<00:03, 225.88it/s]
+backtest loop:   6%|▌         | 48/871 [00:00<00:03, 238.68it/s]
+backtest loop:   8%|▊         | 72/871 [00:00<00:03, 238.05it/s]
+backtest loop:  11%|█▏        | 98/871 [00:00<00:03, 244.23it/s]
+backtest loop:  14%|█▍        | 124/871 [00:00<00:03, 247.89it/s]
+backtest loop:  17%|█▋        | 152/871 [00:00<00:02, 257.05it/s]
+backtest loop:  21%|██        | 179/871 [00:00<00:02, 261.07it/s]
+backtest loop:  24%|██▍       | 208/871 [00:00<00:02, 269.03it/s]
+backtest loop:  27%|██▋       | 235/871 [00:00<00:02, 265.78it/s]
+backtest loop:  30%|███       | 262/871 [00:01<00:02, 266.93it/s]
+backtest loop:  33%|███▎      | 289/871 [00:01<00:02, 258.50it/s]
+backtest loop:  36%|███▋      | 316/871 [00:01<00:02, 257.09it/s]
+backtest loop:  39%|███▉      | 344/871 [00:01<00:02, 259.66it/s]
+backtest loop:  43%|████▎     | 371/871 [00:01<00:01, 261.40it/s]
+backtest loop:  46%|████▌     | 398/871 [00:01<00:01, 255.53it/s]
+backtest loop:  49%|████▊     | 424/871 [00:01<00:01, 256.22it/s]
+backtest loop:  52%|█████▏    | 451/871 [00:01<00:01, 259.34it/s]
+backtest loop:  55%|█████▍    | 477/871 [00:01<00:01, 253.85it/s]
+backtest loop:  58%|█████▊    | 503/871 [00:01<00:01, 253.07it/s]
+backtest loop:  61%|██████    | 529/871 [00:02<00:01, 251.95it/s]
+backtest loop:  64%|██████▎   | 555/871 [00:02<00:01, 246.16it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  67%|██████▋   | 581/871 [00:02<00:01, 247.27it/s]
+backtest loop:  70%|██████▉   | 607/871 [00:02<00:01, 249.60it/s]
+backtest loop:  73%|███████▎  | 632/871 [00:02<00:00, 247.43it/s]
+backtest loop:  75%|███████▌  | 657/871 [00:02<00:00, 246.10it/s]
+backtest loop:  78%|███████▊  | 682/871 [00:02<00:00, 241.29it/s]
+backtest loop:  81%|████████  | 707/871 [00:02<00:00, 241.44it/s]
+backtest loop:  84%|████████▍ | 732/871 [00:02<00:00, 238.26it/s]
+backtest loop:  87%|████████▋ | 757/871 [00:03<00:00, 236.22it/s]
+backtest loop:  90%|████████▉ | 782/871 [00:03<00:00, 238.48it/s]
+backtest loop:  93%|█████████▎| 806/871 [00:03<00:00, 238.53it/s]
+backtest loop:  95%|█████████▌| 830/871 [00:03<00:00, 238.96it/s]
+backtest loop:  98%|█████████▊| 855/871 [00:03<00:00, 241.06it/s]
+backtest loop: 100%|██████████| 871/871 [00:03<00:00, 242.39it/s]
+[69474:MainThread](2026-07-19 04:51:52,750) INFO - qlib.workflow - [record_temp.py:520] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 136514433512402241
+[69474:MainThread](2026-07-19 04:51:52,753) INFO - qlib.workflow - [record_temp.py:545] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 136514433512402241
+[69474:MainThread](2026-07-19 04:51:53,039) INFO - qlib.timer - [log.py:127] - Time cost: 0.004s | waiting `async_log` Done

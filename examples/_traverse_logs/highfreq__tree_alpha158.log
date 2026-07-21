@@ -1,0 +1,81 @@
+Training until validation scores don't improve for 50 rounds
+[20]	train's binary_logloss: 0.692696	train's auc: 0.531669	valid's binary_logloss: 0.692908	valid's auc: 0.518984
+[40]	train's binary_logloss: 0.692347	train's auc: 0.534468	valid's binary_logloss: 0.692742	valid's auc: 0.519918
+[60]	train's binary_logloss: 0.692056	train's auc: 0.536096	valid's binary_logloss: 0.692622	valid's auc: 0.520479
+[80]	train's binary_logloss: 0.691808	train's auc: 0.537444	valid's binary_logloss: 0.692538	valid's auc: 0.520729
+[100]	train's binary_logloss: 0.691592	train's auc: 0.538667	valid's binary_logloss: 0.692465	valid's auc: 0.521238
+[120]	train's binary_logloss: 0.691394	train's auc: 0.53995	valid's binary_logloss: 0.69242	valid's auc: 0.521488
+[140]	train's binary_logloss: 0.691213	train's auc: 0.541156	valid's binary_logloss: 0.692375	valid's auc: 0.521835
+[160]	train's binary_logloss: 0.691042	train's auc: 0.542394	valid's binary_logloss: 0.69234	valid's auc: 0.522098
+[180]	train's binary_logloss: 0.69088	train's auc: 0.54369	valid's binary_logloss: 0.692316	valid's auc: 0.522298
+[200]	train's binary_logloss: 0.690724	train's auc: 0.544959	valid's binary_logloss: 0.6923	valid's auc: 0.522408
+[220]	train's binary_logloss: 0.690576	train's auc: 0.546235	valid's binary_logloss: 0.692283	valid's auc: 0.522594
+[240]	train's binary_logloss: 0.69043	train's auc: 0.547458	valid's binary_logloss: 0.692271	valid's auc: 0.522688
+[260]	train's binary_logloss: 0.690293	train's auc: 0.548628	valid's binary_logloss: 0.692266	valid's auc: 0.522715
+[280]	train's binary_logloss: 0.69016	train's auc: 0.549802	valid's binary_logloss: 0.692259	valid's auc: 0.522778
+[300]	train's binary_logloss: 0.69003	train's auc: 0.550944	valid's binary_logloss: 0.692258	valid's auc: 0.522801
+[320]	train's binary_logloss: 0.689898	train's auc: 0.552145	valid's binary_logloss: 0.692251	valid's auc: 0.522853
+[340]	train's binary_logloss: 0.689764	train's auc: 0.553429	valid's binary_logloss: 0.692245	valid's auc: 0.522898
+[360]	train's binary_logloss: 0.689635	train's auc: 0.554677	valid's binary_logloss: 0.692234	valid's auc: 0.523043
+[380]	train's binary_logloss: 0.689515	train's auc: 0.555775	valid's binary_logloss: 0.692221	valid's auc: 0.523215
+[400]	train's binary_logloss: 0.689395	train's auc: 0.556883	valid's binary_logloss: 0.692212	valid's auc: 0.52335
+[420]	train's binary_logloss: 0.68928	train's auc: 0.55793	valid's binary_logloss: 0.692203	valid's auc: 0.523441
+[440]	train's binary_logloss: 0.689167	train's auc: 0.558991	valid's binary_logloss: 0.692198	valid's auc: 0.523508
+[460]	train's binary_logloss: 0.689055	train's auc: 0.560036	valid's binary_logloss: 0.692196	valid's auc: 0.523523
+[480]	train's binary_logloss: 0.688941	train's auc: 0.561116	valid's binary_logloss: 0.692194	valid's auc: 0.523572
+[500]	train's binary_logloss: 0.688828	train's auc: 0.56217	valid's binary_logloss: 0.692192	valid's auc: 0.523633
+[520]	train's binary_logloss: 0.688715	train's auc: 0.563255	valid's binary_logloss: 0.692187	valid's auc: 0.523706
+[540]	train's binary_logloss: 0.688602	train's auc: 0.564355	valid's binary_logloss: 0.692189	valid's auc: 0.523727
+[560]	train's binary_logloss: 0.688489	train's auc: 0.565403	valid's binary_logloss: 0.692186	valid's auc: 0.523775
+[580]	train's binary_logloss: 0.688377	train's auc: 0.566415	valid's binary_logloss: 0.692183	valid's auc: 0.523821
+[600]	train's binary_logloss: 0.688263	train's auc: 0.56749	valid's binary_logloss: 0.692178	valid's auc: 0.523894
+[620]	train's binary_logloss: 0.688148	train's auc: 0.568574	valid's binary_logloss: 0.69218	valid's auc: 0.523891
+[640]	train's binary_logloss: 0.688035	train's auc: 0.569689	valid's binary_logloss: 0.692183	valid's auc: 0.523875
+Early stopping, best iteration is:
+[603]	train's binary_logloss: 0.688244	train's auc: 0.567674	valid's binary_logloss: 0.692177	valid's auc: 0.523914
+'The following are prediction results of the HFLGBModel model.'
+                                   score
+datetime            instrument          
+2020-12-01 09:30:00 SH600000    0.487271
+                    SH600004    0.513951
+                    SH600009    0.517269
+                    SH600010    0.525965
+                    SH600011    0.509546
+{'IC': np.float64(0.035675648882389804),
+ 'ICIR': np.float64(0.39721767147934367),
+ 'Long precision': np.float64(0.5116934757685262),
+ 'Long-Short Average Return': np.float64(7.38560864172106e-05),
+ 'Long-Short Average Sharpe': np.float64(0.27405101078360133),
+ 'Rank IC': np.float64(0.04393868823995672),
+ 'Rank ICIR': np.float64(0.4908980803072881),
+ 'Short precision': np.float64(0.5428550784484991)}
+
+[50729:MainThread](2026-07-17 10:58:26,133) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[50729:MainThread](2026-07-17 10:58:26,138) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[50729:MainThread](2026-07-17 10:58:26,140) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[50729:MainThread](2026-07-17 10:58:26,140) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data_1min')}
+[50729:MainThread](2026-07-17 10:58:26,146) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name trav_highfreq_tree_alpha158.
+[50729:MainThread](2026-07-17 10:58:26,148) INFO - qlib.workflow - [exp.py:258] - Experiment 298692426552716287 starts running ...
+[50729:MainThread](2026-07-17 10:58:26,989) INFO - qlib.workflow - [recorder.py:345] - Recorder 5f70f145ea4a4088812f2df55a75e4a5 starts running under Experiment 298692426552716287 ...
+[50729:MainThread](2026-07-17 10:59:02,817) INFO - qlib.timer - [log.py:127] - Time cost: 32.614s | Loading data Done
+/Users/xuxin/.local/lib/python3.12/site-packages/numpy/lib/_nanfunctions_impl.py:1215: RuntimeWarning: All-NaN slice encountered
+  return fnb._ureduce(a, func=_nanmedian, keepdims=keepdims,
+[50729:MainThread](2026-07-17 10:59:22,829) INFO - qlib.timer - [log.py:127] - Time cost: 15.017s | RobustZScoreNorm Done
+[50729:MainThread](2026-07-17 10:59:32,744) INFO - qlib.timer - [log.py:127] - Time cost: 9.903s | Fillna Done
+[50729:MainThread](2026-07-17 10:59:45,753) INFO - qlib.timer - [log.py:127] - Time cost: 1.751s | DropnaLabel Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:358: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[cols] = t
+[50729:MainThread](2026-07-17 10:59:47,136) INFO - qlib.timer - [log.py:127] - Time cost: 1.372s | CSRankNorm Done
+[50729:MainThread](2026-07-17 10:59:47,166) INFO - qlib.timer - [log.py:127] - Time cost: 44.349s | fit & process data Done
+[50729:MainThread](2026-07-17 10:59:47,169) INFO - qlib.timer - [log.py:127] - Time cost: 76.967s | Init data Done
+[50729:MainThread](2026-07-17 10:59:47,254) WARNING - qlib.utils - [__init__.py:849] - The parameter `reweighter` with value `None` is ignored.
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[50729:MainThread](2026-07-17 11:05:25,428) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 298692426552716287
+[50729:MainThread](2026-07-17 11:05:40,807) INFO - qlib.timer - [log.py:127] - Time cost: 0.003s | waiting `async_log` Done
