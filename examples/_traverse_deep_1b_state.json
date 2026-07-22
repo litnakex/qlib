@@ -1,0 +1,485 @@
+{
+  "GRU_gru_Alpha158": {
+    "runs": [
+      {
+        "IC": 0.028237668792833306,
+        "ICIR": 0.2085312005242225,
+        "Rank IC": 0.04335291281889417,
+        "Rank ICIR": 0.32760068205054976,
+        "ann_wo_cost": 0.081841,
+        "ir_wo_cost": 1.235141,
+        "mdd_wo_cost": -0.072525,
+        "ann_w_cost": 0.037051,
+        "ir_w_cost": 0.558988,
+        "mdd_w_cost": -0.114148,
+        "sec": 796
+      },
+      {
+        "IC": 0.028234138738156517,
+        "ICIR": 0.20776705498797982,
+        "Rank IC": 0.042603492825007014,
+        "Rank ICIR": 0.32199532064029956,
+        "ann_wo_cost": 0.077027,
+        "ir_wo_cost": 1.064493,
+        "mdd_wo_cost": -0.075643,
+        "ann_w_cost": 0.031944,
+        "ir_w_cost": 0.441522,
+        "mdd_w_cost": -0.100461,
+        "sec": 799
+      },
+      {
+        "IC": 0.028536806696449913,
+        "ICIR": 0.21256543739426778,
+        "Rank IC": 0.04099866632090189,
+        "Rank ICIR": 0.31483546460037054,
+        "ann_wo_cost": 0.042122,
+        "ir_wo_cost": 0.657385,
+        "mdd_wo_cost": -0.114361,
+        "ann_w_cost": -0.000263,
+        "ir_w_cost": -0.004105,
+        "mdd_w_cost": -0.132518,
+        "sec": 805
+      }
+    ],
+    "status": "done",
+    "n_ok": 3,
+    "mean": {
+      "IC": 0.0283,
+      "ICIR": 0.2096,
+      "Rank IC": 0.0423,
+      "Rank ICIR": 0.3215,
+      "ann_w_cost": 0.0229,
+      "ir_w_cost": 0.3321,
+      "mdd_w_cost": -0.1157,
+      "ann_wo_cost": 0.067,
+      "ir_wo_cost": 0.9857,
+      "mdd_wo_cost": -0.0875
+    },
+    "std": {
+      "IC": 0.0002,
+      "ICIR": 0.0026,
+      "Rank IC": 0.0012,
+      "Rank ICIR": 0.0064,
+      "ann_w_cost": 0.0202,
+      "ir_w_cost": 0.2971,
+      "mdd_w_cost": 0.0161,
+      "ann_wo_cost": 0.0217,
+      "ir_wo_cost": 0.2968,
+      "mdd_wo_cost": 0.0233
+    }
+  },
+  "GRU_gru_Alpha360": {
+    "runs": [
+      {
+        "IC": 0.046673686043360536,
+        "ICIR": 0.35642227795609055,
+        "Rank IC": 0.05557084887523528,
+        "Rank ICIR": 0.44862995522989596,
+        "ann_wo_cost": 0.129981,
+        "ir_wo_cost": 1.784294,
+        "mdd_wo_cost": -0.073521,
+        "ann_w_cost": 0.086671,
+        "ir_w_cost": 1.190476,
+        "mdd_w_cost": -0.095385,
+        "sec": 3051
+      },
+      {
+        "IC": 0.04465210959962531,
+        "ICIR": 0.34589292272179517,
+        "Rank IC": 0.05461126258591384,
+        "Rank ICIR": 0.43551382359974095,
+        "ann_wo_cost": 0.073008,
+        "ir_wo_cost": 1.117973,
+        "mdd_wo_cost": -0.061255,
+        "ann_w_cost": 0.036826,
+        "ir_w_cost": 0.563917,
+        "mdd_w_cost": -0.086659,
+        "sec": 5095
+      },
+      {
+        "IC": 0.054087377221081416,
+        "ICIR": 0.42043470147269646,
+        "Rank IC": 0.05907631255024185,
+        "Rank ICIR": 0.46900458082352353,
+        "ann_wo_cost": 0.163105,
+        "ir_wo_cost": 1.997063,
+        "mdd_wo_cost": -0.073153,
+        "ann_w_cost": 0.121923,
+        "ir_w_cost": 1.493467,
+        "mdd_w_cost": -0.09384,
+        "sec": 3106
+      }
+    ],
+    "status": "done",
+    "n_ok": 3,
+    "mean": {
+      "IC": 0.0485,
+      "ICIR": 0.3742,
+      "Rank IC": 0.0564,
+      "Rank ICIR": 0.451,
+      "ann_w_cost": 0.0818,
+      "ir_w_cost": 1.0826,
+      "mdd_w_cost": -0.092,
+      "ann_wo_cost": 0.122,
+      "ir_wo_cost": 1.6331,
+      "mdd_wo_cost": -0.0693
+    },
+    "std": {
+      "IC": 0.005,
+      "ICIR": 0.0403,
+      "Rank IC": 0.0024,
+      "Rank ICIR": 0.0169,
+      "ann_w_cost": 0.0428,
+      "ir_w_cost": 0.4741,
+      "mdd_w_cost": 0.0047,
+      "ann_wo_cost": 0.0456,
+      "ir_wo_cost": 0.4586,
+      "mdd_wo_cost": 0.007
+    }
+  },
+  "LSTM_lstm_Alpha158": {
+    "runs": [
+      {
+        "IC": 0.027268185450603298,
+        "ICIR": 0.20932363562116182,
+        "Rank IC": 0.040666863064486455,
+        "Rank ICIR": 0.32442605369092015,
+        "ann_wo_cost": 0.071319,
+        "ir_wo_cost": 1.100998,
+        "mdd_wo_cost": -0.069682,
+        "ann_w_cost": 0.028544,
+        "ir_w_cost": 0.440734,
+        "mdd_w_cost": -0.08449,
+        "sec": 735
+      },
+      {
+        "IC": 0.025199960924032604,
+        "ICIR": 0.1861843513976803,
+        "Rank IC": 0.03835415845692896,
+        "Rank ICIR": 0.29418634084950124,
+        "ann_wo_cost": 0.054891,
+        "ir_wo_cost": 0.861764,
+        "mdd_wo_cost": -0.073299,
+        "ann_w_cost": 0.012294,
+        "ir_w_cost": 0.192962,
+        "mdd_w_cost": -0.119754,
+        "sec": 743
+      },
+      {
+        "IC": 0.02883665036255505,
+        "ICIR": 0.1992547217352369,
+        "Rank IC": 0.044300527479629905,
+        "Rank ICIR": 0.3209495754257485,
+        "ann_wo_cost": 0.06406,
+        "ir_wo_cost": 0.943052,
+        "mdd_wo_cost": -0.070692,
+        "ann_w_cost": 0.023202,
+        "ir_w_cost": 0.341616,
+        "mdd_w_cost": -0.107211,
+        "sec": 731
+      }
+    ],
+    "status": "done",
+    "n_ok": 3,
+    "mean": {
+      "IC": 0.0271,
+      "ICIR": 0.1983,
+      "Rank IC": 0.0411,
+      "Rank ICIR": 0.3132,
+      "ann_w_cost": 0.0213,
+      "ir_w_cost": 0.3251,
+      "mdd_w_cost": -0.1038,
+      "ann_wo_cost": 0.0634,
+      "ir_wo_cost": 0.9686,
+      "mdd_wo_cost": -0.0712
+    },
+    "std": {
+      "IC": 0.0018,
+      "ICIR": 0.0116,
+      "Rank IC": 0.003,
+      "Rank ICIR": 0.0165,
+      "ann_w_cost": 0.0083,
+      "ir_w_cost": 0.1247,
+      "mdd_w_cost": 0.0179,
+      "ann_wo_cost": 0.0082,
+      "ir_wo_cost": 0.1216,
+      "mdd_wo_cost": 0.0019
+    }
+  },
+  "LSTM_lstm_Alpha360": {
+    "runs": [
+      {
+        "IC": 0.043923659362818925,
+        "ICIR": 0.3358570912869213,
+        "Rank IC": 0.05349682443518632,
+        "Rank ICIR": 0.41941071592835216,
+        "ann_wo_cost": 0.059831,
+        "ir_wo_cost": 0.704885,
+        "mdd_wo_cost": -0.113325,
+        "ann_w_cost": 0.018613,
+        "ir_w_cost": 0.219378,
+        "mdd_w_cost": -0.149617,
+        "sec": 3358
+      },
+      {
+        "IC": 0.042590345279217116,
+        "ICIR": 0.33165392710523295,
+        "Rank IC": 0.05432336881512468,
+        "Rank ICIR": 0.43312634647555426,
+        "ann_wo_cost": 0.065418,
+        "ir_wo_cost": 0.899223,
+        "mdd_wo_cost": -0.075723,
+        "ann_w_cost": 0.028328,
+        "ir_w_cost": 0.389842,
+        "mdd_w_cost": -0.104627,
+        "sec": 3611
+      },
+      {
+        "IC": 0.04374241198927135,
+        "ICIR": 0.33134049181008096,
+        "Rank IC": 0.05317966263008069,
+        "Rank ICIR": 0.4136178005521872,
+        "ann_wo_cost": 0.068724,
+        "ir_wo_cost": 1.039823,
+        "mdd_wo_cost": -0.052941,
+        "ann_w_cost": 0.030234,
+        "ir_w_cost": 0.457617,
+        "mdd_w_cost": -0.070909,
+        "sec": 3537
+      }
+    ],
+    "status": "done",
+    "n_ok": 3,
+    "mean": {
+      "IC": 0.0434,
+      "ICIR": 0.333,
+      "Rank IC": 0.0537,
+      "Rank ICIR": 0.4221,
+      "ann_w_cost": 0.0257,
+      "ir_w_cost": 0.3556,
+      "mdd_w_cost": -0.1084,
+      "ann_wo_cost": 0.0647,
+      "ir_wo_cost": 0.8813,
+      "mdd_wo_cost": -0.0807
+    },
+    "std": {
+      "IC": 0.0007,
+      "ICIR": 0.0025,
+      "Rank IC": 0.0006,
+      "Rank ICIR": 0.01,
+      "ann_w_cost": 0.0062,
+      "ir_w_cost": 0.1228,
+      "mdd_w_cost": 0.0395,
+      "ann_wo_cost": 0.0045,
+      "ir_wo_cost": 0.1682,
+      "mdd_wo_cost": 0.0305
+    }
+  },
+  "GATs_gats_Alpha158": {
+    "runs": [
+      {
+        "IC": 0.048042281489420156,
+        "ICIR": 0.33821393679693434,
+        "Rank IC": 0.0551927198561225,
+        "Rank ICIR": 0.3929841443410621,
+        "ann_wo_cost": 0.184818,
+        "ir_wo_cost": 2.449496,
+        "mdd_wo_cost": -0.07477,
+        "ann_w_cost": 0.144248,
+        "ir_w_cost": 1.912835,
+        "mdd_w_cost": -0.082137,
+        "sec": 941
+      },
+      {
+        "IC": 0.04577440736316342,
+        "ICIR": 0.32086493762331797,
+        "Rank IC": 0.05304297665776005,
+        "Rank ICIR": 0.37849990535775024,
+        "ann_wo_cost": 0.147988,
+        "ir_wo_cost": 2.064507,
+        "mdd_wo_cost": -0.086291,
+        "ann_w_cost": 0.110371,
+        "ir_w_cost": 1.540348,
+        "mdd_w_cost": -0.097445,
+        "sec": 1032
+      },
+      {
+        "IC": 0.04586321409131141,
+        "ICIR": 0.3222947617339857,
+        "Rank IC": 0.05354086620431129,
+        "Rank ICIR": 0.3804175692345037,
+        "ann_wo_cost": 0.172706,
+        "ir_wo_cost": 2.372175,
+        "mdd_wo_cost": -0.068385,
+        "ann_w_cost": 0.132011,
+        "ir_w_cost": 1.814131,
+        "mdd_w_cost": -0.086464,
+        "sec": 959
+      }
+    ],
+    "status": "done",
+    "n_ok": 3,
+    "mean": {
+      "IC": 0.0466,
+      "ICIR": 0.3271,
+      "Rank IC": 0.0539,
+      "Rank ICIR": 0.384,
+      "ann_w_cost": 0.1289,
+      "ir_w_cost": 1.7558,
+      "mdd_w_cost": -0.0887,
+      "ann_wo_cost": 0.1685,
+      "ir_wo_cost": 2.2954,
+      "mdd_wo_cost": -0.0765
+    },
+    "std": {
+      "IC": 0.0013,
+      "ICIR": 0.0096,
+      "Rank IC": 0.0011,
+      "Rank ICIR": 0.0079,
+      "ann_w_cost": 0.0172,
+      "ir_w_cost": 0.193,
+      "mdd_w_cost": 0.0079,
+      "ann_wo_cost": 0.0188,
+      "ir_wo_cost": 0.2037,
+      "mdd_wo_cost": 0.0091
+    }
+  },
+  "GATs_gats_Alpha360": {
+    "runs": [
+      {
+        "IC": 0.04844853014638966,
+        "ICIR": 0.35780838762626965,
+        "Rank IC": 0.05998148044721695,
+        "Rank ICIR": 0.46014713651751926,
+        "ann_wo_cost": 0.085937,
+        "ir_wo_cost": 1.155495,
+        "mdd_wo_cost": -0.063606,
+        "ann_w_cost": 0.051177,
+        "ir_w_cost": 0.688606,
+        "mdd_w_cost": -0.07012,
+        "sec": 8478
+      },
+      {
+        "IC": 0.04947929757177682,
+        "ICIR": 0.3651089796934475,
+        "Rank IC": 0.06100654931658867,
+        "Rank ICIR": 0.46656318103698535,
+        "ann_wo_cost": 0.096797,
+        "ir_wo_cost": 1.363504,
+        "mdd_wo_cost": -0.063479,
+        "ann_w_cost": 0.061332,
+        "ir_w_cost": 0.864619,
+        "mdd_w_cost": -0.074274,
+        "sec": 8040
+      },
+      {
+        "IC": 0.04699581267016545,
+        "ICIR": 0.3515306599318132,
+        "Rank IC": 0.058439143216224544,
+        "Rank ICIR": 0.4591170127255063,
+        "ann_wo_cost": 0.141252,
+        "ir_wo_cost": 1.816891,
+        "mdd_wo_cost": -0.058948,
+        "ann_w_cost": 0.105059,
+        "ir_w_cost": 1.3521,
+        "mdd_w_cost": -0.067369,
+        "sec": 6210
+      }
+    ],
+    "status": "done",
+    "n_ok": 3,
+    "mean": {
+      "IC": 0.0483,
+      "ICIR": 0.3581,
+      "Rank IC": 0.0598,
+      "Rank ICIR": 0.4619,
+      "ann_w_cost": 0.0725,
+      "ir_w_cost": 0.9684,
+      "mdd_w_cost": -0.0706,
+      "ann_wo_cost": 0.108,
+      "ir_wo_cost": 1.4453,
+      "mdd_wo_cost": -0.062
+    },
+    "std": {
+      "IC": 0.0012,
+      "ICIR": 0.0068,
+      "Rank IC": 0.0013,
+      "Rank ICIR": 0.004,
+      "ann_w_cost": 0.0286,
+      "ir_w_cost": 0.3437,
+      "mdd_w_cost": 0.0035,
+      "ann_wo_cost": 0.0293,
+      "ir_wo_cost": 0.3382,
+      "mdd_wo_cost": 0.0027
+    }
+  },
+  "KRNN_krnn_Alpha360": {
+    "runs": [
+      {
+        "IC": 0.0075903076866878924,
+        "ICIR": 0.0506533229290815,
+        "Rank IC": 0.020669126385688498,
+        "Rank ICIR": 0.15431913153240312,
+        "ann_wo_cost": -0.059785,
+        "ir_wo_cost": -0.719542,
+        "mdd_wo_cost": -0.252103,
+        "ann_w_cost": -0.106337,
+        "ir_w_cost": -1.280043,
+        "mdd_w_cost": -0.4034,
+        "sec": 1646
+      },
+      {
+        "IC": 0.01566042544464947,
+        "ICIR": 0.10655576534081802,
+        "Rank IC": 0.02517304908628143,
+        "Rank ICIR": 0.1832331584934717,
+        "ann_wo_cost": 0.024008,
+        "ir_wo_cost": 0.281772,
+        "mdd_wo_cost": -0.127538,
+        "ann_w_cost": -0.023158,
+        "ir_w_cost": -0.271849,
+        "mdd_w_cost": -0.215221,
+        "sec": 2005
+      },
+      {
+        "IC": 0.021240875269759502,
+        "ICIR": 0.1508377393475762,
+        "Rank IC": 0.028993027285558814,
+        "Rank ICIR": 0.2185271090583033,
+        "ann_wo_cost": -0.025975,
+        "ir_wo_cost": -0.297694,
+        "mdd_wo_cost": -0.20728,
+        "ann_w_cost": -0.072094,
+        "ir_w_cost": -0.826719,
+        "mdd_w_cost": -0.307095,
+        "sec": 1980
+      }
+    ],
+    "status": "done",
+    "n_ok": 3,
+    "mean": {
+      "IC": 0.0148,
+      "ICIR": 0.1027,
+      "Rank IC": 0.0249,
+      "Rank ICIR": 0.1854,
+      "ann_w_cost": -0.0672,
+      "ir_w_cost": -0.7929,
+      "mdd_w_cost": -0.3086,
+      "ann_wo_cost": -0.0206,
+      "ir_wo_cost": -0.2452,
+      "mdd_wo_cost": -0.1956
+    },
+    "std": {
+      "IC": 0.0069,
+      "ICIR": 0.0502,
+      "Rank IC": 0.0042,
+      "Rank ICIR": 0.0322,
+      "ann_w_cost": 0.0418,
+      "ir_w_cost": 0.5049,
+      "mdd_w_cost": 0.0941,
+      "ann_wo_cost": 0.0422,
+      "ir_wo_cost": 0.5027,
+      "mdd_wo_cost": 0.0631
+    }
+  }
+}

@@ -1,0 +1,37 @@
+▶ GRU_gru_Alpha158 (已成功 0/3)
+  run1: IC=0.0282 (796s)
+  run2: IC=0.0282 (799s)
+  run3: IC=0.0285 (805s)
+  ✓ GRU_gru_Alpha158 完成 n_ok=3
+▶ GRU_gru_Alpha360 (已成功 0/3)
+  run1: IC=0.0467 (3051s)
+  run2: IC=0.0447 (5095s)
+  run3: IC=0.0541 (3106s)
+  ✓ GRU_gru_Alpha360 完成 n_ok=3
+▶ LSTM_lstm_Alpha158 (已成功 0/3)
+  run1: IC=0.0273 (735s)
+  run2: IC=0.0252 (743s)
+  run3: IC=0.0288 (731s)
+  ✓ LSTM_lstm_Alpha158 完成 n_ok=3
+▶ LSTM_lstm_Alpha360 (已成功 0/3)
+  run1: IC=0.0439 (3358s)
+  run2: IC=0.0426 (3611s)
+  run3: IC=0.0437 (3537s)
+  ✓ LSTM_lstm_Alpha360 完成 n_ok=3
+▶ GATs_gats_Alpha158 (已成功 0/3)
+  run1: IC=0.0480 (941s)
+  run2: IC=0.0458 (1032s)
+  run3: IC=0.0459 (959s)
+  ✓ GATs_gats_Alpha158 完成 n_ok=3
+▶ GATs_gats_Alpha360 (已成功 0/3)
+  run1: IC=0.0484 (8478s)
+  run2: IC=0.0495 (8040s)
+  run3: IC=0.0470 (6210s)
+  ✓ GATs_gats_Alpha360 完成 n_ok=3
+▶ KRNN_krnn_Alpha360 (已成功 0/3)
+  run1: IC=0.0076 (1646s)
+  run2: IC=0.0157 (2005s)
+  run3: IC=0.0212 (1980s)
+  ✓ KRNN_krnn_Alpha360 完成 n_ok=3
+
+1b 补跑 全部处理完毕。状态见 _traverse_deep_1b_state.json

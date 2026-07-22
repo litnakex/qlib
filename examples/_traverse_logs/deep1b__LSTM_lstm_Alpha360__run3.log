@@ -1,0 +1,247 @@
+'The following are prediction results of the LSTM model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000    0.017635
+           SH600008    0.079777
+           SH600009    0.108917
+           SH600010    0.011949
+           SH600015    0.015784
+{'IC': np.float64(0.04374241198927135),
+ 'ICIR': np.float64(0.33134049181008096),
+ 'Rank IC': np.float64(0.05317966263008069),
+ 'Rank ICIR': np.float64(0.4136178005521872)}
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean               0.000289
+std                0.004284
+annualized_return  0.068724
+information_ratio  1.039823
+max_drawdown      -0.052941
+'The following are analysis results of the excess return with cost(1day).'
+                       risk
+mean               0.000127
+std                0.004283
+annualized_return  0.030234
+information_ratio  0.457617
+max_drawdown      -0.070909
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0
+
+[4565:MainThread](2026-07-21 17:21:27,647) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[4565:MainThread](2026-07-21 17:21:27,653) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[4565:MainThread](2026-07-21 17:21:27,655) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[4565:MainThread](2026-07-21 17:21:27,655) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[4565:MainThread](2026-07-21 17:21:27,667) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name trav_deep1b_LSTM_lstm_Alpha360_3.
+[4565:MainThread](2026-07-21 17:21:27,673) INFO - qlib.workflow - [exp.py:258] - Experiment 994671674345745240 starts running ...
+[4565:MainThread](2026-07-21 17:21:28,499) INFO - qlib.workflow - [recorder.py:345] - Recorder a7811547d9fe4499b98eb76190fc91ff starts running under Experiment 994671674345745240 ...
+[4565:MainThread](2026-07-21 17:21:31,731) INFO - qlib.LSTM - [pytorch_lstm.py:58] - LSTM pytorch version...
+[4565:MainThread](2026-07-21 17:21:31,732) INFO - qlib.LSTM - [pytorch_lstm.py:75] - LSTM parameters setting:
+d_feat : 6
+hidden_size : 64
+num_layers : 2
+dropout : 0.0
+n_epochs : 200
+lr : 0.001
+metric : loss
+batch_size : 800
+early_stop : 20
+optimizer : adam
+loss_type : mse
+visible_GPU : 0
+use_GPU : False
+seed : None
+[4565:MainThread](2026-07-21 17:22:23,322) INFO - qlib.timer - [log.py:127] - Time cost: 49.584s | Loading data Done
+/Users/xuxin/.local/lib/python3.12/site-packages/numpy/lib/_nanfunctions_impl.py:1215: RuntimeWarning: All-NaN slice encountered
+  return fnb._ureduce(a, func=_nanmedian, keepdims=keepdims,
+[4565:MainThread](2026-07-21 17:22:30,902) INFO - qlib.timer - [log.py:127] - Time cost: 6.330s | RobustZScoreNorm Done
+[4565:MainThread](2026-07-21 17:22:31,675) INFO - qlib.timer - [log.py:127] - Time cost: 0.772s | Fillna Done
+[4565:MainThread](2026-07-21 17:22:32,886) INFO - qlib.timer - [log.py:127] - Time cost: 0.316s | DropnaLabel Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:358: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[cols] = t
+[4565:MainThread](2026-07-21 17:22:33,054) INFO - qlib.timer - [log.py:127] - Time cost: 0.167s | CSRankNorm Done
+[4565:MainThread](2026-07-21 17:22:33,067) INFO - qlib.timer - [log.py:127] - Time cost: 9.744s | fit & process data Done
+[4565:MainThread](2026-07-21 17:22:33,067) INFO - qlib.timer - [log.py:127] - Time cost: 59.329s | Init data Done
+[4565:MainThread](2026-07-21 17:22:33,068) WARNING - qlib.utils - [__init__.py:849] - The parameter `reweighter` with value `None` is ignored.
+[4565:MainThread](2026-07-21 17:22:33,823) INFO - qlib.LSTM - [pytorch_lstm.py:230] - training...
+[4565:MainThread](2026-07-21 17:22:33,824) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch0:
+[4565:MainThread](2026-07-21 17:22:33,825) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:23:58,948) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:24:50,427) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.993447, valid -0.995243
+[4565:MainThread](2026-07-21 17:24:50,430) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch1:
+[4565:MainThread](2026-07-21 17:24:50,431) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:26:14,033) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:27:05,173) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.990741, valid -0.994380
+[4565:MainThread](2026-07-21 17:27:05,174) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch2:
+[4565:MainThread](2026-07-21 17:27:05,174) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:28:29,010) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:29:21,541) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.988679, valid -0.993623
+[4565:MainThread](2026-07-21 17:29:21,542) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch3:
+[4565:MainThread](2026-07-21 17:29:21,542) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:30:45,349) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:31:37,845) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.987965, valid -0.993650
+[4565:MainThread](2026-07-21 17:31:37,845) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch4:
+[4565:MainThread](2026-07-21 17:31:37,846) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:33:01,854) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:33:53,393) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.987114, valid -0.993796
+[4565:MainThread](2026-07-21 17:33:53,394) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch5:
+[4565:MainThread](2026-07-21 17:33:53,394) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:35:17,763) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:36:10,564) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.986004, valid -0.993503
+[4565:MainThread](2026-07-21 17:36:10,565) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch6:
+[4565:MainThread](2026-07-21 17:36:10,565) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:37:33,665) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:38:23,605) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.985196, valid -0.993892
+[4565:MainThread](2026-07-21 17:38:23,606) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch7:
+[4565:MainThread](2026-07-21 17:38:23,606) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:39:44,678) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:40:34,391) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.984077, valid -0.993750
+[4565:MainThread](2026-07-21 17:40:34,391) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch8:
+[4565:MainThread](2026-07-21 17:40:34,392) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:41:54,671) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:42:44,294) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.983236, valid -0.995673
+[4565:MainThread](2026-07-21 17:42:44,294) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch9:
+[4565:MainThread](2026-07-21 17:42:44,294) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:44:03,922) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:44:53,246) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.982426, valid -0.994116
+[4565:MainThread](2026-07-21 17:44:53,246) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch10:
+[4565:MainThread](2026-07-21 17:44:53,247) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:46:13,876) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:47:03,213) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.981499, valid -0.996511
+[4565:MainThread](2026-07-21 17:47:03,214) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch11:
+[4565:MainThread](2026-07-21 17:47:03,214) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:48:24,456) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:49:14,437) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.979538, valid -0.997279
+[4565:MainThread](2026-07-21 17:49:14,437) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch12:
+[4565:MainThread](2026-07-21 17:49:14,437) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:50:34,818) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:51:24,162) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.978417, valid -0.997011
+[4565:MainThread](2026-07-21 17:51:24,162) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch13:
+[4565:MainThread](2026-07-21 17:51:24,162) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:52:44,643) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:53:34,372) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.976966, valid -0.997012
+[4565:MainThread](2026-07-21 17:53:34,373) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch14:
+[4565:MainThread](2026-07-21 17:53:34,373) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:54:56,270) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:55:46,126) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.975752, valid -0.996797
+[4565:MainThread](2026-07-21 17:55:46,126) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch15:
+[4565:MainThread](2026-07-21 17:55:46,126) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:57:06,487) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 17:57:55,470) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.972835, valid -0.999887
+[4565:MainThread](2026-07-21 17:57:55,471) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch16:
+[4565:MainThread](2026-07-21 17:57:55,471) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 17:59:15,969) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 18:00:05,411) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.970814, valid -1.001451
+[4565:MainThread](2026-07-21 18:00:05,411) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch17:
+[4565:MainThread](2026-07-21 18:00:05,412) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 18:01:25,955) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 18:02:15,913) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.968701, valid -1.002886
+[4565:MainThread](2026-07-21 18:02:15,914) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch18:
+[4565:MainThread](2026-07-21 18:02:15,914) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 18:03:36,006) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 18:04:25,506) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.966333, valid -1.005508
+[4565:MainThread](2026-07-21 18:04:25,507) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch19:
+[4565:MainThread](2026-07-21 18:04:25,507) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 18:05:46,225) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 18:06:36,843) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.965138, valid -1.006007
+[4565:MainThread](2026-07-21 18:06:36,844) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch20:
+[4565:MainThread](2026-07-21 18:06:36,844) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 18:07:57,377) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 18:08:47,562) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.963124, valid -1.009913
+[4565:MainThread](2026-07-21 18:08:47,563) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch21:
+[4565:MainThread](2026-07-21 18:08:47,563) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 18:10:08,427) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 18:10:57,826) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.959345, valid -1.013190
+[4565:MainThread](2026-07-21 18:10:57,826) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch22:
+[4565:MainThread](2026-07-21 18:10:57,826) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 18:12:17,892) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 18:13:07,274) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.956432, valid -1.012581
+[4565:MainThread](2026-07-21 18:13:07,274) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch23:
+[4565:MainThread](2026-07-21 18:13:07,274) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 18:14:27,827) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 18:15:17,212) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.954450, valid -1.016256
+[4565:MainThread](2026-07-21 18:15:17,213) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch24:
+[4565:MainThread](2026-07-21 18:15:17,213) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 18:16:37,651) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 18:17:27,737) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.950760, valid -1.024326
+[4565:MainThread](2026-07-21 18:17:27,737) INFO - qlib.LSTM - [pytorch_lstm.py:234] - Epoch25:
+[4565:MainThread](2026-07-21 18:17:27,737) INFO - qlib.LSTM - [pytorch_lstm.py:235] - training...
+[4565:MainThread](2026-07-21 18:18:47,958) INFO - qlib.LSTM - [pytorch_lstm.py:237] - evaluating...
+[4565:MainThread](2026-07-21 18:19:38,050) INFO - qlib.LSTM - [pytorch_lstm.py:240] - train -0.949419, valid -1.022279
+[4565:MainThread](2026-07-21 18:19:38,051) INFO - qlib.LSTM - [pytorch_lstm.py:252] - early stop
+[4565:MainThread](2026-07-21 18:19:38,051) INFO - qlib.LSTM - [pytorch_lstm.py:255] - best score: -0.993503 @ 5
+[4565:MainThread](2026-07-21 18:19:38,152) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[4565:MainThread](2026-07-21 18:19:58,674) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 994671674345745240
+/Users/xuxin/.local/lib/python3.12/site-packages/pandas/core/nanops.py:1632: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+[4565:MainThread](2026-07-21 18:19:58,990) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+[4565:MainThread](2026-07-21 18:20:07,135) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[4565:MainThread](2026-07-21 18:20:07,136) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[4565:MainThread](2026-07-21 18:20:07,137) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[4565:MainThread](2026-07-21 18:20:07,138) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[4565:MainThread](2026-07-21 18:20:14,980) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[4565:MainThread](2026-07-21 18:20:14,980) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[4565:MainThread](2026-07-21 18:20:14,985) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x143364b60>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   3%|▎         | 22/871 [00:00<00:03, 218.60it/s]
+backtest loop:   6%|▌         | 48/871 [00:00<00:03, 240.26it/s]
+backtest loop:   8%|▊         | 73/871 [00:00<00:03, 240.04it/s]
+backtest loop:  11%|█▏        | 99/871 [00:00<00:03, 242.36it/s]
+backtest loop:  15%|█▍        | 128/871 [00:00<00:02, 257.71it/s]
+backtest loop:  18%|█▊        | 154/871 [00:00<00:02, 256.87it/s]
+backtest loop:  21%|██        | 183/871 [00:00<00:02, 265.71it/s]
+backtest loop:  24%|██▍       | 210/871 [00:00<00:02, 263.78it/s]
+backtest loop:  27%|██▋       | 237/871 [00:00<00:02, 265.26it/s]
+backtest loop:  30%|███       | 264/871 [00:01<00:02, 262.14it/s]
+backtest loop:  33%|███▎      | 291/871 [00:01<00:02, 259.74it/s]
+backtest loop:  37%|███▋      | 318/871 [00:01<00:02, 260.77it/s]
+backtest loop:  40%|███▉      | 345/871 [00:01<00:02, 258.16it/s]
+backtest loop:  43%|████▎     | 371/871 [00:01<00:01, 257.31it/s]
+backtest loop:  46%|████▌     | 397/871 [00:01<00:01, 255.42it/s]
+backtest loop:  49%|████▊     | 423/871 [00:01<00:01, 251.59it/s]
+backtest loop:  52%|█████▏    | 449/871 [00:01<00:01, 252.84it/s]
+backtest loop:  55%|█████▍    | 475/871 [00:01<00:01, 253.00it/s]
+backtest loop:  58%|█████▊    | 501/871 [00:01<00:01, 247.81it/s]
+backtest loop:  60%|██████    | 526/871 [00:02<00:01, 246.03it/s]
+backtest loop:  63%|██████▎   | 551/871 [00:02<00:01, 244.38it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  66%|██████▌   | 577/871 [00:02<00:01, 247.15it/s]
+backtest loop:  69%|██████▉   | 602/871 [00:02<00:01, 247.12it/s]
+backtest loop:  72%|███████▏  | 627/871 [00:02<00:00, 245.30it/s]
+backtest loop:  75%|███████▍  | 652/871 [00:02<00:00, 244.03it/s]
+backtest loop:  78%|███████▊  | 677/871 [00:02<00:00, 239.06it/s]
+backtest loop:  80%|████████  | 701/871 [00:02<00:00, 238.45it/s]
+backtest loop:  83%|████████▎ | 725/871 [00:02<00:00, 237.85it/s]
+backtest loop:  86%|████████▌ | 749/871 [00:03<00:00, 234.52it/s]
+backtest loop:  89%|████████▊ | 773/871 [00:03<00:00, 235.76it/s]
+backtest loop:  92%|█████████▏| 797/871 [00:03<00:00, 236.24it/s]
+backtest loop:  94%|█████████▍| 821/871 [00:03<00:00, 237.02it/s]
+backtest loop:  97%|█████████▋| 845/871 [00:03<00:00, 237.05it/s]
+backtest loop: 100%|█████████▉| 869/871 [00:03<00:00, 236.98it/s]
+backtest loop: 100%|██████████| 871/871 [00:03<00:00, 240.61it/s]
+[4565:MainThread](2026-07-21 18:20:18,630) INFO - qlib.workflow - [record_temp.py:520] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 994671674345745240
+[4565:MainThread](2026-07-21 18:20:18,633) INFO - qlib.workflow - [record_temp.py:545] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 994671674345745240
+[4565:MainThread](2026-07-21 18:20:18,927) INFO - qlib.timer - [log.py:127] - Time cost: 0.009s | waiting `async_log` Done

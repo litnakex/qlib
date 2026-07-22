@@ -1,0 +1,307 @@
+'The following are prediction results of the KRNN model.'
+                          score
+datetime   instrument          
+2017-01-03 SH600000    0.021340
+           SH600008   -0.012821
+           SH600009    0.024104
+           SH600010   -0.009816
+           SH600015   -0.016716
+{'IC': np.float64(0.021240875269759502),
+ 'ICIR': np.float64(0.1508377393475762),
+ 'Rank IC': np.float64(0.028993027285558814),
+ 'Rank ICIR': np.float64(0.2185271090583033)}
+'The following are analysis results of benchmark return(1day).'
+                       risk
+mean               0.000477
+std                0.012295
+annualized_return  0.113561
+information_ratio  0.598699
+max_drawdown      -0.370479
+'The following are analysis results of the excess return without cost(1day).'
+                       risk
+mean              -0.000109
+std                0.005656
+annualized_return -0.025975
+information_ratio -0.297694
+max_drawdown      -0.207280
+'The following are analysis results of the excess return with cost(1day).'
+                       risk
+mean              -0.000303
+std                0.005653
+annualized_return -0.072094
+information_ratio -0.826719
+max_drawdown      -0.307095
+'The following are analysis results of indicators(1day).'
+     value
+ffr    1.0
+pa     0.0
+pos    0.0
+
+[66317:MainThread](2026-07-22 02:28:57,090) INFO - qlib.qrun - [run.py:78] - Render the template with the context: {}
+[66317:MainThread](2026-07-22 02:28:57,097) INFO - qlib.Initialization - [config.py:453] - default_conf: client.
+[66317:MainThread](2026-07-22 02:28:57,101) INFO - qlib.Initialization - [__init__.py:82] - qlib successfully initialized based on client settings.
+[66317:MainThread](2026-07-22 02:28:57,101) INFO - qlib.Initialization - [__init__.py:84] - data_path={'__DEFAULT_FREQ': PosixPath('/Users/xuxin/.qlib/qlib_data/cn_data')}
+[66317:MainThread](2026-07-22 02:28:57,113) WARNING - qlib.workflow - [expm.py:230] - No valid experiment found. Create a new experiment with name trav_deep1b_KRNN_krnn_Alpha360_3.
+[66317:MainThread](2026-07-22 02:28:57,116) INFO - qlib.workflow - [exp.py:258] - Experiment 117371003525464605 starts running ...
+[66317:MainThread](2026-07-22 02:28:59,796) INFO - qlib.workflow - [recorder.py:345] - Recorder 40212054a91a4935bf76010119eea770 starts running under Experiment 117371003525464605 ...
+[66317:MainThread](2026-07-22 02:29:03,166) INFO - qlib.KRNN - [pytorch_krnn.py:262] - KRNN pytorch version...
+[66317:MainThread](2026-07-22 02:29:03,166) INFO - qlib.KRNN - [pytorch_krnn.py:282] - KRNN parameters setting:
+fea_dim : 6
+cnn_dim : 8
+cnn_kernel_size : 3
+rnn_dim : 8
+rnn_dups : 2
+rnn_layers : 2
+dropout : 0
+n_epochs : 200
+lr : 0.001
+metric : loss
+batch_size: 2000
+early_stop : 20
+optimizer : adam
+loss_type : mse
+visible_GPU : 0
+use_GPU : False
+seed : None
+[66317:MainThread](2026-07-22 02:29:52,930) INFO - qlib.timer - [log.py:127] - Time cost: 48.252s | Loading data Done
+/Users/xuxin/.local/lib/python3.12/site-packages/numpy/lib/_nanfunctions_impl.py:1215: RuntimeWarning: All-NaN slice encountered
+  return fnb._ureduce(a, func=_nanmedian, keepdims=keepdims,
+[66317:MainThread](2026-07-22 02:29:58,758) INFO - qlib.timer - [log.py:127] - Time cost: 5.415s | RobustZScoreNorm Done
+[66317:MainThread](2026-07-22 02:29:59,442) INFO - qlib.timer - [log.py:127] - Time cost: 0.683s | Fillna Done
+[66317:MainThread](2026-07-22 02:29:59,930) INFO - qlib.timer - [log.py:127] - Time cost: 0.215s | DropnaLabel Done
+/Users/xuxin/Documents/dev/qlib/qlib/data/dataset/processor.py:358: SettingWithCopyWarning: 
+A value is trying to be set on a copy of a slice from a DataFrame.
+Try using .loc[row_indexer,col_indexer] = value instead
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+  df[cols] = t
+[66317:MainThread](2026-07-22 02:30:00,089) INFO - qlib.timer - [log.py:127] - Time cost: 0.159s | CSRankNorm Done
+[66317:MainThread](2026-07-22 02:30:00,099) INFO - qlib.timer - [log.py:127] - Time cost: 7.169s | fit & process data Done
+[66317:MainThread](2026-07-22 02:30:00,099) INFO - qlib.timer - [log.py:127] - Time cost: 55.422s | Init data Done
+[66317:MainThread](2026-07-22 02:30:00,100) WARNING - qlib.utils - [__init__.py:849] - The parameter `reweighter` with value `None` is ignored.
+[66317:MainThread](2026-07-22 02:30:00,685) INFO - qlib.KRNN - [pytorch_krnn.py:458] - training...
+[66317:MainThread](2026-07-22 02:30:00,685) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch0:
+[66317:MainThread](2026-07-22 02:30:00,686) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:30:31,103) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:30:47,318) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.997240, valid -0.997089
+[66317:MainThread](2026-07-22 02:30:47,320) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch1:
+[66317:MainThread](2026-07-22 02:30:47,320) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:31:17,701) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:31:33,756) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.996864, valid -0.996703
+[66317:MainThread](2026-07-22 02:31:33,756) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch2:
+[66317:MainThread](2026-07-22 02:31:33,757) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:32:04,140) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:32:20,281) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.996742, valid -0.996655
+[66317:MainThread](2026-07-22 02:32:20,281) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch3:
+[66317:MainThread](2026-07-22 02:32:20,281) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:32:50,369) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:33:06,632) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.996954, valid -0.996689
+[66317:MainThread](2026-07-22 02:33:06,632) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch4:
+[66317:MainThread](2026-07-22 02:33:06,632) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:33:37,040) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:33:53,507) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.996817, valid -0.996869
+[66317:MainThread](2026-07-22 02:33:53,508) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch5:
+[66317:MainThread](2026-07-22 02:33:53,508) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:34:23,859) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:34:39,997) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.996948, valid -0.996882
+[66317:MainThread](2026-07-22 02:34:39,997) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch6:
+[66317:MainThread](2026-07-22 02:34:39,998) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:35:10,317) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:35:26,649) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.996480, valid -0.996323
+[66317:MainThread](2026-07-22 02:35:26,650) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch7:
+[66317:MainThread](2026-07-22 02:35:26,651) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:35:56,989) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:36:13,378) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.996277, valid -0.995927
+[66317:MainThread](2026-07-22 02:36:13,379) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch8:
+[66317:MainThread](2026-07-22 02:36:13,379) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:36:43,774) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:37:00,089) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.996072, valid -0.995954
+[66317:MainThread](2026-07-22 02:37:00,090) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch9:
+[66317:MainThread](2026-07-22 02:37:00,090) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:37:30,368) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:37:46,766) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.995740, valid -0.996487
+[66317:MainThread](2026-07-22 02:37:46,766) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch10:
+[66317:MainThread](2026-07-22 02:37:46,766) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:38:17,279) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:38:33,668) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.994943, valid -0.996062
+[66317:MainThread](2026-07-22 02:38:33,668) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch11:
+[66317:MainThread](2026-07-22 02:38:33,668) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:39:04,289) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:39:20,744) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.994692, valid -0.996111
+[66317:MainThread](2026-07-22 02:39:20,744) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch12:
+[66317:MainThread](2026-07-22 02:39:20,744) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:39:51,031) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:40:07,637) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.994333, valid -0.995991
+[66317:MainThread](2026-07-22 02:40:07,638) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch13:
+[66317:MainThread](2026-07-22 02:40:07,638) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:40:37,931) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:40:54,482) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.993693, valid -0.995923
+[66317:MainThread](2026-07-22 02:40:54,484) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch14:
+[66317:MainThread](2026-07-22 02:40:54,484) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:41:24,696) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:41:40,983) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.994416, valid -0.996941
+[66317:MainThread](2026-07-22 02:41:40,983) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch15:
+[66317:MainThread](2026-07-22 02:41:40,983) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:42:11,267) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:42:27,585) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.993318, valid -0.995904
+[66317:MainThread](2026-07-22 02:42:27,586) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch16:
+[66317:MainThread](2026-07-22 02:42:27,586) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:42:57,954) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:43:14,374) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.993023, valid -0.995724
+[66317:MainThread](2026-07-22 02:43:14,375) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch17:
+[66317:MainThread](2026-07-22 02:43:14,375) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:43:44,869) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:44:01,595) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.992974, valid -0.996024
+[66317:MainThread](2026-07-22 02:44:01,595) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch18:
+[66317:MainThread](2026-07-22 02:44:01,596) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:44:32,058) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:44:48,550) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.992513, valid -0.995409
+[66317:MainThread](2026-07-22 02:44:48,550) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch19:
+[66317:MainThread](2026-07-22 02:44:48,551) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:45:19,159) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:45:35,632) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.992218, valid -0.995230
+[66317:MainThread](2026-07-22 02:45:35,633) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch20:
+[66317:MainThread](2026-07-22 02:45:35,633) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:46:06,446) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:46:23,087) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.992153, valid -0.995666
+[66317:MainThread](2026-07-22 02:46:23,088) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch21:
+[66317:MainThread](2026-07-22 02:46:23,088) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:46:53,868) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:47:10,346) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.992947, valid -0.997435
+[66317:MainThread](2026-07-22 02:47:10,346) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch22:
+[66317:MainThread](2026-07-22 02:47:10,346) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:47:40,923) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:47:57,524) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.991854, valid -0.995673
+[66317:MainThread](2026-07-22 02:47:57,524) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch23:
+[66317:MainThread](2026-07-22 02:47:57,525) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:48:28,194) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:48:44,723) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.991903, valid -0.996746
+[66317:MainThread](2026-07-22 02:48:44,723) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch24:
+[66317:MainThread](2026-07-22 02:48:44,723) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:49:15,649) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:49:32,129) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.991404, valid -0.996155
+[66317:MainThread](2026-07-22 02:49:32,130) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch25:
+[66317:MainThread](2026-07-22 02:49:32,130) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:50:03,187) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:50:20,114) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.991529, valid -0.995502
+[66317:MainThread](2026-07-22 02:50:20,114) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch26:
+[66317:MainThread](2026-07-22 02:50:20,114) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:50:50,677) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:51:07,533) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.991413, valid -0.996335
+[66317:MainThread](2026-07-22 02:51:07,533) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch27:
+[66317:MainThread](2026-07-22 02:51:07,533) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:51:38,129) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:51:54,660) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.991329, valid -0.996139
+[66317:MainThread](2026-07-22 02:51:54,661) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch28:
+[66317:MainThread](2026-07-22 02:51:54,661) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:52:25,160) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:52:41,638) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.990798, valid -0.995566
+[66317:MainThread](2026-07-22 02:52:41,638) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch29:
+[66317:MainThread](2026-07-22 02:52:41,638) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:53:12,434) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:53:29,225) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.991150, valid -0.996276
+[66317:MainThread](2026-07-22 02:53:29,226) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch30:
+[66317:MainThread](2026-07-22 02:53:29,226) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:54:00,137) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:54:16,853) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.990689, valid -0.996207
+[66317:MainThread](2026-07-22 02:54:16,853) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch31:
+[66317:MainThread](2026-07-22 02:54:16,854) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:54:47,635) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:55:04,407) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.990526, valid -0.996335
+[66317:MainThread](2026-07-22 02:55:04,407) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch32:
+[66317:MainThread](2026-07-22 02:55:04,408) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:55:35,028) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:55:51,630) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.990512, valid -0.995930
+[66317:MainThread](2026-07-22 02:55:51,630) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch33:
+[66317:MainThread](2026-07-22 02:55:51,630) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:56:22,439) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:56:39,054) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.990132, valid -0.996337
+[66317:MainThread](2026-07-22 02:56:39,054) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch34:
+[66317:MainThread](2026-07-22 02:56:39,054) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:57:09,596) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:57:26,439) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.990400, valid -0.996835
+[66317:MainThread](2026-07-22 02:57:26,439) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch35:
+[66317:MainThread](2026-07-22 02:57:26,439) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:57:57,064) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:58:13,573) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.990313, valid -0.996727
+[66317:MainThread](2026-07-22 02:58:13,573) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch36:
+[66317:MainThread](2026-07-22 02:58:13,573) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:58:44,107) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:59:00,878) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.989910, valid -0.997145
+[66317:MainThread](2026-07-22 02:59:00,878) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch37:
+[66317:MainThread](2026-07-22 02:59:00,878) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 02:59:31,611) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 02:59:48,448) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.989835, valid -0.996719
+[66317:MainThread](2026-07-22 02:59:48,449) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch38:
+[66317:MainThread](2026-07-22 02:59:48,449) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 03:00:19,146) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 03:00:35,684) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.989925, valid -0.996334
+[66317:MainThread](2026-07-22 03:00:35,684) INFO - qlib.KRNN - [pytorch_krnn.py:462] - Epoch39:
+[66317:MainThread](2026-07-22 03:00:35,685) INFO - qlib.KRNN - [pytorch_krnn.py:463] - training...
+[66317:MainThread](2026-07-22 03:01:06,368) INFO - qlib.KRNN - [pytorch_krnn.py:465] - evaluating...
+[66317:MainThread](2026-07-22 03:01:22,978) INFO - qlib.KRNN - [pytorch_krnn.py:468] - train -0.989706, valid -0.996355
+[66317:MainThread](2026-07-22 03:01:22,978) INFO - qlib.KRNN - [pytorch_krnn.py:480] - early stop
+[66317:MainThread](2026-07-22 03:01:22,979) INFO - qlib.KRNN - [pytorch_krnn.py:483] - best score: -0.995230 @ 19
+[66317:MainThread](2026-07-22 03:01:23,050) INFO - qlib.fill_placeholder - [__init__.py:798] - <PRED> lookes like a placeholder, but it can't match to any given values
+Gym has been unmaintained since 2022 and does not support NumPy 2.0 amongst other critical functionality.
+Please upgrade to Gymnasium, the maintained drop-in replacement of Gym, or contact the authors of your software and request that they upgrade.
+Users of this version of Gym should be able to simply replace 'import gym' with 'import gymnasium as gym' in the vast majority of cases.
+See the migration guide at https://gymnasium.farama.org/introduction/migration_guide/ for additional information.
+[66317:MainThread](2026-07-22 03:01:29,898) INFO - qlib.workflow - [record_temp.py:197] - Signal record 'pred.pkl' has been saved as the artifact of the Experiment 117371003525464605
+/Users/xuxin/.local/lib/python3.12/site-packages/pandas/core/nanops.py:1632: ConstantInputWarning: An input array is constant; the correlation coefficient is not defined.
+  return spearmanr(a, b)[0]
+[66317:MainThread](2026-07-22 03:01:30,191) INFO - qlib.backtest caller - [__init__.py:93] - Create new exchange
+[66317:MainThread](2026-07-22 03:01:38,458) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[66317:MainThread](2026-07-22 03:01:38,458) WARNING - qlib.online operator - [exchange.py:219] - $close field data contains nan.
+[66317:MainThread](2026-07-22 03:01:38,460) WARNING - qlib.online operator - [exchange.py:226] - factor.day.bin file not exists or factor contains `nan`. Order using adjusted_price.
+[66317:MainThread](2026-07-22 03:01:38,460) WARNING - qlib.online operator - [exchange.py:228] - trade unit 100 is not supported in adjusted_price mode.
+[66317:MainThread](2026-07-22 03:01:46,245) WARNING - qlib.data - [data.py:665] - load calendar error: freq=day, future=True; return current calendar!
+[66317:MainThread](2026-07-22 03:01:46,245) WARNING - qlib.data - [data.py:668] - You can get future calendar by referring to the following document: https://github.com/microsoft/qlib/blob/main/scripts/data_collector/contrib/README.md
+[66317:MainThread](2026-07-22 03:01:46,250) WARNING - qlib.BaseExecutor - [executor.py:121] - `common_infra` is not set for <qlib.backtest.executor.SimulatorExecutor object at 0x12926c680>
+
+backtest loop:   0%|          | 0/871 [00:00<?, ?it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:   3%|▎         | 24/871 [00:00<00:03, 221.82it/s]
+backtest loop:   6%|▌         | 49/871 [00:00<00:03, 232.42it/s]
+backtest loop:   8%|▊         | 73/871 [00:00<00:03, 235.21it/s]
+backtest loop:  11%|█▏        | 98/871 [00:00<00:03, 238.65it/s]
+backtest loop:  14%|█▍        | 123/871 [00:00<00:03, 241.97it/s]
+backtest loop:  17%|█▋        | 148/871 [00:00<00:02, 243.87it/s]
+backtest loop:  20%|█▉        | 173/871 [00:00<00:02, 245.65it/s]
+backtest loop:  23%|██▎       | 198/871 [00:00<00:02, 245.49it/s]
+backtest loop:  26%|██▌       | 223/871 [00:00<00:02, 245.52it/s]
+backtest loop:  28%|██▊       | 248/871 [00:01<00:02, 242.20it/s]
+backtest loop:  31%|███▏      | 273/871 [00:01<00:02, 243.01it/s]
+backtest loop:  34%|███▍      | 298/871 [00:01<00:02, 240.42it/s]
+backtest loop:  37%|███▋      | 323/871 [00:01<00:02, 242.80it/s]
+backtest loop:  40%|███▉      | 348/871 [00:01<00:02, 243.75it/s]
+backtest loop:  43%|████▎     | 373/871 [00:01<00:02, 241.89it/s]
+backtest loop:  46%|████▌     | 399/871 [00:01<00:01, 246.68it/s]
+backtest loop:  49%|████▊     | 424/871 [00:01<00:01, 246.02it/s]
+backtest loop:  52%|█████▏    | 449/871 [00:01<00:01, 246.67it/s]
+backtest loop:  54%|█████▍    | 474/871 [00:01<00:01, 245.88it/s]
+backtest loop:  57%|█████▋    | 499/871 [00:02<00:01, 246.11it/s]
+backtest loop:  60%|██████    | 524/871 [00:02<00:01, 245.56it/s]
+backtest loop:  63%|██████▎   | 549/871 [00:02<00:01, 241.21it/s]/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+/Users/xuxin/Documents/dev/qlib/qlib/utils/index_data.py:492: RuntimeWarning: Mean of empty slice
+  return np.nanmean(self.data)
+
+backtest loop:  66%|██████▌   | 576/871 [00:02<00:01, 244.30it/s]
+backtest loop:  69%|██████▉   | 601/871 [00:02<00:01, 243.92it/s]
+backtest loop:  72%|███████▏  | 626/871 [00:02<00:01, 243.22it/s]
+backtest loop:  75%|███████▍  | 651/871 [00:02<00:00, 242.62it/s]
+backtest loop:  78%|███████▊  | 676/871 [00:02<00:00, 237.95it/s]
+backtest loop:  80%|████████  | 700/871 [00:02<00:00, 237.96it/s]
+backtest loop:  83%|████████▎ | 724/871 [00:02<00:00, 237.79it/s]
+backtest loop:  86%|████████▌ | 748/871 [00:03<00:00, 234.80it/s]
+backtest loop:  89%|████████▊ | 772/871 [00:03<00:00, 235.83it/s]
+backtest loop:  91%|█████████▏| 796/871 [00:03<00:00, 236.90it/s]
+backtest loop:  94%|█████████▍| 820/871 [00:03<00:00, 185.25it/s]
+backtest loop:  97%|█████████▋| 844/871 [00:03<00:00, 198.45it/s]
+backtest loop: 100%|█████████▉| 869/871 [00:03<00:00, 210.86it/s]
+backtest loop: 100%|██████████| 871/871 [00:03<00:00, 235.01it/s]
+[66317:MainThread](2026-07-22 03:01:49,981) INFO - qlib.workflow - [record_temp.py:520] - Portfolio analysis record 'port_analysis_1day.pkl' has been saved as the artifact of the Experiment 117371003525464605
+[66317:MainThread](2026-07-22 03:01:49,984) INFO - qlib.workflow - [record_temp.py:545] - Indicator analysis record 'indicator_analysis_1day.pkl' has been saved as the artifact of the Experiment 117371003525464605
+[66317:MainThread](2026-07-22 03:01:50,298) INFO - qlib.timer - [log.py:127] - Time cost: 0.000s | waiting `async_log` Done
